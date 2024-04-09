@@ -1,10 +1,10 @@
-#define SD3 A15
-#define SD2 7
-#define SD1 6
-#define SM 5
-#define SE1 4
-#define SE2 3
-#define SE3 A1
+#define SD3 A0
+#define SD2 A1
+#define SD1 A2
+#define SM A3
+#define SE1 A4
+#define SE2 A5
+#define SE3 A6
 #define LDRD A8
 #define LDRE A9
 
@@ -38,20 +38,21 @@ void loop() {
   Serial.print(sd3);
   Serial.print(" SD2: ");
   Serial.print(sd2);
-  // Serial.print(" SD1: ");
-  // Serial.print(sd1);
-  // Serial.print(" SM: ");
-  // Serial.print(sm);
-  // Serial.print(" SE1: ");
-  // Serial.print(se1);
-  // Serial.print(" SE2: ");
-  // Serial.print(se2);
-  // Serial.print(" SE3: ");
-  // Serial.print(se3);
+  Serial.print(" SD1: ");
+  Serial.print(sd1);
+  Serial.print(" SM: ");
+  Serial.print(sm);
+  Serial.print(" SE1: ");
+  Serial.print(se1);
+  Serial.print(" SE2: ");
+  Serial.print(se2);
+  Serial.print(" SE3: ");
+  Serial.print(se3);
   // Serial.print(" LDRD: ");
   // Serial.print(ldrd);
   // Serial.print(" LDRE: ");
   // Serial.print(ldre);
 
   Serial.println();
+  delay(100);
 }
