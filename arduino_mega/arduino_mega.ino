@@ -6,7 +6,7 @@
   Versão: 1.0
 */
 
-#include "mega_pins.h"
+#include "mega_def.h"
 #include <QTRSensors.h>
 
 #define LUZ 900
