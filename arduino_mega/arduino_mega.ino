@@ -8,27 +8,30 @@
 
 #include "mega_def.h"
 #include <QTRSensors.h>
+#include <Adafruit_TCS34725.h>
 
-#define CALIBRACAO             1
+#define DEBUG                0
 
-#define CALIBRAR_QTRA          0
-#define CALIBRAR_QTRRC         0
-#define CALIBRAR_TCS_VERDE     0
-#define CALIBRAR_ULTRA_FRENTE  0
-#define CALIBRAR_GIROSCOPIO    0
-#define CALIBRAR_LASER_FRENTE  0
-#define CALIBRAR_VISAO_GARRA   0
-#define CALIBRAR_BOTOES        0
-#define CALIBRAR_TCS_AREA      0
+#define DEBUG_QTRA           0
+#define DEBUG_QTRRC          0
+#define DEBUG_TCS_VERDE      0
+#define DEBUG_ULTRA_FRENTE   0
+#define DEBUG_GIROSCOPIO     0
+#define DEBUG_LASER_FRENTE   0
+#define DEBUG_VISAO_GARRA    0
+#define DEBUG_BOTOES         0
+#define DEBUG_TCS_AREA       0
 
-#define LUZ 900
-#define LUZ_F 500
-
+#define LUZ                  900
+#define LUZ_F                500
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;
 uint16_t sensorValues[SensorCount];
 uint16_t sFE3, sFE2, sFE1, sFD1, sFD2, sFD3;
 uint16_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
+
+Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcsDir = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 
 void setup() {
   ligarLed(AMBOS, VERMELHO, 0);
@@ -54,6 +57,14 @@ void setup() {
 
   qtrc.setTypeRC();
   qtrc.setSensorPins((const uint8_t[]){32, 34, 36, 38, 40, 42}, SensorCount);
+
+  Serial2.begin(9600);
+
+  if (!tcs.begin()) {
+    Serial.println("Sensor TCS34725 não encontrado. Verifique as conexões.");
+    while (1)
+      ;  // Loop infinito se o sensor não for encontrado
+  }
 }
 
 void loop() {
@@ -63,18 +74,96 @@ void loop() {
     return; // Comente essa linha se quiser que o robo ANDE com o SERIAL LIGADO (não recomendado)
   #endif
 
-  se2 = analogRead(SE2_PIN);
-  se1 = analogRead(SE1_PIN);
-  sd1 = analogRead(SD1_PIN);
-  sd2 = analogRead(SD2_PIN);
+  // se2 = analogRead(SE2_PIN);
+  // se1 = analogRead(SE1_PIN);
+  // sd1 = analogRead(SD1_PIN);
+  // sd2 = analogRead(SD2_PIN);
+
+  // if (se1 >= LUZ || se2 >= LUZ) {
+  //   segueLinhaEsquerda();
+  // }
+
+  // if (sd1 >= LUZ || sd2 >= LUZ) {
+  //   segueLinhaDireita();
+  // }
+
+  lerDadosSensorRemoto();
+
+  lerSensorCor();
 
   
+}
 
-  if (se1 >= LUZ || se2 >= LUZ) {
-    segueLinhaEsquerda();
+
+void lerDadosSensorRemoto() {
+  static char buffer[64] = { 0 };
+  static int index = 0;
+  bool dadosRecebidos = false;
+
+  // Variáveis para armazenar os valores RGB extraídos
+  int r, g, b;
+
+  // Define um tempo limite para a recepção
+  unsigned long startTime = millis();
+
+  while (millis() - startTime < 1000) {  // Aguarda até 1 segundo por uma resposta
+    if (Serial2.available() > 0) {
+      char received = Serial2.read();
+      if (received == '\n') {
+        buffer[index] = '\0';  // Termina a string se for o final da mensagem
+        dadosRecebidos = true;
+        break;  // Sai do loop após processar a mensagem
+      } else if (index < 63) {
+        buffer[index++] = received;
+      }
+    }
   }
 
-  if (sd1 >= LUZ || sd2 >= LUZ) {
-    segueLinhaDireita();
+  if (dadosRecebidos) {
+    // Serial.print(buffer);
+    // Tenta extrair os valores R, G, B da string recebida
+    if (sscanf(buffer, "R:%d,G:%d,B:%d", &r, &g, &b) == 3) { // Se três valores forem lidos com sucesso
+      Serial.print(" Sensor Remoto: R:");
+      Serial.print(r);
+      Serial.print(",G:");
+      Serial.print(g);
+      Serial.print(",B:");
+      Serial.print(b);
+    } else {
+      Serial.print(" Formato de dados inválido.");
+    }
+  } else {
+    Serial.print("Timeout: Nenhuma resposta do sensor remoto.");
   }
+
+  // Limpa o buffer e reseta o índice após processar a mensagem
+  memset(buffer, 0, sizeof(buffer));
+  index = 0;
+}
+
+void lerSensorCor(Adafruit_TCS34725 *tcs) {
+  uint16_t r, g, b, c, colorTemp, lux;
+
+  tcs->getRawData(&r, &g, &b, &c);
+  // colorTemp = tcs->calculateColorTemperature(r, g, b);
+  // lux = tcs->calculateLux(r, g, b);
+
+  Serial.print("R: ");
+  Serial.print(r);
+  Serial.print(" G: ");
+  Serial.print(g);
+  Serial.print(" B: ");
+  Serial.print(b);
+}
+
+void tcaSelecionar(uint8_t i) {
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();
+}
+
+void tcaDesliga() {
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(0);  // Desligar todos os canais
+  Wire.endTransmission();
 }
