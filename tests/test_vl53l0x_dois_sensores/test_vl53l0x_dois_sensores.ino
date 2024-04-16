@@ -1,4 +1,4 @@
- /*
+/*
   * Original Library soruce: https://github.com/adafruit/Adafruit_VL53L0X
   * 
  * Using 2 VL53L0X Laser Distance Sensors
@@ -42,13 +42,13 @@ or make donation using PayPal http://robojax.com/L/?id=64
 
 // address we will assign if dual sensor is present
 #define LOX1_ADDRESS 0x30
-#define LOX2_ADDRESS 0x31
-int sensor1,sensor2;
+#define LOX2_ADDRESS 0x331
+int sensor1, sensor2;
 
 
 // set the pins to shutdown
-#define SHT_LOX1 7
-#define SHT_LOX2 6
+#define SHT_LOX1 22
+#define SHT_LOX2 23
 
 // objects for the vl53l0x
 Adafruit_VL53L0X lox1 = Adafruit_VL53L0X();
@@ -68,7 +68,7 @@ VL53L0X_RangingMeasurementData_t measure2;
  */
 void setID() {
   // all reset
-  digitalWrite(SHT_LOX1, LOW);    
+  digitalWrite(SHT_LOX1, LOW);
   digitalWrite(SHT_LOX2, LOW);
   delay(10);
   // all unreset
@@ -81,9 +81,10 @@ void setID() {
   digitalWrite(SHT_LOX2, LOW);
 
   // initing LOX1
-  if(!lox1.begin(LOX1_ADDRESS)) {
+  if (!lox1.begin(LOX1_ADDRESS)) {
     Serial.println(F("Failed to boot first VL53L0X"));
-    while(1);
+    while (1)
+      ;
   }
   delay(10);
 
@@ -92,47 +93,48 @@ void setID() {
   delay(10);
 
   //initing LOX2
-  if(!lox2.begin(LOX2_ADDRESS)) {
+  if (!lox2.begin(LOX2_ADDRESS)) {
     Serial.println(F("Failed to boot second VL53L0X"));
-    while(1);
+    while (1)
+      ;
   }
 }
 
 void read_dual_sensors() {
-  
-  lox1.rangingTest(&measure1, false); // pass in 'true' to get debug data printout!
-  lox2.rangingTest(&measure2, false); // pass in 'true' to get debug data printout!
+
+  lox1.rangingTest(&measure1, false);  // pass in 'true' to get debug data printout!
+  lox2.rangingTest(&measure2, false);  // pass in 'true' to get debug data printout!
 
   // print sensor one reading
   Serial.print("1: ");
-  if(measure1.RangeStatus != 4) {     // if not out of range
-    sensor1 = measure1.RangeMilliMeter;    
+  if (measure1.RangeStatus != 4) {  // if not out of range
+    sensor1 = measure1.RangeMilliMeter;
     Serial.print(sensor1);
-    Serial.print("mm");    
+    Serial.print("mm");
   } else {
     Serial.print("Out of range");
   }
-  
+
   Serial.print(" ");
 
   // print sensor two reading
   Serial.print("2: ");
-  if(measure2.RangeStatus != 4) {
+  if (measure2.RangeStatus != 4) {
     sensor2 = measure2.RangeMilliMeter;
     Serial.print(sensor2);
     Serial.print("mm");
   } else {
     Serial.print("Out of range");
   }
-  
+
   Serial.println();
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // wait until serial port opens for native USB devices
-  while (! Serial) { delay(1); }
+  while (!Serial) { delay(1); }
 
   pinMode(SHT_LOX1, OUTPUT);
   pinMode(SHT_LOX2, OUTPUT);
@@ -143,15 +145,14 @@ void setup() {
   digitalWrite(SHT_LOX2, LOW);
 
   Serial.println("Both in reset mode...(pins are low)");
-  
-  
+
+
   Serial.println("Starting...");
   setID();
- 
 }
 
 void loop() {
-   
+
   read_dual_sensors();
   delay(100);
 }

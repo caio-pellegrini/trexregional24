@@ -9,6 +9,7 @@
 #include "mega_def.h"
 #include <QTRSensors.h>
 #include <Adafruit_TCS34725.h>
+#include <Wire.h>
 
 #define DEBUG                0
 
@@ -30,8 +31,8 @@ uint16_t sensorValues[SensorCount];
 uint16_t sFE3, sFE2, sFE1, sFD1, sFD2, sFD3;
 uint16_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 
-Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
-Adafruit_TCS34725 tcsDir = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
+// Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 
 void setup() {
   ligarLed(AMBOS, VERMELHO, 0);
@@ -58,18 +59,18 @@ void setup() {
   qtrc.setTypeRC();
   qtrc.setSensorPins((const uint8_t[]){32, 34, 36, 38, 40, 42}, SensorCount);
 
+  Serial.begin(9600);
   Serial2.begin(9600);
 
-  if (!tcs.begin()) {
-    Serial.println("Sensor TCS34725 não encontrado. Verifique as conexões.");
-    while (1)
-      ;  // Loop infinito se o sensor não for encontrado
+  if (!tcsEsq.begin()) {
+    Serial.println("TCS34725 Esq não encontrado. Verifique as conexões.");
   }
+
 }
 
 void loop() {
   // ligarLed(AMBOS, VERMELHO, 1000);
-  #if CALIBRACAO
+  #if DEBUG
     calibrar();
     return; // Comente essa linha se quiser que o robo ANDE com o SERIAL LIGADO (não recomendado)
   #endif
@@ -87,11 +88,12 @@ void loop() {
   //   segueLinhaDireita();
   // }
 
+  Serial2.println("caio");
+
+  lerSensorCor(&tcsEsq);
+
   lerDadosSensorRemoto();
 
-  lerSensorCor();
-
-  
 }
 
 
@@ -123,12 +125,12 @@ void lerDadosSensorRemoto() {
     // Serial.print(buffer);
     // Tenta extrair os valores R, G, B da string recebida
     if (sscanf(buffer, "R:%d,G:%d,B:%d", &r, &g, &b) == 3) { // Se três valores forem lidos com sucesso
-      Serial.print(" Sensor Remoto: R:");
+      Serial.print(" TCS DIR: R:");
       Serial.print(r);
       Serial.print(",G:");
       Serial.print(g);
       Serial.print(",B:");
-      Serial.print(b);
+      Serial.println(b);
     } else {
       Serial.print(" Formato de dados inválido.");
     }
@@ -147,23 +149,26 @@ void lerSensorCor(Adafruit_TCS34725 *tcs) {
   tcs->getRawData(&r, &g, &b, &c);
   // colorTemp = tcs->calculateColorTemperature(r, g, b);
   // lux = tcs->calculateLux(r, g, b);
+  r = map(r, 0, 6000, 0, 255);
+  g = map(g, 0, 6000, 0, 255);
+  b = map(b, 0, 6000, 0, 255);
 
-  Serial.print("R: ");
+  Serial.print("TCS ESQ: R:");
   Serial.print(r);
-  Serial.print(" G: ");
+  Serial.print(",G:");
   Serial.print(g);
-  Serial.print(" B: ");
+  Serial.print(",B:");
   Serial.print(b);
 }
 
-void tcaSelecionar(uint8_t i) {
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << i);
-  Wire.endTransmission();
-}
+// void tcaSelecionar(uint8_t i) {
+//   Wire.beginTransmission(TCAADDR);
+//   Wire.write(1 << i);
+//   Wire.endTransmission();
+// }
 
-void tcaDesliga() {
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(0);  // Desligar todos os canais
-  Wire.endTransmission();
-}
+// void tcaDesliga() {
+//   Wire.beginTransmission(TCAADDR);
+//   Wire.write(0);  // Desligar todos os canais
+//   Wire.endTransmission();
+// }

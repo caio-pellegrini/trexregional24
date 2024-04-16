@@ -9,8 +9,6 @@ void setup(void) {
 
   if (!tcs.begin()) {
     Serial.println("Sensor TCS34725 não encontrado. Verifique as conexões.");
-    while (1)
-      ;  // Loop infinito se o sensor não for encontrado
   }
 
   digitalWrite(LED_BUILTIN, HIGH);

@@ -24,7 +24,7 @@ void setup() {
   Wire.begin();
   Serial.begin(9600);
 
-  // Serial.println(tcsBar.begin() ? "TCS34725 Bar conectado :)" : "TCS34725 Bar conexão falhou :(");
+  Serial.println(tcsBar.begin() ? "TCS34725 Bar conectado :)" : "TCS34725 Bar conexão falhou :(");
 
   tcadesliga();
   tcaSelecionar(canalTcsMulti);  // Selecionar o primeiro sensor de cor e inicializá-lo
@@ -33,9 +33,9 @@ void setup() {
 }
 
 void loop() {
-  // Serial.print("TCS BAR: ");
-  // lerSensorCor(&tcsBar);
-  // tcadesliga();
+  Serial.print("TCS BAR: ");
+  lerSensorCor(&tcsBar);
+  tcadesliga();
 
   delay(500);
 
