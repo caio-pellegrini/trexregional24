@@ -32,7 +32,9 @@ uint16_t sensorValues[SensorCount];
 uint16_t sFE3, sFE2, sFE1, sFD1, sFD2, sFD3;
 uint16_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 
-
+Ultrasonic ultraEsq(7, 6);
+Ultrasonic ultraDir(5, 4);
+int ultraEsq, ultraDir;
 
 // Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);

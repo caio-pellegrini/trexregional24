@@ -122,11 +122,14 @@ void calibrar()
     Serial.print(ultraGarra);
 #endif
 
-    #if DEBUG_ULTRA_FRENTE
-        ultraF = ultrasonicF.read(CM);
-        Serial.print(" ultraF: ");
-        Serial.print(ultraF);
-    #endif
+#if DEBUG_ULTRA
+    ultraEsq = ultraEsq.read(CM);
+    Serial.print(" ultraE: ");
+    Serial.print(ultraE);
+    ultraDir= ultraDir.read(CM);
+    Serial.print(" ultraF: ");
+    Serial.print(ultraF);
+#endif
 
 #if DEBUG_BOTOES
     btnE = !digitalRead(btnEpin);
