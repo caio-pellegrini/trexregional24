@@ -12,12 +12,12 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG                0
+#define DEBUG                1
 
 #define DEBUG_QTRA           0
 #define DEBUG_QTRRC          0
 #define DEBUG_TCS_VERDE      0
-#define DEBUG_ULTRA_FRENTE   0
+#define DEBUG_ULTRA          1 
 #define DEBUG_GIROSCOPIO     0
 #define DEBUG_LASER_FRENTE   0
 #define DEBUG_VISAO_GARRA    0
@@ -34,7 +34,7 @@ uint16_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 
 Ultrasonic ultrasonicEsq(7, 6);
 Ultrasonic ultrasonicDir(5, 4);
-int ultraEsq, ultraDir;
+int ultraE, ultraD;
 
 // Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
@@ -77,8 +77,8 @@ void loop() {
   // ligarLed(AMBOS, VERMELHO, 1000);
   #if DEBUG
     calibrar();
-    return; // Comente essa linha se quiser que o robo ANDE com o SERIAL LIGADO (não recomendado)
-  #endif
+    // return; // Comente essa linha se quiser que o robo ANDE com o SERIAL LIGADO (não recomendado)
+  #endif  
 
   // se2 = analogRead(SE2_PIN);
   // se1 = analogRead(SE1_PIN);
@@ -93,10 +93,9 @@ void loop() {
   //   segueLinhaDireita();
   // }
 
+
   Serial2.println("caio");
-
   lerSensorCor(&tcsEsq);
-
   lerDadosSensorRemoto();
 
 }
