@@ -123,10 +123,10 @@ void calibrar()
 #endif
 
 #if DEBUG_ULTRA
-    ultraEsq = ultraEsq.read(CM);
+    ultraEsq = ultrasonicEsq.read(CM);
     Serial.print(" ultraE: ");
     Serial.print(ultraE);
-    ultraDir= ultraDir.read(CM);
+    ultraDir = ultrasonicDir.read(CM);
     Serial.print(" ultraF: ");
     Serial.print(ultraF);
 #endif
