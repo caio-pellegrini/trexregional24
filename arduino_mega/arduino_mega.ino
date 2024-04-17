@@ -126,18 +126,19 @@ void lerDadosSensorRemoto() {
   }
 
   if (dadosRecebidos) {
-    // Serial.print(buffer);
-    // Tenta extrair os valores R, G, B da string recebida
-    if (sscanf(buffer, "R:%d,G:%d,B:%d", &r, &g, &b) == 3) { // Se três valores forem lidos com sucesso
-      Serial.print(" TCS DIR: R:");
-      Serial.print(r);
-      Serial.print(",G:");
-      Serial.print(g);
-      Serial.print(",B:");
-      Serial.println(b);
-    } else {
-      Serial.print(" Formato de dados inválido.");
-    }
+    Serial.print(buffer);
+
+    // // Tenta extrair os valores R, G, B da string recebida
+    // if (sscanf(buffer, "R:%d,G:%d,B:%d", &r, &g, &b) == 3) { // Se três valores forem lidos com sucesso
+    //   Serial.print(" TCS DIR: R:");
+    //   Serial.print(r);
+    //   Serial.print(",G:");
+    //   Serial.print(g);
+    //   Serial.print(",B:");
+    //   Serial.println(b);
+    // } else {
+    //   Serial.print(" Formato de dados inválido.");
+    // }
   } else {
     Serial.print("Timeout: Nenhuma resposta do sensor remoto.");
   }

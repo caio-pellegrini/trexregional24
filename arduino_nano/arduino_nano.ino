@@ -30,11 +30,12 @@ void loop(void) {
       if (strstr(buffer, "caio") != NULL) {
         uint16_t r, g, b, c;
         tcs.getRawData(&r, &g, &b, &c);
-        r = map(r, 0, 6000, 0, 255);
-        g = map(g, 0, 6000, 0, 255);
-        b = map(b, 0, 6000, 0, 255);
 
-        snprintf(strtcs, sizeof(strtcs), "R:%d,G:%d,B:%d", r, g, b);
+        // r = map(r, 0, 6000, 0, 255);
+        // g = map(g, 0, 6000, 0, 255);
+        // b = map(b, 0, 6000, 0, 255);
+
+        snprintf(strtcs, sizeof(strtcs), "R:%d,G:%d,B:%d,C:%d", r, g, b, c);
         Serial.println(strtcs);  // Envia os dados do sensor após receber o comando
       }
       memset(buffer, 0, sizeof(buffer));  // Limpa o buffer e reseta o índice após processar o comando

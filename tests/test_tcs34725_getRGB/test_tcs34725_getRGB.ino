@@ -12,7 +12,7 @@
 // Adafruit_TCS34725 tcs = Adafruit_TCS34725();
 
 /* Initialise with specific int time and gain values */
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_154MS, TCS34725_GAIN_1X);
 
 void setup(void) {
   Serial.begin(9600);
@@ -28,7 +28,7 @@ void setup(void) {
 }
 
 void loop(void) {
-  int r, g, b, c, colorTemp, lux;
+  float r, g, b, c, colorTemp, lux;
 
   //tcs.getRawData(&r, &g, &b, &c);
   tcs.getRGB(&r, &g, &b);
@@ -38,9 +38,21 @@ void loop(void) {
 
   // Serial.print("Color Temp: "); Serial.print(colorTemp, DEC); Serial.print(" K - ");
   // Serial.print("Lux: "); Serial.print(lux, DEC); Serial.print(" - ");
+
+  Serial.print("GET RGB:   ");
   Serial.print("R: "); Serial.print(r); Serial.print(" ");
   Serial.print("G: "); Serial.print(g); Serial.print(" ");
   Serial.print("B: "); Serial.print(b); Serial.print(" ");
   // Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
-  Serial.println(" ");
+  Serial.print("    ---   ");
+
+  uint16_t r1, g1, b1, c1;
+  tcs.getRawData(&r1, &g1, &b1, &c1);
+
+  Serial.print("RAW VALUES:   ");
+  Serial.print("R: "); Serial.print(r1); Serial.print(" ");
+  Serial.print("G: "); Serial.print(g1); Serial.print(" ");
+  Serial.print("B: "); Serial.print(b1); Serial.print(" ");
+  Serial.print("C: "); Serial.print(c1, DEC); Serial.print(" ");
+  Serial.println("");
 }
