@@ -12,12 +12,12 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG                1
+#define DEBUG                0
 
 #define DEBUG_QTRA           0
 #define DEBUG_QTRRC          0
 #define DEBUG_TCS_VERDE      0
-#define DEBUG_ULTRA          1 
+#define DEBUG_ULTRA          0
 #define DEBUG_GIROSCOPIO     0
 #define DEBUG_LASER_FRENTE   0
 #define DEBUG_VISAO_GARRA    0
@@ -26,6 +26,8 @@
 
 #define LUZ                  900
 #define LUZ_F                500
+#define TCS_SATURACAO_MAX 4000
+
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;
 uint16_t sensorValues[SensorCount];
@@ -96,7 +98,10 @@ void loop() {
 
   Serial2.println("caio");
   lerSensorCor(&tcsEsq);
+  Serial.print(" TCS DIR: ");
   lerDadosSensorRemoto();
+
+  Serial.println();
 
 }
 
@@ -126,19 +131,19 @@ void lerDadosSensorRemoto() {
   }
 
   if (dadosRecebidos) {
-    Serial.print(buffer);
+    // Serial.print(buffer);
 
-    // // Tenta extrair os valores R, G, B da string recebida
-    // if (sscanf(buffer, "R:%d,G:%d,B:%d", &r, &g, &b) == 3) { // Se três valores forem lidos com sucesso
-    //   Serial.print(" TCS DIR: R:");
-    //   Serial.print(r);
-    //   Serial.print(",G:");
-    //   Serial.print(g);
-    //   Serial.print(",B:");
-    //   Serial.println(b);
-    // } else {
-    //   Serial.print(" Formato de dados inválido.");
-    // }
+    // Tenta extrair os valores R, G, B da string recebida
+    if (sscanf(buffer, "R:%d,G:%d,B:%d", &r, &g, &b) == 3) { // Se três valores forem lidos com sucesso
+      Serial.print(" TCS DIR: R:");
+      Serial.print(r);
+      Serial.print(",G:");
+      Serial.print(g);
+      Serial.print(",B:");
+      Serial.print(b);
+    } else {
+      Serial.print(" Formato ;de dados inválido.");
+    }
   } else {
     Serial.print("Timeout: Nenhuma resposta do sensor remoto.");
   }
@@ -149,14 +154,13 @@ void lerDadosSensorRemoto() {
 }
 
 void lerSensorCor(Adafruit_TCS34725 *tcs) {
-  uint16_t r, g, b, c, colorTemp, lux;
+  uint16_t r, g, b, c;
 
   tcs->getRawData(&r, &g, &b, &c);
-  // colorTemp = tcs->calculateColorTemperature(r, g, b);
-  // lux = tcs->calculateLux(r, g, b);
-  r = map(r, 0, 6000, 0, 255);
-  g = map(g, 0, 6000, 0, 255);
-  b = map(b, 0, 6000, 0, 255);
+  
+  r = map(r, 0, TCS_SATURACAO_MAX, 0, 255);
+  g = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
+  b = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
 
   Serial.print("TCS ESQ: R:");
   Serial.print(r);

@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
+#define TCS_SATURACAO_MAX 4000 // por enquanto esse valor é iniciado aqui, mas ele poderia ser enviado pelo Mega
 
 char strtcs[40];
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
@@ -31,11 +32,11 @@ void loop(void) {
         uint16_t r, g, b, c;
         tcs.getRawData(&r, &g, &b, &c);
 
-        // r = map(r, 0, 6000, 0, 255);
-        // g = map(g, 0, 6000, 0, 255);
-        // b = map(b, 0, 6000, 0, 255);
+        r = map(r, 0, TCS_SATURACAO_MAX, 0, 255);
+        g = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
+        b = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
 
-        snprintf(strtcs, sizeof(strtcs), "R:%d,G:%d,B:%d,C:%d", r, g, b, c);
+        snprintf(strtcs, sizeof(strtcs), "R:%d,G:%d,B:%d", r, g, b); // String a ser enviada
         Serial.println(strtcs);  // Envia os dados do sensor após receber o comando
       }
       memset(buffer, 0, sizeof(buffer));  // Limpa o buffer e reseta o índice após processar o comando
