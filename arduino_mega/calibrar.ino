@@ -49,14 +49,27 @@ void calibrar()
     #endif
 
 #if DEBUG_TCS_VERDE
-    tcadesliga();
-    tcaSelecionar(canalTcsEsq);
-    SCE = lerSensorCor(&tcsEsq);
-    tcaSelecionar(canalTcsDir);
-    SCD = lerSensorCor(&tcsDir);
-    Serial.print(" | SCE: "); Serial.print(SCE);
-    Serial.print(" SCD: "); Serial.print(SCD);
-    tcadesliga();
+    Serial2.println("caio");
+
+    lerSensorCor(&tcsEsq, rgbEsq);
+    
+    Serial.print("TCS ESQ: ");
+    Serial.print("R:");
+    Serial.print(rgbEsq[0]);
+    Serial.print(",G:");
+    Serial.print(rgbEsq[1]);
+    Serial.print(",B:");
+    Serial.print(rgbEsq[2]);
+
+    lerDadosSensorRemoto(rgbDir);
+
+    Serial.print(" TCS DIR: ");
+    Serial.print("R:");
+    Serial.print(rgbDir[0]);
+    Serial.print(",G:");
+    Serial.print(rgbDir[1]);
+    Serial.print(",B:");
+    Serial.print(rgbDir[2]);
 #endif
 
 #if DEBUG_TCS_AREA

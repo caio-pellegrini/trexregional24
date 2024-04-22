@@ -1,7 +1,7 @@
 void frente() {
-  analogWrite(MOTOR_DF, 85);
+  analogWrite(MOTOR_DF, 100);
   analogWrite(MOTOR_DT, 0);
-  analogWrite(MOTOR_EF, 85);
+  analogWrite(MOTOR_EF, 100);
   analogWrite(MOTOR_ET, 0);
   delay(1);
 }
