@@ -12,22 +12,23 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG 0
-
-#define DEBUG_QTRA 0
-#define DEBUG_QTRRC 0
-#define DEBUG_TCS_VERDE 0
-#define DEBUG_TCS_AREA 0
-#define DEBUG_ULTRA 0
-#define DEBUG_GIROSCOPIO 0
+#define DEBUG              0
+#define DEBUG_QTRA         1
+#define DEBUG_QTRRC        0
+#define DEBUG_TCS_VERDE    0
+#define DEBUG_TCS_AREA     0
+#define DEBUG_ULTRA        0
+#define DEBUG_GIROSCOPIO   0
 #define DEBUG_LASER_FRENTE 0
-#define DEBUG_VISAO_GARRA 0
-#define DEBUG_BOTOES 0
+#define DEBUG_VISAO_GARRA  0
+#define DEBUG_BOTOES       0
 
-
-#define LUZ 900
-#define LUZ_F 500
-#define TCS_SATURACAO_MAX 4000
+#define LUZ                900
+#define LUZ_F              500
+#define TCS_SATURACAO_MAX  4000
+#define VEL_MOTOR_FRENTE   135
+#define VEL_MOTOR_SEG_MAX  210
+#define VEL_MOTOR_SEG_MIN  193
 
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;
@@ -106,16 +107,14 @@ void loop()
     segueLinhaDireita();
   }
 
+
+  
+
   // Serial2.println("caio");
-
   // lerSensorCor(&tcsEsq, rgbEsq);
-
   // Serial.print(rgbEsq[1]);
-
   // lerDadosSensorRemoto(rgbDir);
-
   // Serial.print(rgbDir[1]);
-
   // Serial.println();
 }
 

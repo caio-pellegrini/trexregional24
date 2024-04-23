@@ -13,21 +13,21 @@ void calibrar()
         sd2 = analogRead(SD2_PIN);
         sd3 = analogRead(SD3_PIN);
 
-        Serial.print(" | sE3: ");
+        Serial.print(" | se3: ");
         Serial.print(se3);
-        Serial.print(" sE2: ");
+        Serial.print(" se2: ");
         Serial.print(se2);
-        Serial.print(" sE1: ");
+        Serial.print(" se1: ");
         Serial.print(se1);
-        Serial.print(" sE0: ");
+        Serial.print(" se0: ");
         Serial.print(se0);
-        Serial.print(" sD0: ");
+        Serial.print(" sd0: ");
         Serial.print(sd0);
-        Serial.print(" sD1: ");
+        Serial.print(" sd1: ");
         Serial.print(sd1);
-        Serial.print(" sD2: ");
+        Serial.print(" sd2: ");
         Serial.print(sd2);
-        Serial.print(" sD3: ");
+        Serial.print(" sd3: ");
         Serial.print(sd3);
     #endif
 
