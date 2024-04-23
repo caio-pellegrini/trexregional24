@@ -23,6 +23,7 @@
     #define VERMELHO   255, 0, 0
     #define VERDE      0, 255, 0
     #define AZUL       0, 0, 255
+    #define BRANCO     255, 255, 255
 
     // CONSTANTES PARA LEDS
     #define AMBOS      true, true

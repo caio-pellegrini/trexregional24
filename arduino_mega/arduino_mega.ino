@@ -13,9 +13,9 @@
 #include <Ultrasonic.h>
 
 #define DEBUG              0
-#define DEBUG_QTRA         1
+#define DEBUG_QTRA         0
 #define DEBUG_QTRRC        0
-#define DEBUG_TCS_VERDE    0
+#define DEBUG_TCS_VERDE    1
 #define DEBUG_TCS_AREA     0
 #define DEBUG_ULTRA        0
 #define DEBUG_GIROSCOPIO   0
@@ -29,11 +29,13 @@
 #define VEL_MOTOR_FRENTE   135
 #define VEL_MOTOR_SEG_MAX  210
 #define VEL_MOTOR_SEG_MIN  193
+#define CORTE_VERDE        75    // abaixo disso é verde
+#define CORTE_VERDE_PRETO  20    // abaixo disso é preto
 
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;
 uint16_t sensorValues[SensorCount];
-uint16_t sFE3, sFE2, sFE1, sFD1, sFD2, sFD3;
+uint16_t sFE3, sFE2, sFE1, sFD1, sFD2, sFD3, sf;
 uint16_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 
 Ultrasonic ultrasonicEsq(7, 6);
@@ -80,6 +82,8 @@ void setup()
   {
     Serial.println("TCS34725 Esq não encontrado. Verifique as conexões.");
   }
+
+  ligarLed(AMBOS, DESLIGADO, 0);
 }
 
 void loop()
@@ -87,7 +91,7 @@ void loop()
   // ligarLed(AMBOS, VERMELHO, 1000);
   #if DEBUG
     calibrar();
-    return; // Comente essa linha se quiser que o robo ANDE com o SERIAL LIGADO (não recomendado)
+    // return; // Comente essa linha se quiser que o robo ANDE com o SERIAL LIGADO (não recomendado)
   #endif
 
   se2 = analogRead(SE2_PIN);
@@ -95,7 +99,7 @@ void loop()
   sd1 = analogRead(SD1_PIN);
   sd2 = analogRead(SD2_PIN);
 
-  frente();
+  moverFrente();
 
   if (se1 >= LUZ || se2 >= LUZ)
   {
@@ -107,15 +111,84 @@ void loop()
     segueLinhaDireita();
   }
 
+  se3 = analogRead(SE3_PIN);
+  se2 = analogRead(SE2_PIN);
+  se1 = analogRead(SE1_PIN);
+  se0 = analogRead(SE0_PIN);
+  sd0 = analogRead(SD0_PIN);
+  sd1 = analogRead(SD1_PIN);
+  sd2 = analogRead(SD2_PIN);
+  sd3 = analogRead(SD3_PIN);
 
-  
+  // qtrc.read(sensorValues);
+  // sf = map(sensorValues[3], 0, 2500, 0, 1023);
 
-  // Serial2.println("caio");
-  // lerSensorCor(&tcsEsq, rgbEsq);
-  // Serial.print(rgbEsq[1]);
-  // lerDadosSensorRemoto(rgbDir);
-  // Serial.print(rgbDir[1]);
-  // Serial.println();
+  if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
+  {
+    moverTrasPorMS(100);
+    pararMotor();
+
+    Serial2.println("caio");
+    lerSensorCor(&tcsEsq, rgbEsq);
+
+    lerDadosSensorRemoto(rgbDir);
+    Serial.print(rgbDir[1]);
+
+    if (rgbEsq[1] < CORTE_VERDE && rgbEsq[1] > CORTE_VERDE_PRETO)
+    {
+      ligarLed(ESQ, VERDE, 0);
+    }
+    else if (rgbEsq[1] < CORTE_VERDE_PRETO)
+    {
+      ligarLed(ESQ, VERMELHO, 0);
+    }
+    else
+    {
+      ligarLed(ESQ, BRANCO, 0);
+    }
+
+
+    if (rgbDir[1] < CORTE_VERDE && rgbDir[1] > CORTE_VERDE_PRETO)
+    {
+      ligarLed(DIR, VERDE, 0);
+    }
+    else if (rgbDir[1] < CORTE_VERDE_PRETO)
+    {
+      ligarLed(DIR, VERMELHO, 0);
+    }
+    else
+    {
+      ligarLed(DIR, BRANCO, 0);
+    }
+
+    delay(500);
+
+    ligarLed(AMBOS, DESLIGADO, 0);
+
+
+
+    // Serial.println();
+
+    // if (rgbDir[1] < CORTE_VERDE)
+    // {
+    //   Serial.print(" Verde");
+    // }
+    // else if (rgbDir[1] < CORTE_VERDE_PRETO)
+    // {
+    //   Serial.print(" Preto");
+    // }
+    // else
+    // {
+    //   Serial.print(" Branco");
+    // }
+
+    // return;
+  }
+
+
+
+
+
 }
 
 void lerDadosSensorRemoto(int *rgbValues)
