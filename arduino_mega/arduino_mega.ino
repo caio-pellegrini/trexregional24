@@ -12,9 +12,9 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG              0
-#define DEBUG_CALIBRACAO   1
-#define DEBUG_EM_CURSO     0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
+#define DEBUG              1
+#define DEBUG_CALIBRACAO   0
+#define DEBUG_EM_CURSO     1 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA         0
 #define DEBUG_QTRRC        0
 #define DEBUG_TCS_VERDE    1
@@ -31,8 +31,9 @@
 #define VEL_MOTOR_FRENTE   135
 #define VEL_MOTOR_SEG_MAX  210
 #define VEL_MOTOR_SEG_MIN  193
-#define CORTE_VERDE        75    // abaixo disso é verde
-#define CORTE_VERDE_PRETO  20    // abaixo disso é preto
+#define CORTE_VERDE        90    // abaixo disso é verde
+#define CORTE_VERDE_PRETO  10    // abaixo disso é preto
+// criar cortes personalizados para cada sensor
 
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;
@@ -52,18 +53,21 @@ int rgbDir[3]; // pode ser trocado para byte posteriormente
 
 void setup()
 {
-  ligarLed(AMBOS, VERMELHO, 0);
-  Serial2.begin(9600);
-  Serial.begin(9600);
-  
-
-  
-
   for (byte i = 0; i < 3; i++)
   {
     pinMode(rgbD[i], OUTPUT);
     pinMode(rgbE[i], OUTPUT);
   }
+  ligarLed(AMBOS, VERMELHO, 0);
+
+  Serial2.begin(9600);
+  Serial.begin(9600);
+
+  if (!tcsEsq.begin())
+  {
+    Serial.println("TCS34725 Esq não encontrado. Verifique as conexões.");
+  }
+
   pinMode(MOTOR_DF, OUTPUT);
   pinMode(MOTOR_DT, OUTPUT);
   pinMode(MOTOR_EF, OUTPUT);
@@ -81,13 +85,6 @@ void setup()
 
   qtrc.setTypeRC();
   qtrc.setSensorPins((const uint8_t[]){32, 34, 36, 38, 40, 42}, SensorCount);
-
-
-
-  if (!tcsEsq.begin())
-  {
-    Serial.println("TCS34725 Esq não encontrado. Verifique as conexões.");
-  }
 
   desligarLed(AMBOS);
 
@@ -136,16 +133,16 @@ void loop()
 
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
   {
-    moverTrasPorMS(100);
+    moverTrasPorMS(200);
     pararMotor();
     delay(100); // Aguardar um tempo antes de fazer a leitura dos sensores de cor
 
     lerVerde();
 
-    Serial.print("D: ");
-    Serial.print(rgbDir[1]);
     Serial.print("E: ");
     Serial.print(rgbEsq[1]);
+    Serial.print("D: ");
+    Serial.print(rgbDir[1]);
     Serial.println();
 
     bool verdeEsq = false;
@@ -179,23 +176,21 @@ void loop()
     {
       ligarLed(DIR, BRANCO, 0);
     }
-
-    delay(500);
-
-    ligarLed(AMBOS, DESLIGADO, 0);
+    
+    moverFrentePorMS(400);
 
     if (verdeEsq && verdeDir)
     {
       // beco sem saida
-      virarEsquerdaPorMS(2000);
+      virarEsquerdaPorMS(2400);
     } else if (verdeEsq && !verdeDir)
     {
       // curva a esquerda
-      virarEsquerdaPorMS(1000);
+      virarEsquerdaPorMS(1200);
     } else if (!verdeEsq && verdeDir)
     {
       // curva a direita
-      virarDireitaPorMS(1000);
+      virarDireitaPorMS(1200);
     } else
     {
       // seguir reto
@@ -203,6 +198,8 @@ void loop()
     }
 
     pararMotor();
+
+    desligarLed(AMBOS);
 
   }
 
