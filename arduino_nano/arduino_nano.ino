@@ -5,23 +5,26 @@
 char strtcs[40];
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
-void setup(void) {
+void setup() {
   Serial.begin(9600);
 
   if (!tcs.begin()) {
-    Serial.println("Sensor TCS34725 não encontrado. Verifique as conexões.");
+    //Serial.println("Sensor TCS34725 não encontrado. Verifique as conexões.");
   }
 
+  //Serial.println("HELLO MEGA");  // Envio de mensagem inicial
+
+
   digitalWrite(LED_BUILTIN, HIGH);
-  delay(200);
-  digitalWrite(LED_BUILTIN, LOW);
-  delay(200);
-  digitalWrite(LED_BUILTIN, HIGH);
-  delay(200);
-  digitalWrite(LED_BUILTIN, LOW);
+  // delay(200);
+  // digitalWrite(LED_BUILTIN, LOW);
+  // delay(200);
+  // digitalWrite(LED_BUILTIN, HIGH);
+  // delay(200);
+  // digitalWrite(LED_BUILTIN, LOW);
 }
 
-void loop(void) {
+void loop() {
   static char buffer[64];
   static int index = 0;
 

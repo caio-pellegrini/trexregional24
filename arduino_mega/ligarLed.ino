@@ -21,3 +21,12 @@ void ligarLed(bool esq, bool dir, byte r, byte g, byte b, unsigned long delayTem
     }
   }
 }
+
+void desligarLed(bool esq, bool dir) {
+  if (esq) {
+    for (byte i = 0; i < 3; i++) analogWrite(rgbE[i], 0);
+  }
+  if (dir) {
+    for (byte i = 0; i < 3; i++) analogWrite(rgbD[i], 0);
+  }
+}

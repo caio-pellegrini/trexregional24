@@ -12,7 +12,7 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG              1
+#define DEBUG              0
 #define DEBUG_CALIBRACAO   1
 #define DEBUG_EM_CURSO     0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA         0
@@ -53,6 +53,11 @@ int rgbDir[3]; // pode ser trocado para byte posteriormente
 void setup()
 {
   ligarLed(AMBOS, VERMELHO, 0);
+  Serial2.begin(9600);
+  Serial.begin(9600);
+  
+
+  
 
   for (byte i = 0; i < 3; i++)
   {
@@ -77,46 +82,15 @@ void setup()
   qtrc.setTypeRC();
   qtrc.setSensorPins((const uint8_t[]){32, 34, 36, 38, 40, 42}, SensorCount);
 
-  Serial.begin(9600);
-  Serial2.begin(9600);
+
 
   if (!tcsEsq.begin())
   {
     Serial.println("TCS34725 Esq não encontrado. Verifique as conexões.");
   }
 
-  ligarLed(AMBOS, DESLIGADO, 0);
+  desligarLed(AMBOS);
 
-  lerVerde();
-
-      if (rgbEsq[1] < CORTE_VERDE && rgbEsq[1] > CORTE_VERDE_PRETO)
-    {
-      ligarLed(ESQ, VERDE, 0);
-    }
-    else if (rgbEsq[1] < CORTE_VERDE_PRETO)
-    {
-      ligarLed(ESQ, VERMELHO, 0);
-    }
-    else
-    {
-      ligarLed(ESQ, BRANCO, 0);
-    }
-
-
-    if (rgbDir[1] < CORTE_VERDE && rgbDir[1] > CORTE_VERDE_PRETO)
-    {
-      ligarLed(DIR, VERDE, 0);
-    }
-    else if (rgbDir[1] < CORTE_VERDE_PRETO)
-    {
-      ligarLed(DIR, VERMELHO, 0);
-    }
-    else
-    {
-      ligarLed(DIR, BRANCO, 0);
-    }
-
-    ligarLed(AMBOS, DESLIGADO, 0);
 }
 
 void loop()
@@ -225,8 +199,10 @@ void loop()
     } else
     {
       // seguir reto
+      moverFrentePorMS(1000);
     }
 
+    pararMotor();
 
   }
 

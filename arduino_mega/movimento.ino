@@ -42,7 +42,11 @@ void segueLinhaDireita()
   delay(3);
 }
 
-
+void moverFrentePorMS(unsigned long ms)
+{
+  moverFrente();
+  delay(ms);
+}
 
 void moverTrasPorMS(unsigned long ms)
 {
