@@ -13,8 +13,8 @@
 #include <Ultrasonic.h>
 
 #define DEBUG              1
-#define DEBUG_CALIBRACAO   0
-#define DEBUG_EM_CURSO     1 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
+#define DEBUG_CALIBRACAO   1
+#define DEBUG_EM_CURSO     0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA         0
 #define DEBUG_QTRRC        0
 #define DEBUG_TCS_VERDE    1
@@ -27,12 +27,12 @@
 
 #define LUZ                900
 #define LUZ_F              500
-#define TCS_SATURACAO_MAX  4000
+#define TCS_SATURACAO_MAX  2000
 #define VEL_MOTOR_FRENTE   135
 #define VEL_MOTOR_SEG_MAX  210
 #define VEL_MOTOR_SEG_MIN  193
-#define CORTE_VERDE        90    // abaixo disso é verde
-#define CORTE_VERDE_PRETO  10    // abaixo disso é preto
+#define CORTE_VERDE        60    // abaixo disso é verde
+#define CORTE_VERDE_PRETO  30    // abaixo disso é preto
 // criar cortes personalizados para cada sensor
 
 QTRSensors qtrc;

@@ -3,10 +3,10 @@
     #define MEGA_PINS_H
 
     // MOTORES
-    #define MOTOR_DF   8  // azul claro
-    #define MOTOR_DT   9  // azul escuro
     #define MOTOR_EF   11 // verde escuro
     #define MOTOR_ET   10 // verde claro
+    #define MOTOR_DF   8  // azul claro
+    #define MOTOR_DT   9  // azul escuro
 
     // SENSORES DE REFLETÂNCIA
     #define SE3_PIN    A8
