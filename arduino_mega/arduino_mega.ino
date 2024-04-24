@@ -12,7 +12,9 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG              0
+#define DEBUG              1
+#define DEBUG_CALIBRACAO   1
+#define DEBUG_EM_CURSO     0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA         0
 #define DEBUG_QTRRC        0
 #define DEBUG_TCS_VERDE    1
@@ -84,15 +86,50 @@ void setup()
   }
 
   ligarLed(AMBOS, DESLIGADO, 0);
+
+  lerVerde();
+
+      if (rgbEsq[1] < CORTE_VERDE && rgbEsq[1] > CORTE_VERDE_PRETO)
+    {
+      ligarLed(ESQ, VERDE, 0);
+    }
+    else if (rgbEsq[1] < CORTE_VERDE_PRETO)
+    {
+      ligarLed(ESQ, VERMELHO, 0);
+    }
+    else
+    {
+      ligarLed(ESQ, BRANCO, 0);
+    }
+
+
+    if (rgbDir[1] < CORTE_VERDE && rgbDir[1] > CORTE_VERDE_PRETO)
+    {
+      ligarLed(DIR, VERDE, 0);
+    }
+    else if (rgbDir[1] < CORTE_VERDE_PRETO)
+    {
+      ligarLed(DIR, VERMELHO, 0);
+    }
+    else
+    {
+      ligarLed(DIR, BRANCO, 0);
+    }
+
+    ligarLed(AMBOS, DESLIGADO, 0);
 }
 
 void loop()
 {
-  // ligarLed(AMBOS, VERMELHO, 1000);
   #if DEBUG
-    calibrar();
-    // return; // Comente essa linha se quiser que o robo ANDE com o SERIAL LIGADO (não recomendado)
+    #if DEBUG_CALIBRACAO
+      calibrar();
+    #endif
+    #if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
+      return;
+    #endif
   #endif
+
 
   se2 = analogRead(SE2_PIN);
   se1 = analogRead(SE1_PIN);
@@ -127,16 +164,23 @@ void loop()
   {
     moverTrasPorMS(100);
     pararMotor();
+    delay(100); // Aguardar um tempo antes de fazer a leitura dos sensores de cor
 
-    Serial2.println("caio");
-    lerSensorCor(&tcsEsq, rgbEsq);
+    lerVerde();
 
-    lerDadosSensorRemoto(rgbDir);
+    Serial.print("D: ");
     Serial.print(rgbDir[1]);
+    Serial.print("E: ");
+    Serial.print(rgbEsq[1]);
+    Serial.println();
+
+    bool verdeEsq = false;
+    bool verdeDir = false;
 
     if (rgbEsq[1] < CORTE_VERDE && rgbEsq[1] > CORTE_VERDE_PRETO)
     {
       ligarLed(ESQ, VERDE, 0);
+      verdeEsq = true;
     }
     else if (rgbEsq[1] < CORTE_VERDE_PRETO)
     {
@@ -151,6 +195,7 @@ void loop()
     if (rgbDir[1] < CORTE_VERDE && rgbDir[1] > CORTE_VERDE_PRETO)
     {
       ligarLed(DIR, VERDE, 0);
+      verdeDir = true;
     }
     else if (rgbDir[1] < CORTE_VERDE_PRETO)
     {
@@ -165,28 +210,25 @@ void loop()
 
     ligarLed(AMBOS, DESLIGADO, 0);
 
+    if (verdeEsq && verdeDir)
+    {
+      // beco sem saida
+      virarEsquerdaPorMS(2000);
+    } else if (verdeEsq && !verdeDir)
+    {
+      // curva a esquerda
+      virarEsquerdaPorMS(1000);
+    } else if (!verdeEsq && verdeDir)
+    {
+      // curva a direita
+      virarDireitaPorMS(1000);
+    } else
+    {
+      // seguir reto
+    }
 
 
-    // Serial.println();
-
-    // if (rgbDir[1] < CORTE_VERDE)
-    // {
-    //   Serial.print(" Verde");
-    // }
-    // else if (rgbDir[1] < CORTE_VERDE_PRETO)
-    // {
-    //   Serial.print(" Preto");
-    // }
-    // else
-    // {
-    //   Serial.print(" Branco");
-    // }
-
-    // return;
   }
-
-
-
 
 
 }
