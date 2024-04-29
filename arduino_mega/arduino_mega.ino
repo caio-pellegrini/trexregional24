@@ -1,3 +1,5 @@
+#include <Adafruit_TCS34725.h>
+
 /*
   Nome do Projeto: Seguidor de Linha
   Descrição: Sketch para controlar um robô seguidor de linha.
@@ -12,7 +14,7 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG              1
+#define DEBUG              0
 #define DEBUG_CALIBRACAO   1
 #define DEBUG_EM_CURSO     0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA         0
@@ -27,12 +29,12 @@
 
 #define LUZ                900
 #define LUZ_F              500
-#define TCS_SATURACAO_MAX  2000
+#define TCS_SATURACAO_MAX  4000
 #define VEL_MOTOR_FRENTE   135
 #define VEL_MOTOR_SEG_MAX  210
 #define VEL_MOTOR_SEG_MIN  193
-#define CORTE_VERDE        60    // abaixo disso é verde
-#define CORTE_VERDE_PRETO  30    // abaixo disso é preto
+#define CORTE_VERDE        100    // abaixo disso é verde
+#define CORTE_VERDE_PRETO  1    // abaixo disso é preto
 // criar cortes personalizados para cada sensor
 
 QTRSensors qtrc;
@@ -46,7 +48,7 @@ Ultrasonic ultrasonicDir(5, 4);
 int ultraE, ultraD;
 
 // Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
-Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
 
 int rgbEsq[3]; // pode ser trocado para byte posteriormente
 int rgbDir[3]; // pode ser trocado para byte posteriormente
@@ -102,22 +104,7 @@ void loop()
   #endif
 
 
-  se2 = analogRead(SE2_PIN);
-  se1 = analogRead(SE1_PIN);
-  sd1 = analogRead(SD1_PIN);
-  sd2 = analogRead(SD2_PIN);
-
-  moverFrente();
-
-  if (se1 >= LUZ || se2 >= LUZ)
-  {
-    segueLinhaEsquerda();
-  }
-
-  if (sd1 >= LUZ || sd2 >= LUZ)
-  {
-    segueLinhaDireita();
-  }
+  
 
   se3 = analogRead(SE3_PIN);
   se2 = analogRead(SE2_PIN);
@@ -133,9 +120,13 @@ void loop()
 
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
   {
-    moverTrasPorMS(200);
+    pararMotor();
+    delay(100);
+    moverTrasPorMS(100);
     pararMotor();
     delay(100); // Aguardar um tempo antes de fazer a leitura dos sensores de cor
+    rgbEsq[1] = 0;
+    rgbDir[1] = 0;
 
     lerVerde();
 
@@ -147,6 +138,8 @@ void loop()
 
     bool verdeEsq = false;
     bool verdeDir = false;
+
+    
 
     if (rgbEsq[1] < CORTE_VERDE && rgbEsq[1] > CORTE_VERDE_PRETO)
     {
@@ -176,6 +169,10 @@ void loop()
     {
       ligarLed(DIR, BRANCO, 0);
     }
+
+    if (rgbEsq[1] == 0 || rgbDir[1] == 0) {
+      //return;
+    }
     
     moverFrentePorMS(400);
 
@@ -201,6 +198,24 @@ void loop()
 
     desligarLed(AMBOS);
 
+  }
+
+
+  se2 = analogRead(SE2_PIN);
+  se1 = analogRead(SE1_PIN);
+  sd1 = analogRead(SD1_PIN);
+  sd2 = analogRead(SD2_PIN);
+
+  moverFrente();
+
+  if (se1 >= LUZ || se2 >= LUZ)
+  {
+    segueLinhaEsquerda();
+  }
+
+  if (sd1 >= LUZ || sd2 >= LUZ)
+  {
+    segueLinhaDireita();
   }
 
 

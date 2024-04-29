@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
+
 #define TCS_SATURACAO_MAX 4000 // por enquanto esse valor é iniciado aqui, mas ele poderia ser enviado pelo Mega
 
 char strtcs[40];
