@@ -14,27 +14,27 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG              0
-#define DEBUG_CALIBRACAO   1
-#define DEBUG_EM_CURSO     0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA         0
-#define DEBUG_QTRRC        0
-#define DEBUG_TCS_VERDE    1
-#define DEBUG_TCS_AREA     0
-#define DEBUG_ULTRA        0
-#define DEBUG_GIROSCOPIO   0
+#define DEBUG 0
+#define DEBUG_CALIBRACAO 1
+#define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
+#define DEBUG_QTRA 0
+#define DEBUG_QTRRC 0
+#define DEBUG_TCS_VERDE 1
+#define DEBUG_TCS_AREA 0
+#define DEBUG_ULTRA 0
+#define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
-#define DEBUG_VISAO_GARRA  0
-#define DEBUG_BOTOES       0
+#define DEBUG_VISAO_GARRA 0
+#define DEBUG_BOTOES 0
 
-#define LUZ                900
-#define LUZ_F              500
-#define TCS_SATURACAO_MAX  4000
-#define VEL_MOTOR_FRENTE   135
-#define VEL_MOTOR_SEG_MAX  210
-#define VEL_MOTOR_SEG_MIN  193
-#define CORTE_VERDE        100    // abaixo disso é verde
-#define CORTE_VERDE_PRETO  1    // abaixo disso é preto
+#define LUZ 900
+#define LUZ_F 500
+#define TCS_SATURACAO_MAX 4000
+#define VEL_MOTOR_FRENTE 135
+#define VEL_MOTOR_SEG_MAX 210
+#define VEL_MOTOR_SEG_MIN 193
+#define CORTE_VERDE_ESQ   80     // abaixo disso é verde
+#define CORTE_VERDE_DIR   80
 // criar cortes personalizados para cada sensor
 
 QTRSensors qtrc;
@@ -52,6 +52,7 @@ Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS
 
 int rgbEsq[3]; // pode ser trocado para byte posteriormente
 int rgbDir[3]; // pode ser trocado para byte posteriormente
+
 
 void setup()
 {
@@ -89,22 +90,18 @@ void setup()
   qtrc.setSensorPins((const uint8_t[]){32, 34, 36, 38, 40, 42}, SensorCount);
 
   desligarLed(AMBOS);
-
 }
 
 void loop()
 {
-  #if DEBUG
-    #if DEBUG_CALIBRACAO
-      calibrar();
-    #endif
-    #if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
-      return;
-    #endif
-  #endif
-
-
-  
+#if DEBUG
+#if DEBUG_CALIBRACAO
+  calibrar();
+#endif
+#if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
+  return;
+#endif
+#endif
 
   se3 = analogRead(SE3_PIN);
   se2 = analogRead(SE2_PIN);
@@ -121,34 +118,21 @@ void loop()
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
   {
     pararMotor();
-    delay(100);
     moverTrasPorMS(100);
     pararMotor();
-    delay(100); // Aguardar um tempo antes de fazer a leitura dos sensores de cor
-    rgbEsq[1] = 0;
-    rgbDir[1] = 0;
+    //delay(500); // Aguardar um tempo antes de fazer a leitura dos sensores de cor
 
-    lerVerde();
+    lerVerde(false);
 
-    Serial.print("E: ");
-    Serial.print(rgbEsq[1]);
-    Serial.print("D: ");
-    Serial.print(rgbDir[1]);
-    Serial.println();
+      lerVerde(false);
 
     bool verdeEsq = false;
     bool verdeDir = false;
 
-    
-
-    if (rgbEsq[1] < CORTE_VERDE && rgbEsq[1] > CORTE_VERDE_PRETO)
+    if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < 100)
     {
       ligarLed(ESQ, VERDE, 0);
       verdeEsq = true;
-    }
-    else if (rgbEsq[1] < CORTE_VERDE_PRETO)
-    {
-      ligarLed(ESQ, VERMELHO, 0);
     }
     else
     {
@@ -156,50 +140,50 @@ void loop()
     }
 
 
-    if (rgbDir[1] < CORTE_VERDE && rgbDir[1] > CORTE_VERDE_PRETO)
+    if (rgbDir[1] != 0)
     {
-      ligarLed(DIR, VERDE, 0);
-      verdeDir = true;
-    }
-    else if (rgbDir[1] < CORTE_VERDE_PRETO)
-    {
-      ligarLed(DIR, VERMELHO, 0);
+      if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < 100)
+      {
+        ligarLed(DIR, VERDE, 0);
+        verdeDir = true;
+      }
+      else
+      {
+        ligarLed(DIR, BRANCO, 0);
+      }
     }
     else
     {
-      ligarLed(DIR, BRANCO, 0);
+      ligarLed(DIR, VERMELHO, 0);
     }
 
-    if (rgbEsq[1] == 0 || rgbDir[1] == 0) {
-      //return;
-    }
-    
     moverFrentePorMS(400);
 
     if (verdeEsq && verdeDir)
     {
       // beco sem saida
       virarEsquerdaPorMS(2400);
-    } else if (verdeEsq && !verdeDir)
+    }
+    else if (verdeEsq && !verdeDir)
     {
       // curva a esquerda
       virarEsquerdaPorMS(1200);
-    } else if (!verdeEsq && verdeDir)
+    }
+    else if (!verdeEsq && verdeDir)
     {
       // curva a direita
       virarDireitaPorMS(1200);
-    } else
+    }
+    else
     {
       // seguir reto
-      moverFrentePorMS(1000);
+      moverFrentePorMS(200);
     }
 
     pararMotor();
 
     desligarLed(AMBOS);
-
   }
-
 
   se2 = analogRead(SE2_PIN);
   se1 = analogRead(SE1_PIN);
@@ -217,8 +201,6 @@ void loop()
   {
     segueLinhaDireita();
   }
-
-
 }
 
 void lerDadosSensorRemoto(int *rgbValues)
@@ -228,7 +210,7 @@ void lerDadosSensorRemoto(int *rgbValues)
   bool dadosRecebidos = false;
 
   // Variáveis para armazenar os valores RGB extraídos
-  int r, g, b;
+  uint16_t r, g, b;
 
   // Define um tempo limite para a recepção
   unsigned long startTime = millis();
@@ -264,12 +246,15 @@ void lerDadosSensorRemoto(int *rgbValues)
     }
     else
     {
-      Serial.print(" Formato de dados inválido.");
+      // Serial.print(" Formato de dados inválido.");
     }
   }
   else
   {
-    Serial.print("Timeout: Nenhuma resposta do sensor remoto.");
+    Serial.print("Timeout");
+    rgbValues[0] = 0;
+    rgbValues[1] = 0;
+    rgbValues[2] = 0;
   }
 
   // Limpa o buffer e reseta o índice após processar a mensagem
@@ -283,13 +268,9 @@ void lerSensorCor(Adafruit_TCS34725 *tcs, int *rgbValues)
 
   tcs->getRawData(&r, &g, &b, &c);
 
-  r = map(r, 0, TCS_SATURACAO_MAX, 0, 255);
-  g = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
-  b = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
-
-  rgbValues[0] = r;
-  rgbValues[1] = g;
-  rgbValues[2] = b;
+  rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255);
+  rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);;
+  rgbValues[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);;
 }
 
 // void tcaSelecionar(uint8_t i) {

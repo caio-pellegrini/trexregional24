@@ -49,9 +49,7 @@ void calibrar()
     #endif
 
 #if DEBUG_TCS_VERDE
-    Serial2.println("caio");
-
-    lerSensorCor(&tcsEsq, rgbEsq);
+    lerVerde(true);
     
     Serial.print("TCS ESQ: ");
     Serial.print("R:");
@@ -60,8 +58,6 @@ void calibrar()
     Serial.print(rgbEsq[1]);
     Serial.print(",B:");
     Serial.print(rgbEsq[2]);
-
-    lerDadosSensorRemoto(rgbDir);
 
     Serial.print(" TCS DIR: ");
     Serial.print("R:");
