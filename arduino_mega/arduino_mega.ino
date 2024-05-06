@@ -14,12 +14,12 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG 1
+#define DEBUG 0
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
-#define DEBUG_QTRRC 0
-#define DEBUG_TCS_VERDE 1
+#define DEBUG_QTRRC 1
+#define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_GIROSCOPIO 0
@@ -27,8 +27,8 @@
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 900 // 900 quando range = 0-1023
-#define LUZ_F 500
+#define LUZ 224 // 900 quando range = 0-1023
+#define LUZ_F 40 // 30 no branco e 90 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define VEL_MOTOR_FRENTE 135
 #define VEL_MOTOR_SEG_MAX 210
@@ -41,7 +41,7 @@
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;
 uint16_t sensorValues[SensorCount];
-uint16_t sFE3, sFE2, sFE1, sFD1, sFD2, sFD3, sf;
+uint16_t sfe3, sfe2, sfe1, sfd1, sfd2, sfd3;
 uint16_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 
 Ultrasonic ultrasonicEsq(7, 6);
@@ -104,18 +104,19 @@ void loop()
 #endif
 #endif
 
-  se3 = analogRead(SE3_PIN);
-  se2 = analogRead(SE2_PIN);
-  se1 = analogRead(SE1_PIN);
-  se0 = analogRead(SE0_PIN);
-  sd0 = analogRead(SD0_PIN);
-  sd1 = analogRead(SD1_PIN);
-  sd2 = analogRead(SD2_PIN);
-  sd3 = analogRead(SD3_PIN);
+  se3 = analogRead(SE3_PIN) >> 2; // >> 2 transforma o valor de 10-bits (0-1023) para 8-bits (0-255)
+  se2 = analogRead(SE2_PIN) >> 2;
+  se1 = analogRead(SE1_PIN) >> 2;
+  se0 = analogRead(SE0_PIN) >> 2;
+  sd0 = analogRead(SD0_PIN) >> 2;
+  sd1 = analogRead(SD1_PIN) >> 2;
+  sd2 = analogRead(SD2_PIN) >> 2;
+  sd3 = analogRead(SD3_PIN) >> 2;
 
-  // qtrc.read(sensorValues);
-  // sf = map(sensorValues[3], 0, 2500, 0, 1023);
+  qtrc.read(sensorValues);
+  sfe1 = map(sensorValues[3], 0, 2500, 0, 255);
 
+  // CRUZAMENTO
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
   {
     pararMotor();
@@ -161,17 +162,17 @@ void loop()
     if (verdeEsq && verdeDir)
     {
       // beco sem saida
-      virarEsquerdaPorMS(2400);
+      virarEsquerdaPorMS(2200);
     }
     else if (verdeEsq && !verdeDir)
     {
       // curva a esquerda
-      virarEsquerdaPorMS(1200);
+      virarEsquerdaPorMS(1100);
     }
     else if (!verdeEsq && verdeDir)
     {
       // curva a direita
-      virarDireitaPorMS(1200);
+      virarDireitaPorMS(1100);
     }
     else
     {
@@ -184,10 +185,146 @@ void loop()
     desligarLed(AMBOS);
   }
 
-  se2 = analogRead(SE2_PIN);
-  se1 = analogRead(SE1_PIN);
-  sd1 = analogRead(SD1_PIN);
-  sd2 = analogRead(SD2_PIN);
+  // MEIO CRUZAMENTO ESQUERDO
+  if (sfe1 >= LUZ_F && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ)) {
+    pararMotor();
+    moverTrasPorMS(100);
+    pararMotor();
+
+    lerVerde();
+    lerVerde();
+
+    bool verdeEsq = false;
+    bool verdeDir = false;
+
+    if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
+    {
+      ligarLed(ESQ, VERDE, 0);
+      verdeEsq = true;
+    }
+    else
+    {
+      ligarLed(ESQ, BRANCO, 0);
+    }
+
+
+    if (rgbDir[1] != 0)
+    {
+      if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
+      {
+        ligarLed(DIR, VERDE, 0);
+        verdeDir = true;
+      }
+      else
+      {
+        ligarLed(DIR, BRANCO, 0);
+      }
+    }
+    else
+    {
+      ligarLed(DIR, VERMELHO, 0);
+    }
+
+    moverFrentePorMS(400);
+
+    if (verdeEsq && verdeDir)
+    {
+      // beco sem saida
+      virarEsquerdaPorMS(2200);
+    }
+    else if (verdeEsq && !verdeDir)
+    {
+      // curva a esquerda
+      virarEsquerdaPorMS(1100);
+    }
+    else if (!verdeEsq && verdeDir)
+    {
+      // curva a direita
+      virarDireitaPorMS(1100);
+    }
+    else
+    {
+      // seguir reto
+      moverFrentePorMS(200);
+    }
+
+    pararMotor();
+
+    desligarLed(AMBOS);
+  }
+
+  // MEIO CRUZAMENTO DIREITO
+  if (sfe1 >= LUZ_F && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)) {
+    pararMotor();
+    moverTrasPorMS(100);
+    pararMotor();
+
+    lerVerde();
+    lerVerde();
+
+    bool verdeEsq = false;
+    bool verdeDir = false;
+
+    if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
+    {
+      ligarLed(ESQ, VERDE, 0);
+      verdeEsq = true;
+    }
+    else
+    {
+      ligarLed(ESQ, BRANCO, 0);
+    }
+
+
+    if (rgbDir[1] != 0)
+    {
+      if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
+      {
+        ligarLed(DIR, VERDE, 0);
+        verdeDir = true;
+      }
+      else
+      {
+        ligarLed(DIR, BRANCO, 0);
+      }
+    }
+    else
+    {
+      ligarLed(DIR, VERMELHO, 0);
+    }
+
+    moverFrentePorMS(400);
+
+    if (verdeEsq && verdeDir)
+    {
+      // beco sem saida
+      virarEsquerdaPorMS(2200);
+    }
+    else if (verdeEsq && !verdeDir)
+    {
+      // curva a esquerda
+      virarEsquerdaPorMS(1100);
+    }
+    else if (!verdeEsq && verdeDir)
+    {
+      // curva a direita
+      virarDireitaPorMS(1100);
+    }
+    else
+    {
+      // seguir reto
+      moverFrentePorMS(200);
+    }
+
+    pararMotor();
+
+    desligarLed(AMBOS);
+  }
+
+  se2 = analogRead(SE2_PIN) >> 2;
+  se1 = analogRead(SE1_PIN) >> 2;
+  sd1 = analogRead(SD1_PIN) >> 2;
+  sd2 = analogRead(SD2_PIN) >> 2;
 
   moverFrente();
 
@@ -200,6 +337,8 @@ void loop()
   {
     segueLinhaDireita();
   }
+
+  
 }
 
 void lerDadosSensorRemoto(int *rgbValues)

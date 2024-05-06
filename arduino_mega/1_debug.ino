@@ -32,20 +32,20 @@ void calibrar()
     #endif
 
     #if DEBUG_QTRRC
-    qtrc.read(sensorValues);
-    sFE3 = map(sensorValues[0], 0, 2500, 0, 1023);
-    sFE2 = map(sensorValues[1], 0, 2500, 0, 1023);
-    sFE1 = map(sensorValues[2], 0, 2500, 0, 1023);
-    sFD1 = map(sensorValues[3], 0, 2500, 0, 1023);
-    sFD2 = map(sensorValues[4], 0, 2500, 0, 1023);
-    sFD3 = map(sensorValues[5], 0, 2500, 0, 1023);
+      qtrc.read(sensorValues);
+      sfe3 = map(sensorValues[0], 0, 2500, 0, 255);
+      sfe2 = map(sensorValues[1], 0, 2500, 0, 255);
+      sfe1 = map(sensorValues[2], 0, 2500, 0, 255);
+      sfd1 = map(sensorValues[3], 0, 2500, 0, 255);
+      sfd2 = map(sensorValues[4], 0, 2500, 0, 255);
+      sfd3 = map(sensorValues[5], 0, 2500, 0, 255);
 
-    Serial.print(" sFE3: " + String(sFE3));
-    Serial.print(" sFE2: " + String(sFE2));
-    Serial.print(" sFE1: " + String(sFE1));
-    Serial.print(" | sFD1: " + String(sFD1));
-    Serial.print(" sFD2: " + String(sFD2));
-    Serial.print(" sFD3: " + String(sFD3));
+      Serial.print(" | sfe3: " + String(sfe3));
+      Serial.print(" sfe2: " + String(sfe2));
+      Serial.print(" sfe1: " + String(sfe1));
+      Serial.print(" sfd1: " + String(sfd1));
+      Serial.print(" sfd2: " + String(sfd2));
+      Serial.print(" sfd3: " + String(sfd3));
     #endif
 
 #if DEBUG_TCS_VERDE
