@@ -14,10 +14,10 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 
-#define DEBUG 0
+#define DEBUG 1
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 0
+#define DEBUG_QTRA 1
 #define DEBUG_QTRRC 0
 #define DEBUG_TCS_VERDE 1
 #define DEBUG_TCS_AREA 0
@@ -27,14 +27,15 @@
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 900
+#define LUZ 900 // 900 quando range = 0-1023
 #define LUZ_F 500
-#define TCS_SATURACAO_MAX 4000
+#define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define VEL_MOTOR_FRENTE 135
 #define VEL_MOTOR_SEG_MAX 210
 #define VEL_MOTOR_SEG_MIN 193
 #define CORTE_VERDE_ESQ   80     // abaixo disso é verde
-#define CORTE_VERDE_DIR   80
+#define CORTE_VERDE_DIR   70
+#define CORTE_VERMELHO_CRUZ 100
 // criar cortes personalizados para cada sensor
 
 QTRSensors qtrc;
@@ -48,7 +49,7 @@ Ultrasonic ultrasonicDir(5, 4);
 int ultraE, ultraD;
 
 // Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
-Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
 int rgbEsq[3]; // pode ser trocado para byte posteriormente
 int rgbDir[3]; // pode ser trocado para byte posteriormente
@@ -120,16 +121,14 @@ void loop()
     pararMotor();
     moverTrasPorMS(100);
     pararMotor();
-    //delay(500); // Aguardar um tempo antes de fazer a leitura dos sensores de cor
 
-    lerVerde(false);
-
-      lerVerde(false);
+    lerVerde();
+    lerVerde();
 
     bool verdeEsq = false;
     bool verdeDir = false;
 
-    if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < 100)
+    if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
     {
       ligarLed(ESQ, VERDE, 0);
       verdeEsq = true;
@@ -142,7 +141,7 @@ void loop()
 
     if (rgbDir[1] != 0)
     {
-      if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < 100)
+      if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
       {
         ligarLed(DIR, VERDE, 0);
         verdeDir = true;
@@ -269,8 +268,12 @@ void lerSensorCor(Adafruit_TCS34725 *tcs, int *rgbValues)
   tcs->getRawData(&r, &g, &b, &c);
 
   rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255);
-  rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);;
-  rgbValues[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);;
+  rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
+  rgbValues[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
+  // rgbValues[0] = r;
+  // rgbValues[1] = g;
+  // rgbValues[2] = b;
+  
 }
 
 // void tcaSelecionar(uint8_t i) {

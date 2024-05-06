@@ -1,10 +1,10 @@
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
 
-#define TCS_SATURACAO_MAX 4000 // por enquanto esse valor é iniciado aqui, mas ele poderia ser enviado pelo Mega
+#define TCS_SATURACAO_MAX 1500 // por enquanto esse valor é iniciado aqui, mas ele poderia ser enviado pelo Mega
 
 char strtcs[40];
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_614MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
 void setup() {
   Serial.begin(9600);

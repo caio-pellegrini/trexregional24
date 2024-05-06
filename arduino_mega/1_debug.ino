@@ -49,9 +49,10 @@ void calibrar()
     #endif
 
 #if DEBUG_TCS_VERDE
-    lerVerde(true);
-    
-    Serial.print("TCS ESQ: ");
+    lerVerde();
+    lerVerde();
+
+    Serial.print(" | TCS ESQ: ");
     Serial.print("R:");
     Serial.print(rgbEsq[0]);
     Serial.print(",G:");
