@@ -54,21 +54,67 @@ void moverTrasPorMS(unsigned long ms)
   delay(ms);
 }
 
-void virarEsquerdaPorMS(unsigned long ms)
+void virarEsquerda()
 {
   analogWrite(MOTOR_EF, 0);
   analogWrite(MOTOR_ET, VEL_MOTOR_FRENTE);
   analogWrite(MOTOR_DF, VEL_MOTOR_FRENTE);
   analogWrite(MOTOR_DT, 0);
-  delay(ms);
 }
 
-void virarDireitaPorMS(unsigned long ms)
+void virarDireita()
 {
   analogWrite(MOTOR_EF, VEL_MOTOR_FRENTE);
   analogWrite(MOTOR_ET, 0);
   analogWrite(MOTOR_DF, 0);
   analogWrite(MOTOR_DT, VEL_MOTOR_FRENTE);
+}
+
+void virarEsquerdaPorMS(unsigned long ms)
+{
+  virarEsquerda();
   delay(ms);
 }
 
+void virarDireitaPorMS(unsigned long ms)
+{
+  virarDireita();
+  delay(ms);
+}
+
+void virarEsquerdaGiro(uint8_t graus)
+{
+  lerGiroDMP();
+  initialYaw = yaw;  // Armazenar yaw inicial em graus
+
+  float targetYaw = initialYaw - graus; // Alvo é 90 graus à direita do atual
+  if (targetYaw < -180) targetYaw += 360;  // Correção de ângulo
+
+  // Código para mover o robô à esquerda
+  virarEsquerda();
+
+  while (true) {
+    // Atualize a orientação atual
+    lerGiroDMP();
+
+    if (abs(yaw - targetYaw) <= 1) break;  // Tolerância de 1 grau
+  }
+}
+
+void virarDireitaGiro(uint8_t graus)
+{
+  lerGiroDMP();
+  initialYaw = yaw;  // Armazenar yaw inicial em graus
+
+  float targetYaw = initialYaw + graus; // Alvo é 90 graus à esquerda do atual
+  if (targetYaw > 180) targetYaw -= 360;  // Correção de ângulo
+  // Código para mover o robô à esquerda
+  virarDireita();
+
+  while (true) {
+    // Atualize a orientação atual
+    lerGiroDMP();
+
+    if (abs(yaw - targetYaw) <= 1) break;  // Tolerância de 1 grau
+  }
+}

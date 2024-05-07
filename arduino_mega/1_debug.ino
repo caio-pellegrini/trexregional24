@@ -87,11 +87,9 @@ void calibrar()
 #endif
 
 #if DEBUG_GIROSCOPIO
-    if (mpuInterrupt)
-    {
-        // lerGiroscopio();
-        lerGirodmp();
-    }
+    // lerGiroscopio();
+    lerGiroDMP();
+    
     Serial.print(" | yaw: ");
     Serial.print(yaw);
     Serial.print(" pitch: ");

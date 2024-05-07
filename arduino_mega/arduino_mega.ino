@@ -11,16 +11,18 @@
 #include <Adafruit_TCS34725.h>
 #include <Wire.h>
 #include <Ultrasonic.h>
+#include "MPU6050_6Axis_MotionApps612.h"
+
 
 #define DEBUG 0
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 1
-#define DEBUG_QTRRC 1
+#define DEBUG_QTRA 0
+#define DEBUG_QTRRC 0
 #define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
-#define DEBUG_GIROSCOPIO 0
+#define DEBUG_GIROSCOPIO 1
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
@@ -51,6 +53,27 @@ Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS
 int rgbEsq[3]; // pode ser trocado para byte posteriormente
 int rgbDir[3]; // pode ser trocado para byte posteriormente
 
+// Variáveis e definições para o MPU-6050 com DMP
+MPU6050 mpu;
+uint8_t mpuIntStatus;
+uint16_t fifoCount;
+uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
+bool dmpReady = false;  // set true if DMP init was successful
+uint8_t fifoBuffer[64]; // FIFO storage buffer
+// orientation/motion vars
+Quaternion q;           // [w, x, y, z]         quaternion container
+VectorFloat gravity;    // [x, y, z]            gravity vector
+float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+float yaw, pitch, roll;
+float initialYaw;
+volatile bool mpuInterrupt = false;
+// mpu antigo
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+void dmpDataReady() {
+  mpuInterrupt = true;
+}
 
 void setup()
 {
@@ -86,6 +109,8 @@ void setup()
 
   qtrc.setTypeRC();
   qtrc.setSensorPins((const uint8_t[]){32, 34, 36, 38, 40, 42}, SensorCount);
+
+  ligarGiroscopio();
 
   desligarLed(AMBOS);
 }
@@ -164,12 +189,14 @@ void loop()
     else if (verdeEsq && !verdeDir)
     {
       // curva a esquerda
-      virarEsquerdaPorMS(1100);
+      virarEsquerdaGiro(105);
+      moverFrentePorMS(300);
     }
     else if (!verdeEsq && verdeDir)
     {
       // curva a direita
-      virarDireitaPorMS(1100);
+      virarDireitaGiro(105);
+      moverFrentePorMS(300);
     }
     else
     {
@@ -178,6 +205,7 @@ void loop()
     }
 
     pararMotor();
+    delay(3000);
 
     desligarLed(AMBOS);
   }
