@@ -18,6 +18,8 @@
     #define SD2_PIN    A10
     #define SD3_PIN    A11
 
+    #define MPU6050_INTERRUPT_PIN 2
+
     // CONSTANTES PARA CORES
     #define DESLIGADO  0, 0, 0
     #define VERMELHO   255, 0, 0

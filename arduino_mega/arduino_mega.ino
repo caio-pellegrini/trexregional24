@@ -1,5 +1,3 @@
-#include <Adafruit_TCS34725.h>
-
 /*
   Nome do Projeto: Seguidor de Linha
   Descrição: Sketch para controlar um robô seguidor de linha.
@@ -27,7 +25,7 @@
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 224 // 900 quando range = 0-1023
+#define LUZ 225 // 900 quando range = 0-1023
 #define LUZ_F 40 // 30 no branco e 90 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define VEL_MOTOR_FRENTE 135
@@ -36,13 +34,12 @@
 #define CORTE_VERDE_ESQ   80     // abaixo disso é verde
 #define CORTE_VERDE_DIR   70
 #define CORTE_VERMELHO_CRUZ 100
-// criar cortes personalizados para cada sensor
 
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;
 uint16_t sensorValues[SensorCount];
-uint16_t sfe3, sfe2, sfe1, sfd1, sfd2, sfd3;
-uint16_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
+byte sfe3, sfe2, sfe1, sfd1, sfd2, sfd3;
+byte se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 
 Ultrasonic ultrasonicEsq(7, 6);
 Ultrasonic ultrasonicDir(5, 4);
