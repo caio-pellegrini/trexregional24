@@ -142,11 +142,14 @@ void loop()
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
   {
     pararMotor();
+    ligarLed(AMBOS, BRANCO, 0);
     moverTrasPorMS(100);
     pararMotor();
 
     lerVerde();
     lerVerde();
+
+    desligarLed(AMBOS); 
 
     bool verdeEsq = false;
     bool verdeDir = false;
@@ -156,11 +159,6 @@ void loop()
       ligarLed(ESQ, VERDE, 0);
       verdeEsq = true;
     }
-    else
-    {
-      ligarLed(ESQ, BRANCO, 0);
-    }
-
 
     if (rgbDir[1] != 0)
     {
@@ -169,14 +167,10 @@ void loop()
         ligarLed(DIR, VERDE, 0);
         verdeDir = true;
       }
-      else
-      {
-        ligarLed(DIR, BRANCO, 0);
-      }
     }
     else
     {
-      ligarLed(DIR, VERMELHO, 0);
+      ligarLed(DIR, VERMELHO, 0); // avisa que o rgbdir não recebeu dados do TCS
     }
 
     moverFrentePorMS(400);
@@ -227,11 +221,6 @@ void loop()
       ligarLed(ESQ, VERDE, 0);
       verdeEsq = true;
     }
-    else
-    {
-      ligarLed(ESQ, BRANCO, 0);
-    }
-
 
     if (rgbDir[1] != 0)
     {
@@ -240,14 +229,10 @@ void loop()
         ligarLed(DIR, VERDE, 0);
         verdeDir = true;
       }
-      else
-      {
-        ligarLed(DIR, BRANCO, 0);
-      }
     }
     else
     {
-      ligarLed(DIR, VERMELHO, 0);
+      ligarLed(DIR, VERMELHO, 0); // avisa que o rgbdir não recebeu dados do TCS
     }
 
     moverFrentePorMS(400);
