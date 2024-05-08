@@ -12,9 +12,9 @@ void ligarGiroscopio() {
   // verify connection
   Serial.println(mpu.testConnection() ? "MPU6050 conectado :)" : "MPU6050 conexão falhou :(");
 
-  // testeeee
-  mpu.setRate(999); // 1 Hz
-  mpu.setDLPFMode(1);
+  // rate 999 => 1 Hz / rate 49 => 20 Hz /  9 => 100 Hz
+  mpu.setRate(9); // Taxa de amostragem
+  mpu.setDLPFMode(1); // Filtro Digital de Passa Baixa
   mpu.setIntDataReadyEnabled(true);
 
   // load and configure the DMP
@@ -22,12 +22,12 @@ void ligarGiroscopio() {
   devStatus = mpu.dmpInitialize();
 
   // supply your own gyro offsets here, scaled for min sensitivity
-  mpu.setXAccelOffset(-581);
-  mpu.setYAccelOffset(1369);
+  mpu.setXAccelOffset(-579);
+  mpu.setYAccelOffset(1373);
   mpu.setZAccelOffset(914);
   mpu.setXGyroOffset(34);
   mpu.setYGyroOffset(27);
-  mpu.setZGyroOffset(26);
+  mpu.setZGyroOffset(27);
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
     // // Calibration Time: generate offsets and calibrate our MPU6050 (uncomment to calibrate)
@@ -73,13 +73,6 @@ void lerGiroDMP() {
     mpu.dmpGetQuaternion(&q, fifoBuffer);
     mpu.dmpGetGravity(&gravity, &q);
     mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
-
-    // Serial.print("ypr\t");
-    // Serial.print(ypr[0] * 180 / M_PI);
-    // Serial.print("\t");
-    // Serial.print(ypr[1] * 180 / M_PI);
-    // Serial.print("\t");
-    // Serial.print(ypr[2] * 180 / M_PI);
 
     yaw = ypr[0] * 180 / M_PI;
     pitch = ypr[1] * 180 / M_PI;

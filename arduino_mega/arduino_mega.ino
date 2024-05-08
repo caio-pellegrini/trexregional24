@@ -13,28 +13,27 @@
 #include <Ultrasonic.h>
 #include "MPU6050_6Axis_MotionApps612.h"
 
-
 #define DEBUG 0
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 0
-#define DEBUG_QTRRC 0
+#define DEBUG_QTRA 1
+#define DEBUG_QTRRC 1
 #define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
-#define DEBUG_GIROSCOPIO 1
+#define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 225 // 900 quando range = 0-1023
-#define LUZ_F 40 // 30 no branco e 90 no preto
+#define LUZ 225                // 900 quando range = 0-1023
+#define LUZ_F 40               // 30 no branco e 90 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define VEL_MOTOR_FRENTE 135
 #define VEL_MOTOR_SEG_MAX 210
 #define VEL_MOTOR_SEG_MIN 193
-#define CORTE_VERDE_ESQ   80     // abaixo disso é verde
-#define CORTE_VERDE_DIR   70
+#define CORTE_VERDE_ESQ 80 // abaixo disso é verde
+#define CORTE_VERDE_DIR 70
 #define CORTE_VERMELHO_CRUZ 100
 
 QTRSensors qtrc;
@@ -62,16 +61,17 @@ uint8_t devStatus;      // return status after each device operation (0 = succes
 bool dmpReady = false;  // set true if DMP init was successful
 uint8_t fifoBuffer[64]; // FIFO storage buffer
 // orientation/motion vars
-Quaternion q;           // [w, x, y, z]         quaternion container
-VectorFloat gravity;    // [x, y, z]            gravity vector
-float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+Quaternion q;        // [w, x, y, z]         quaternion container
+VectorFloat gravity; // [x, y, z]            gravity vector
+float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
 float yaw, pitch, roll;
 float initialYaw;
 volatile bool mpuInterrupt = false;
 // mpu antigo
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
-void dmpDataReady() {
+void dmpDataReady()
+{
   mpuInterrupt = true;
 }
 
@@ -145,189 +145,29 @@ void loop()
     ligarLed(AMBOS, BRANCO, 0);
     moverTrasPorMS(100);
     pararMotor();
-
-    lerVerde();
-    lerVerde();
-
-    desligarLed(AMBOS); 
-
-    bool verdeEsq = false;
-    bool verdeDir = false;
-
-    if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
-    {
-      ligarLed(ESQ, VERDE, 0);
-      verdeEsq = true;
-    }
-
-    if (rgbDir[1] != 0)
-    {
-      if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
-      {
-        ligarLed(DIR, VERDE, 0);
-        verdeDir = true;
-      }
-    }
-    else
-    {
-      ligarLed(DIR, VERMELHO, 0); // avisa que o rgbdir não recebeu dados do TCS
-    }
-
-    moverFrentePorMS(400);
-
-    if (verdeEsq && verdeDir)
-    {
-      // beco sem saida
-      virarEsquerdaPorMS(2200);
-    }
-    else if (verdeEsq && !verdeDir)
-    {
-      // curva a esquerda
-      virarEsquerdaGiro(105);
-      moverFrentePorMS(300);
-    }
-    else if (!verdeEsq && verdeDir)
-    {
-      // curva a direita
-      virarDireitaGiro(105);
-      moverFrentePorMS(300);
-    }
-    else
-    {
-      // seguir reto
-      moverFrentePorMS(200);
-    }
-
-    pararMotor();
-    delay(3000);
-
+    analisarVerde(true, true, true);
     desligarLed(AMBOS);
   }
 
   // MEIO CRUZAMENTO ESQUERDO
-  if (sfe1 >= LUZ_F && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ)) {
+  if (sfe1 >= LUZ_F && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
+  {
     pararMotor();
+    ligarLed(ESQ, BRANCO, 0);
     moverTrasPorMS(100);
     pararMotor();
-
-    lerVerde();
-    lerVerde();
-
-    bool verdeEsq = false;
-    bool verdeDir = false;
-
-    if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
-    {
-      ligarLed(ESQ, VERDE, 0);
-      verdeEsq = true;
-    }
-
-    if (rgbDir[1] != 0)
-    {
-      if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
-      {
-        ligarLed(DIR, VERDE, 0);
-        verdeDir = true;
-      }
-    }
-    else
-    {
-      ligarLed(DIR, VERMELHO, 0); // avisa que o rgbdir não recebeu dados do TCS
-    }
-
-    moverFrentePorMS(400);
-
-    if (verdeEsq && verdeDir)
-    {
-      // beco sem saida
-      virarEsquerdaPorMS(2200);
-    }
-    else if (verdeEsq && !verdeDir)
-    {
-      // curva a esquerda
-      virarEsquerdaPorMS(1100);
-    }
-    else if (!verdeEsq && verdeDir)
-    {
-      // curva a direita
-      virarDireitaPorMS(1100);
-    }
-    else
-    {
-      // seguir reto
-      moverFrentePorMS(200);
-    }
-
-    pararMotor();
-
+    analisarVerde(false, true, false);
     desligarLed(AMBOS);
   }
 
   // MEIO CRUZAMENTO DIREITO
-  if (sfe1 >= LUZ_F && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)) {
+  if (sfe1 >= LUZ_F && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
+  {
     pararMotor();
+    ligarLed(DIR, BRANCO, 0);
     moverTrasPorMS(100);
     pararMotor();
-
-    lerVerde();
-    lerVerde();
-
-    bool verdeEsq = false;
-    bool verdeDir = false;
-
-    if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
-    {
-      ligarLed(ESQ, VERDE, 0);
-      verdeEsq = true;
-    }
-    else
-    {
-      ligarLed(ESQ, BRANCO, 0);
-    }
-
-
-    if (rgbDir[1] != 0)
-    {
-      if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
-      {
-        ligarLed(DIR, VERDE, 0);
-        verdeDir = true;
-      }
-      else
-      {
-        ligarLed(DIR, BRANCO, 0);
-      }
-    }
-    else
-    {
-      ligarLed(DIR, VERMELHO, 0);
-    }
-
-    moverFrentePorMS(400);
-
-    if (verdeEsq && verdeDir)
-    {
-      // beco sem saida
-      virarEsquerdaPorMS(2200);
-    }
-    else if (verdeEsq && !verdeDir)
-    {
-      // curva a esquerda
-      virarEsquerdaPorMS(1100);
-    }
-    else if (!verdeEsq && verdeDir)
-    {
-      // curva a direita
-      virarDireitaPorMS(1100);
-    }
-    else
-    {
-      // seguir reto
-      moverFrentePorMS(200);
-    }
-
-    pararMotor();
-
+    analisarVerde(false, false, true);
     desligarLed(AMBOS);
   }
 
@@ -347,8 +187,6 @@ void loop()
   {
     segueLinhaDireita();
   }
-
-  
 }
 
 void lerDadosSensorRemoto(int *rgbValues)
@@ -422,7 +260,6 @@ void lerSensorCor(Adafruit_TCS34725 *tcs, int *rgbValues)
   // rgbValues[0] = r;
   // rgbValues[1] = g;
   // rgbValues[2] = b;
-  
 }
 
 // void tcaSelecionar(uint8_t i) {
@@ -436,3 +273,64 @@ void lerSensorCor(Adafruit_TCS34725 *tcs, int *rgbValues)
 //   Wire.write(0);  // Desligar todos os canais
 //   Wire.endTransmission();
 // }
+
+void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
+{
+  lerVerde();
+  lerVerde();
+
+  desligarLed(AMBOS);
+
+  bool verdeEsq = false;
+  bool verdeDir = false;
+
+  if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
+  {
+    ligarLed(ESQ, VERDE, 0);
+    verdeEsq = true;
+  }
+
+  if (rgbDir[1] != 0)
+  {
+    if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
+    {
+      ligarLed(DIR, VERDE, 0);
+      verdeDir = true;
+    }
+  }
+  else
+  {
+    ligarLed(DIR, VERMELHO, 0); // avisa que o rgbdir não recebeu dados do TCS
+  }
+
+  moverFrentePorMS(300);
+  
+  // Beco sem saida
+  if (isBeco && verdeEsq && verdeDir)
+  {
+    virarEsquerdaGiro(210);
+    moverFrentePorMS(300);
+  }
+
+  // Curva à esquerda
+  if (isVerdeEsquerdo && verdeEsq && !verdeDir)
+  {
+    virarEsquerdaGiro(105);
+    moverFrentePorMS(200);
+  }
+
+  // Curva à direita
+  if (isVerdeDireito && !verdeEsq && verdeDir)
+  {
+    virarDireitaGiro(105);
+    moverFrentePorMS(200);
+  }
+
+  // Seguir reto
+  if (!verdeEsq && !verdeDir)
+  {
+    moverFrentePorMS(200);
+  }
+
+  pararMotor();
+}
