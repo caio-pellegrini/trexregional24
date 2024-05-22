@@ -29,12 +29,15 @@
 #define LUZ 225                // 900 quando range = 0-1023
 #define LUZ_F 40               // 30 no branco e 90 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
-#define VEL_MOTOR_FRENTE 135
-#define VEL_MOTOR_SEG_MAX 210
-#define VEL_MOTOR_SEG_MIN 193
 #define CORTE_VERDE_ESQ 80 // abaixo disso é verde
 #define CORTE_VERDE_DIR 70
 #define CORTE_VERMELHO_CRUZ 100
+#define VEL_MOTOR_FRENTE 135
+#define VEL_MOTOR_CURVA 135
+#define VEL_MOTOR_TRAS 100
+#define VEL_MOTOR_SEG_MAX 210
+#define VEL_MOTOR_SEG_MIN 193
+
 
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;

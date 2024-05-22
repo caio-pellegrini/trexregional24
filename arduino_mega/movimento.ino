@@ -57,17 +57,17 @@ void moverTrasPorMS(unsigned long ms)
 void virarEsquerda()
 {
   analogWrite(MOTOR_EF, 0);
-  analogWrite(MOTOR_ET, VEL_MOTOR_FRENTE);
-  analogWrite(MOTOR_DF, VEL_MOTOR_FRENTE);
+  analogWrite(MOTOR_ET, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_DF, VEL_MOTOR_CURVA);
   analogWrite(MOTOR_DT, 0);
 }
 
 void virarDireita()
 {
-  analogWrite(MOTOR_EF, VEL_MOTOR_FRENTE);
+  analogWrite(MOTOR_EF, VEL_MOTOR_CURVA);
   analogWrite(MOTOR_ET, 0);
   analogWrite(MOTOR_DF, 0);
-  analogWrite(MOTOR_DT, VEL_MOTOR_FRENTE);
+  analogWrite(MOTOR_DT, VEL_MOTOR_CURVA);
 }
 
 void virarEsquerdaPorMS(unsigned long ms)
