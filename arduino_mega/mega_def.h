@@ -32,7 +32,7 @@
     #define ESQ        true, false
     #define DIR        false, true
 
-    const byte rgbE[3] = {53, 51, 49}; // Vermelho, Verde, Azul
-    const byte rgbD[3] = {52, 50, 48}; // Vermelho, Verde, Azul
+    const uint8_t rgbE[3] = {53, 51, 49}; // Vermelho, Verde, Azul
+    const uint8_t rgbD[3] = {52, 50, 48}; // Vermelho, Verde, Azul
 
 #endif

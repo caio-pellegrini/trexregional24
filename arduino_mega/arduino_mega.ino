@@ -42,8 +42,8 @@
 QTRSensors qtrc;
 const uint8_t SensorCount = 6;
 uint16_t sensorValues[SensorCount];
-byte sfe3, sfe2, sfe1, sfd1, sfd2, sfd3;
-byte se3, se2, se1, se0, sd0, sd1, sd2, sd3;
+uint8_t sfe3, sfe2, sfe1, sfd1, sfd2, sfd3;
+uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 
 Ultrasonic ultrasonicEsq(7, 6);
 Ultrasonic ultrasonicDir(5, 4);
@@ -52,8 +52,8 @@ int ultraE, ultraD;
 // Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
-byte rgbEsq[3]; // pode ser trocado para byte posteriormente - trocar para uint8_t
-byte rgbDir[3]; // pode ser trocado para byte posteriormente
+uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
+uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito
 
 // Variáveis e definições para o MPU-6050 com DMP
 MPU6050 mpu;
@@ -80,7 +80,7 @@ void dmpDataReady()
 
 void setup()
 {
-  for (byte i = 0; i < 3; i++)
+  for (uint8_t i = 0; i < 3; i++)
   {
     pinMode(rgbD[i], OUTPUT);
     pinMode(rgbE[i], OUTPUT);
@@ -192,7 +192,7 @@ void loop()
   }
 }
 
-void lerDadosSensorRemoto(byte *rgbValues)
+void lerDadosSensorRemoto(uint8_t *rgbValues)
 {
   static char buffer[64] = {0};
   static int index = 0;
@@ -251,7 +251,7 @@ void lerDadosSensorRemoto(byte *rgbValues)
   index = 0;
 }
 
-void lerSensorCor(Adafruit_TCS34725 *tcs, byte *rgbValues)
+void lerSensorCor(Adafruit_TCS34725 *tcs, uint8_t *rgbValues)
 {
   uint16_t r, g, b, c;
 

@@ -1,4 +1,4 @@
-void ligarLed(bool esq, bool dir, byte r, byte g, byte b, unsigned long delayTempo) {
+void ligarLed(bool esq, bool dir, uint8_t r, uint8_t g, uint8_t b, unsigned long delayTempo) {
 
   if (esq) {
     analogWrite(rgbE[0], r);
@@ -14,19 +14,19 @@ void ligarLed(bool esq, bool dir, byte r, byte g, byte b, unsigned long delayTem
   if (delayTempo != 0) {
     delay(delayTempo);
     if (esq) {
-      for (byte i = 0; i < 3; i++) analogWrite(rgbE[i], 0);
+      for (uint8_t i = 0; i < 3; i++) analogWrite(rgbE[i], 0);
     }
     if (dir) {
-      for (byte i = 0; i < 3; i++) analogWrite(rgbD[i], 0);
+      for (uint8_t i = 0; i < 3; i++) analogWrite(rgbD[i], 0);
     }
   }
 }
 
 void desligarLed(bool esq, bool dir) {
   if (esq) {
-    for (byte i = 0; i < 3; i++) analogWrite(rgbE[i], 0);
+    for (uint8_t i = 0; i < 3; i++) analogWrite(rgbE[i], 0);
   }
   if (dir) {
-    for (byte i = 0; i < 3; i++) analogWrite(rgbD[i], 0);
+    for (uint8_t i = 0; i < 3; i++) analogWrite(rgbD[i], 0);
   }
 }
