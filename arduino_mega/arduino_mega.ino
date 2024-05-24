@@ -52,8 +52,8 @@ int ultraE, ultraD;
 // Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
-int rgbEsq[3]; // pode ser trocado para byte posteriormente
-int rgbDir[3]; // pode ser trocado para byte posteriormente
+byte rgbEsq[3]; // pode ser trocado para byte posteriormente - trocar para uint8_t
+byte rgbDir[3]; // pode ser trocado para byte posteriormente
 
 // Variáveis e definições para o MPU-6050 com DMP
 MPU6050 mpu;
@@ -192,7 +192,7 @@ void loop()
   }
 }
 
-void lerDadosSensorRemoto(int *rgbValues)
+void lerDadosSensorRemoto(byte *rgbValues)
 {
   static char buffer[64] = {0};
   static int index = 0;
@@ -251,7 +251,7 @@ void lerDadosSensorRemoto(int *rgbValues)
   index = 0;
 }
 
-void lerSensorCor(Adafruit_TCS34725 *tcs, int *rgbValues)
+void lerSensorCor(Adafruit_TCS34725 *tcs, byte *rgbValues)
 {
   uint16_t r, g, b, c;
 
