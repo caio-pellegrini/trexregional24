@@ -1,6 +1,8 @@
 {
     "configuration": "cpu=atmega2560",
     "board": "arduino:avr:mega",
-    "port": "COM3",
-    "sketch": "arduino_mega\\arduino_mega.ino"
+    "port": "COM1",
+    "sketch": "arduino_mega\\arduino_mega.ino",
+    "programmer": "avrisp",
+    "output": "..\\output"
 }
