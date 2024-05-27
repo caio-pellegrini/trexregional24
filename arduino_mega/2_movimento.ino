@@ -97,7 +97,7 @@ void virarEsquerdaGiro(uint8_t graus)
     // Atualize a orientação atual
     lerGiroDMP();
 
-    if (abs(yaw - targetYaw) <= 2) break;  // Tolerância de 1 grau
+    if (abs(yaw - targetYaw) <= 1) break;  // Tolerância de 1 grau
   }
 }
 
@@ -115,6 +115,6 @@ void virarDireitaGiro(uint8_t graus)
     // Atualize a orientação atual
     lerGiroDMP();
 
-    if (abs(yaw - targetYaw) <= 2) break;  // Tolerância de 1 grau
+    if (abs(yaw - targetYaw) <= 1) break;  // Tolerância de 1 grau
   }
 }

@@ -4,6 +4,79 @@ void lerVerde() {
   lerDadosSensorRemoto(rgbDir);
 }
 
+void lerDadosSensorRemoto(uint8_t *rgbValues)
+{
+  static char buffer[64] = {0};
+  static int index = 0;
+  bool dadosRecebidos = false;
+
+  // Variáveis para armazenar os valores RGB extraídos
+  uint16_t r, g, b;
+
+  // Define um tempo limite para a recepção
+  unsigned long startTime = millis();
+
+  while (millis() - startTime < 1000)
+  { // Aguarda até 1 segundo por uma resposta
+    if (Serial2.available() > 0)
+    {
+      char received = Serial2.read();
+      if (received == '\n')
+      {
+        buffer[index] = '\0'; // Termina a string se for o final da mensagem
+        dadosRecebidos = true;
+        break; // Sai do loop após processar a mensagem
+      }
+      else if (index < 63)
+      {
+        buffer[index++] = received;
+      }
+    }
+  }
+
+  if (dadosRecebidos)
+  {
+    // Serial.print(buffer);
+
+    // Tenta extrair os valores R, G, B da string recebida
+    if (sscanf(buffer, "R:%d,G:%d,B:%d", &r, &g, &b) == 3)
+    { // Se três valores forem lidos com sucesso
+      rgbValues[0] = r;
+      rgbValues[1] = g;
+      rgbValues[2] = b;
+    }
+    else
+    {
+      // Serial.print(" Formato de dados inválido.");
+    }
+  }
+  else
+  {
+    Serial.print("Timeout");
+    rgbValues[0] = 0;
+    rgbValues[1] = 0;
+    rgbValues[2] = 0;
+  }
+
+  // Limpa o buffer e reseta o índice após processar a mensagem
+  memset(buffer, 0, sizeof(buffer));
+  index = 0;
+}
+
+void lerSensorCor(Adafruit_TCS34725 *tcs, uint8_t *rgbValues)
+{
+  uint16_t r, g, b, c;
+
+  tcs->getRawData(&r, &g, &b, &c);
+
+  rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255);
+  rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
+  rgbValues[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
+  // rgbValues[0] = r;
+  // rgbValues[1] = g;
+  // rgbValues[2] = b;
+}
+
 void ligarGiroscopio() {
   // initialize device
   mpu.initialize();
