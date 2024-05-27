@@ -27,18 +27,21 @@
 #define DEBUG_BOTOES 0
 
 #define LUZ 225                // 900 quando range = 0-1023
-#define LUZ_F 40               // 30 no branco e 90 no preto
+#define LUZ_FRENTE 70           // 30 no branco e 200 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
-#define CORTE_VERDE_ESQ 80 // abaixo disso é verde
+#define CORTE_VERDE_ESQ 80   // abaixo disso é verde
 #define CORTE_VERDE_DIR 70
 #define CORTE_VERMELHO_CRUZ 100
-#define VEL_MOTOR_FRENTE 135
+
+#define CONVERT_VEL(vel) ((vel * 255) / 100)
+#define VEL_MOTOR_FRENTE  CONVERT_VEL(52)
 #define VEL_MOTOR_CURVA 110
 #define VEL_MOTOR_TRAS 100
-#define VEL_MOTOR_SEG_MAX 210
-#define VEL_MOTOR_SEG_MIN 193
+#define VEL_MOTOR_SEG_MAX 200
+#define VEL_MOTOR_SEG_MIN 183
 
-#define TEMPO_MOVER_ANTES_CRUZ 400
+
+#define TEMPO_MOVER_ANTES_CRUZ 350
 
 
 QTRSensors qtrc;
@@ -46,6 +49,7 @@ const uint8_t SensorCount = 6;
 uint16_t sensorValues[SensorCount];
 uint8_t sfe3, sfe2, sfe1, sfd1, sfd2, sfd3;
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
+uint8_t sf;
 
 Ultrasonic ultrasonicEsq(7, 6);
 Ultrasonic ultrasonicDir(5, 4);
@@ -92,6 +96,8 @@ void setup()
   Serial2.begin(9600);
   Serial.begin(9600);
 
+  Serial.print(VEL_MOTOR_FRENTE);
+
   if (!tcsEsq.begin())
   {
     Serial.println("TCS34725 Esq não encontrado. Verifique as conexões.");
@@ -115,6 +121,8 @@ void setup()
   qtrc.setTypeRC();
   qtrc.setSensorPins((const uint8_t[]){32, 34, 36, 38, 40, 42}, SensorCount);
 
+  pinMode(A0, INPUT);
+
   ligarGiroscopio();
 
   desligarLed(AMBOS);
@@ -131,17 +139,12 @@ void loop()
 #endif
 #endif
 
-  se3 = analogRead(SE3_PIN) >> 2; // >> 2 transforma o valor de 10-bits (0-1023) para 8-bits (0-255)
-  se2 = analogRead(SE2_PIN) >> 2;
-  se1 = analogRead(SE1_PIN) >> 2;
-  se0 = analogRead(SE0_PIN) >> 2;
-  sd0 = analogRead(SD0_PIN) >> 2;
-  sd1 = analogRead(SD1_PIN) >> 2;
-  sd2 = analogRead(SD2_PIN) >> 2;
-  sd3 = analogRead(SD3_PIN) >> 2;
+  lerQTRATodos();
 
   qtrc.read(sensorValues);
   sfe1 = map(sensorValues[3], 0, 2500, 0, 255);
+
+  sf = analogRead(A0) >> 2;
 
   // CRUZAMENTO
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
@@ -155,7 +158,7 @@ void loop()
   }
 
   // MEIO CRUZAMENTO ESQUERDO
-  if (sfe1 >= LUZ_F && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
+  if (sf >= 35 && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
   {
     pararMotor();
     ligarLed(ESQ, BRANCO, 0);
@@ -166,7 +169,7 @@ void loop()
   }
 
   // MEIO CRUZAMENTO DIREITO
-  if (sfe1 >= LUZ_F && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
+  if (sf >= 35 && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
   {
     pararMotor();
     ligarLed(DIR, BRANCO, 0);
@@ -176,10 +179,7 @@ void loop()
     desligarLed(AMBOS);
   }
 
-  se2 = analogRead(SE2_PIN) >> 2;
-  se1 = analogRead(SE1_PIN) >> 2;
-  sd1 = analogRead(SD1_PIN) >> 2;
-  sd2 = analogRead(SD2_PIN) >> 2;
+  lerQTRASegueLinha();
 
   moverFrente();
 
@@ -193,18 +193,6 @@ void loop()
     segueLinhaDireita();
   }
 }
-
-// void tcaSelecionar(uint8_t i) {
-//   Wire.beginTransmission(TCAADDR);
-//   Wire.write(1 << i);
-//   Wire.endTransmission();
-// }
-
-// void tcaDesliga() {
-//   Wire.beginTransmission(TCAADDR);
-//   Wire.write(0);  // Desligar todos os canais
-//   Wire.endTransmission();
-// }
 
 void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
 {
@@ -266,3 +254,15 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
 
   pararMotor();
 }
+
+// void tcaSelecionar(uint8_t i) {
+//   Wire.beginTransmission(TCAADDR);
+//   Wire.write(1 << i);
+//   Wire.endTransmission();
+// }
+
+// void tcaDesliga() {
+//   Wire.beginTransmission(TCAADDR);
+//   Wire.write(0);  // Desligar todos os canais
+//   Wire.endTransmission();
+// }
