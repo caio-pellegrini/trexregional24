@@ -40,7 +40,6 @@
 #define VEL_MOTOR_SEG_MAX CONVERT_8B_DEC(78)
 #define VEL_MOTOR_SEG_MIN CONVERT_8B_DEC(71)
 
-
 #define TEMPO_MOVER_ANTES_CRUZ 350
 
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
