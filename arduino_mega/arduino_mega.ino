@@ -13,11 +13,11 @@
 #include <Ultrasonic.h>
 #include "MPU6050_6Axis_MotionApps612.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
-#define DEBUG_QTRRC 1
+#define DEBUG_REFL_FRENTE 1
 #define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
@@ -27,27 +27,22 @@
 #define DEBUG_BOTOES 0
 
 #define LUZ 225                // 900 quando range = 0-1023
-#define LUZ_FRENTE 70           // 30 no branco e 200 no preto
+#define LUZ_FRENTE 30           // 6 no branco e 110 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define CORTE_VERDE_ESQ 80   // abaixo disso é verde
 #define CORTE_VERDE_DIR 70
 #define CORTE_VERMELHO_CRUZ 100
 
-#define CONVERT_VEL(vel) ((vel * 255) / 100)
-#define VEL_MOTOR_FRENTE  CONVERT_VEL(52)
-#define VEL_MOTOR_CURVA 110
-#define VEL_MOTOR_TRAS 100
-#define VEL_MOTOR_SEG_MAX 200
-#define VEL_MOTOR_SEG_MIN 183
+#define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
+#define VEL_MOTOR_FRENTE  CONVERT_8B_DEC(52)
+#define VEL_MOTOR_CURVA   CONVERT_8B_DEC(43)
+#define VEL_MOTOR_TRAS    CONVERT_8B_DEC(39)
+#define VEL_MOTOR_SEG_MAX CONVERT_8B_DEC(78)
+#define VEL_MOTOR_SEG_MIN CONVERT_8B_DEC(71)
 
 
 #define TEMPO_MOVER_ANTES_CRUZ 350
 
-
-QTRSensors qtrc;
-const uint8_t SensorCount = 6;
-uint16_t sensorValues[SensorCount];
-uint8_t sfe3, sfe2, sfe1, sfd1, sfd2, sfd3;
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 uint8_t sf;
 
@@ -118,10 +113,8 @@ void setup()
   pinMode(SD3_PIN, INPUT);
   pinMode(SD0_PIN, INPUT);
 
-  qtrc.setTypeRC();
-  qtrc.setSensorPins((const uint8_t[]){32, 34, 36, 38, 40, 42}, SensorCount);
-
-  pinMode(A0, INPUT);
+  // PORTA SENSOR DA FRENTE
+  pinMode(SF_PIN, INPUT);
 
   ligarGiroscopio();
 
@@ -141,10 +134,7 @@ void loop()
 
   lerQTRATodos();
 
-  qtrc.read(sensorValues);
-  sfe1 = map(sensorValues[3], 0, 2500, 0, 255);
-
-  sf = analogRead(A0) >> 2;
+  lerReflFrente();
 
   // CRUZAMENTO
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
@@ -158,7 +148,7 @@ void loop()
   }
 
   // MEIO CRUZAMENTO ESQUERDO
-  if (sf >= 35 && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
+  if (sf >= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
   {
     pararMotor();
     ligarLed(ESQ, BRANCO, 0);
@@ -169,7 +159,7 @@ void loop()
   }
 
   // MEIO CRUZAMENTO DIREITO
-  if (sf >= 35 && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
+  if (sf >= LUZ_FRENTE && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
   {
     pararMotor();
     ligarLed(DIR, BRANCO, 0);

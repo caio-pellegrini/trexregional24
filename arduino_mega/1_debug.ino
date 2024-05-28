@@ -31,21 +31,10 @@ void calibrar()
         Serial.print(sd3);
     #endif
 
-    #if DEBUG_QTRRC
-      qtrc.read(sensorValues);
-      sfe3 = map(sensorValues[0], 0, 2500, 0, 255);
-      sfe2 = map(sensorValues[1], 0, 2500, 0, 255);
-      sfe1 = map(sensorValues[2], 0, 2500, 0, 255);
-      sfd1 = map(sensorValues[3], 0, 2500, 0, 255);
-      sfd2 = map(sensorValues[4], 0, 2500, 0, 255);
-      sfd3 = map(sensorValues[5], 0, 2500, 0, 255);
+    #if DEBUG_REFL_FRENTE
+      sf = analogRead(SF_PIN) >> 2;
 
-      Serial.print(" | sfe3: " + String(sfe3));
-      Serial.print(" sfe2: " + String(sfe2));
-      Serial.print(" sfe1: " + String(sfe1));
-      Serial.print(" sfd1: " + String(sfd1));
-      Serial.print(" sfd2: " + String(sfd2));
-      Serial.print(" sfd3: " + String(sfd3));
+      Serial.print(" sf: " + String(sf));
     #endif
 
 #if DEBUG_TCS_VERDE

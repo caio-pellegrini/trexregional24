@@ -16,6 +16,10 @@ void lerQTRASegueLinha() {
   sd2 = analogRead(SD2_PIN) >> 2;
 }
 
+void lerReflFrente() {
+  sf = analogRead(SF_PIN) >> 2;
+}
+
 void lerVerde() {
   Serial2.println("caio");
   lerSensorCor(&tcsEsq, rgbEsq);
