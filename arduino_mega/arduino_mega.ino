@@ -45,10 +45,6 @@
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 uint8_t sf;
 
-Ultrasonic ultrasonicEsq(7, 6);
-Ultrasonic ultrasonicDir(5, 4);
-int ultraE, ultraD;
-
 // Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
@@ -77,6 +73,8 @@ void dmpDataReady()
 {
   mpuInterrupt = true;
 }
+
+
 
 void setup()
 {
