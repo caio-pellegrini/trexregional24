@@ -38,6 +38,8 @@
     const uint8_t rgbE[3] = {53, 51, 49}; // Vermelho, Verde, Azul
     const uint8_t rgbD[3] = {52, 50, 48}; // Vermelho, Verde, Azul
 
-    #define LOX1_I2C_ADDR 0x30
+    #define LOX1_I2C_ADDR 0x2B
+
+    #define TCAADDR 0x70
 
 #endif

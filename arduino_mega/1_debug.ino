@@ -59,20 +59,29 @@ void calibrar()
 #endif
 
 #if DEBUG_TCS_AREA
-    tcadesliga();
-    tcaSelecionar(canalTcsArea);
-    Serial.print(" corArea: ");
-    corArea = lerCorArea(&tcsArea);
-    Serial.print(corArea);
-    tcadesliga();
-    if (corArea == 1)
-    {
-        ligarLed(AMBOS, VERDE, 500);
-    }
-    else if (corArea == 2)
-    {
-        ligarLed(AMBOS, VERMELHO, 500);
-    }
+    tcaDesliga();
+    tcaSelecionar(0);
+    lerSensorCorFrente(&tcsFrente, rgbFrente);
+
+    Serial.print(" TCS FRENTE: ");
+    Serial.print("R:");
+    Serial.print(rgbFrente[0]);
+    Serial.print(",G:");
+    Serial.print(rgbFrente[1]);
+    Serial.print(",B:");
+    Serial.print(rgbFrente[2]);
+    // Serial.print(" corArea: ");
+    // corArea = lerCorArea(&tcsArea);
+    // Serial.print(corArea);
+    // tcadesliga();
+    // if (corArea == 1)
+    // {
+    //     ligarLed(AMBOS, VERDE, 500);
+    // }
+    // else if (corArea == 2)
+    // {
+    //     ligarLed(AMBOS, VERMELHO, 500);
+    // }
 #endif
 
 #if DEBUG_GIROSCOPIO

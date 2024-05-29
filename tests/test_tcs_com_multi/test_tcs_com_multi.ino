@@ -21,8 +21,8 @@ void tcadesliga() {
 }
 
 void setup() {
-  Wire.begin();
   Serial.begin(9600);
+  Wire.begin();
 
   Serial.println(tcsBar.begin() ? "TCS34725 Bar conectado :)" : "TCS34725 Bar conexão falhou :(");
 

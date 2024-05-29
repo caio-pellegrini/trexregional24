@@ -99,6 +99,17 @@ void lerSensorCor(Adafruit_TCS34725 *tcs, uint8_t *rgbValues)
   // rgbValues[2] = b;
 }
 
+void lerSensorCorFrente(Adafruit_TCS34725 *tcs, uint16_t *rgbValues)
+{
+    uint16_t r, g, b, c;
+
+  tcs->getRawData(&r, &g, &b, &c);
+
+  rgbValues[0] = r;
+  rgbValues[1] = g;
+  rgbValues[2] = b;
+}
+
 void ligarGiroscopio() {
   // initialize device
   mpu.initialize();
@@ -117,12 +128,12 @@ void ligarGiroscopio() {
   devStatus = mpu.dmpInitialize();
 
   // supply your own gyro offsets here, scaled for min sensitivity
-  mpu.setXAccelOffset(-579);
-  mpu.setYAccelOffset(1373);
-  mpu.setZAccelOffset(914);
-  mpu.setXGyroOffset(34);
-  mpu.setYGyroOffset(27);
-  mpu.setZGyroOffset(27);
+  mpu.setXAccelOffset(-2187);
+  mpu.setYAccelOffset(1953);
+  mpu.setZAccelOffset(1456);
+  mpu.setXGyroOffset(42);
+  mpu.setYGyroOffset(-28);
+  mpu.setZGyroOffset(9);
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
     // // Calibration Time: generate offsets and calibrate our MPU6050 (uncomment to calibrate)

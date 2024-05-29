@@ -14,16 +14,16 @@
 #include "MPU6050_6Axis_MotionApps612.h"
 #include "Adafruit_VL53L0X.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 0
 #define DEBUG_REFL_FRENTE 0
 #define DEBUG_TCS_VERDE 0
-#define DEBUG_TCS_AREA 0
+#define DEBUG_TCS_AREA 1
 #define DEBUG_ULTRA 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 1
+#define DEBUG_LASER_FRENTE 0
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
@@ -46,11 +46,12 @@
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 uint8_t sf;
 
-// Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
 uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
 uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito
+uint16_t rgbFrente[3];
 
 // Variáveis e definições para o MPU-6050 com DMP
 MPU6050 mpu;
@@ -92,12 +93,13 @@ void setup()
   Serial2.begin(9600);
   Serial.begin(9600);
 
-  Serial.print(VEL_MOTOR_FRENTE);
-
   if (!tcsEsq.begin())
   {
     Serial.println("TCS34725 Esq não encontrado. Verifique as conexões.");
   }
+
+  tcaSelecionar(0);
+  Serial.println(tcsFrente.begin() ? "TCS34725 area conectado :)" : "TCS34725 area conexão falhou :(");
 
   pinMode(MOTOR_DF, OUTPUT);
   pinMode(MOTOR_DT, OUTPUT);
@@ -120,11 +122,13 @@ void setup()
   // EMISSOR RECEPTOR
   pinMode(3, INPUT);
 
-  ligarGiroscopio();
+  tcaDesliga();
+  tcaSelecionar(7);
+  Serial.println(laserFrente.begin() ? "VL53L0X Frente conectado :)" : "VL53L0X Frente conexão falhou :(");
+  tcaDesliga();
 
-  if (!laserFrente.begin(LOX1_I2C_ADDR)) {
-    Serial.println("Failed to boot VL53L0X");
-  }
+
+  ligarGiroscopio();
 
   desligarLed(AMBOS);
 }
@@ -263,14 +267,14 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
   pararMotor();
 }
 
-// void tcaSelecionar(uint8_t i) {
-//   Wire.beginTransmission(TCAADDR);
-//   Wire.write(1 << i);
-//   Wire.endTransmission();
-// }
+void tcaSelecionar(uint8_t i) {
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();
+}
 
-// void tcaDesliga() {
-//   Wire.beginTransmission(TCAADDR);
-//   Wire.write(0);  // Desligar todos os canais
-//   Wire.endTransmission();
-// }
+void tcaDesliga() {
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(0);  // Desligar todos os canais
+  Wire.endTransmission();
+}
