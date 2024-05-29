@@ -18,7 +18,7 @@
     #define SD2_PIN    A10
     #define SD3_PIN    A11
 
-    #define SF_PIN     A0
+    #define SF_PIN     A7
 
     #define MPU6050_INTERRUPT_PIN 2
 
@@ -27,6 +27,7 @@
     #define VERMELHO   255, 0, 0
     #define VERDE      0, 255, 0
     #define AZUL       0, 0, 255
+    #define ROXO       255, 0, 255
     #define BRANCO     255, 255, 255
 
     // CONSTANTES PARA LEDS
@@ -36,5 +37,7 @@
 
     const uint8_t rgbE[3] = {53, 51, 49}; // Vermelho, Verde, Azul
     const uint8_t rgbD[3] = {52, 50, 48}; // Vermelho, Verde, Azul
+
+    #define LOX1_I2C_ADDR 0x30
 
 #endif

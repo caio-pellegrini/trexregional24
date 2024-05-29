@@ -12,17 +12,18 @@
 #include <Wire.h>
 #include <Ultrasonic.h>
 #include "MPU6050_6Axis_MotionApps612.h"
+#include "Adafruit_VL53L0X.h"
 
-#define DEBUG 1
+#define DEBUG 0
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 1
-#define DEBUG_REFL_FRENTE 1
+#define DEBUG_QTRA 0
+#define DEBUG_REFL_FRENTE 0
 #define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 0
+#define DEBUG_LASER_FRENTE 1
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
@@ -74,7 +75,10 @@ void dmpDataReady()
   mpuInterrupt = true;
 }
 
+Adafruit_VL53L0X laserFrente = Adafruit_VL53L0X();
+VL53L0X_RangingMeasurementData_t medidaLaserFrente;
 
+bool er;
 
 void setup()
 {
@@ -113,7 +117,14 @@ void setup()
   // PORTA SENSOR DA FRENTE
   pinMode(SF_PIN, INPUT);
 
+  // EMISSOR RECEPTOR
+  pinMode(3, INPUT);
+
   ligarGiroscopio();
+
+  if (!laserFrente.begin(LOX1_I2C_ADDR)) {
+    Serial.println("Failed to boot VL53L0X");
+  }
 
   desligarLed(AMBOS);
 }
@@ -128,6 +139,16 @@ void loop()
   return;
 #endif
 #endif
+  
+
+  er = digitalRead(3);
+
+  if (er) {
+    ligarLed(AMBOS, ROXO, 0);
+  } else {
+    desligarLed(AMBOS);
+  }
+
 
   lerQTRATodos();
 

@@ -34,7 +34,7 @@ void calibrar()
     #if DEBUG_REFL_FRENTE
       sf = analogRead(SF_PIN) >> 2;
 
-      Serial.print(" sf: " + String(sf));
+      Serial.print(" | sf: " + String(sf));
     #endif
 
 #if DEBUG_TCS_VERDE
@@ -90,6 +90,8 @@ void calibrar()
 #if DEBUG_LASER_FRENTE
     lerLaserFrente();
     Serial.print(" LaserFrente: ");
+    Serial.print(medidaLaserFrente.RangeStatus);
+    Serial.print(" ");
     if (medidaLaserFrente.RangeStatus != 4)
     { // phase failures have incorrect data
         Serial.print(medidaLaserFrente.RangeMilliMeter);

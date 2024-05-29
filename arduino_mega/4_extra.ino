@@ -30,3 +30,9 @@ void desligarLed(bool esq, bool dir) {
     for (uint8_t i = 0; i < 3; i++) analogWrite(rgbD[i], 0);
   }
 }
+
+void printDebug(String msg) {
+  if (DEBUG) {
+    Serial.println(msg);
+  }
+}

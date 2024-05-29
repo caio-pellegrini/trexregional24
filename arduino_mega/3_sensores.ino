@@ -91,7 +91,7 @@ void lerSensorCor(Adafruit_TCS34725 *tcs, uint8_t *rgbValues)
 
   tcs->getRawData(&r, &g, &b, &c);
 
-  rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255);
+  rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255); // usar constrain para limitar um valor específico
   rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
   rgbValues[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
   // rgbValues[0] = r;
@@ -186,4 +186,8 @@ void lerGiroscopio() {
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
   pitch = map(ax, -17000, 17000, 0, 255);
   mpuInterrupt = false;
+}
+
+void lerLaserFrente() {
+  laserFrente.rangingTest(&medidaLaserFrente, false);
 }
