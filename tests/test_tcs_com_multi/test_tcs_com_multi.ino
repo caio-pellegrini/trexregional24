@@ -6,7 +6,7 @@
 Adafruit_TCS34725 tcsMulti = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsBar = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_600MS, TCS34725_GAIN_1X);
 
-uint8_t canalTcsMulti = 0;
+uint8_t canalTcsMulti = 6;
 
 void tcaSelecionar(uint8_t i) {
   Wire.beginTransmission(TCAADDR);

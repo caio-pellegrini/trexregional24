@@ -18,7 +18,7 @@
     #define SD2_PIN    A10
     #define SD3_PIN    A11
 
-    #define SF_PIN     A7
+    #define SF_PIN     A5
 
     #define MPU6050_INTERRUPT_PIN 2
 
