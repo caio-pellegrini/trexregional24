@@ -3,60 +3,74 @@
 #include "Adafruit_TCS34725.h"
 
 VL53L0X sensor1;
-
 unsigned int dist1;
+
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
-int x = 14;
-int tcsa = 13;
+int laser_xshut = 14;
+int tcsa = 42;
 
 void setup()
 {
-
-  Serial.begin (9600);
+  Serial.begin(9600);
   Wire.begin();
-  pinMode(x, OUTPUT);//-> VL53L0x XSHUT pin (sensor1)
-  pinMode(tcsa, OUTPUT);//-> TCS34725 Vin pin
-  digitalWrite(x, LOW);  delay(50);
-  digitalWrite(tcsa, LOW);  delay(50);
-  delay(10);
-  pinMode(x, INPUT);
-  delay(1000);
-  scan();
+
+  pinMode(laser_xshut, OUTPUT); // Configura o pino XSHUT do VL53L0X como saída
+  pinMode(tcsa, OUTPUT); // Configura o pino Vin do TCS34725 como saída
+  
+  digitalWrite(laser_xshut, LOW); // Desliga o VL53L0X
+  delay(50);
+  digitalWrite(tcsa, LOW); // Desliga o TCS34725
+  delay(50);
+  
+  // Esta linha configura o pino XSHUT como entrada, possivelmente para evitar interferência
+  // ou permitir que o sensor assuma o controle do pino
+  //pinMode(laser_xshut, INPUT); // ??
+  //delay(1000);
+  
+  scan(); // Escaneia dispositivos I2C
+  
+  // Configura o sensor VL53L0X
   sensor1.setTimeout(500);
-  if (!sensor1.init())
-  {
+  digitalWrite(laser_xshut, HIGH); // Habilita o sensor puxando o pino XSHUT para alto
+  delay(10);
+
+  if (!sensor1.init()) {
     Serial.println("Failed to detect and initialize sensor!");
     while (1) {}
   }
-  sensor1.setAddress(0x31);
+  
+  sensor1.setAddress(0x31); // Define o endereço I2C do sensor
   delay(10);
-  digitalWrite(tcsa, HIGH);
+  // sensor1.startContinuous(); // Inicia leituras contínuas
+  
+  digitalWrite(tcsa, HIGH); // Liga o sensor TCS34725
   delay(10);
-  tcs.begin();
+  
+  if (!tcs.begin()) {
+    Serial.println("Failed to initialize TCS34725 sensor!");
+    while (1) {}
+  }
 }
 
 void loop() {
   getDist();
-  delay(500);
   RGB();
   delay(500);
   scan();
-  
 }
+
 void getDist() {
-  dist1 = sensor1.readRangeContinuousMillimeters();
-  Serial.print("dist1= ");  Serial.print(dist1);
+  dist1 = sensor1.readRangeSingleMillimeters();
+  Serial.print("dist1= "); Serial.print(dist1);
 }
 
 void RGB() {
-  int red, green, blue, clear;
-  //tcs.enable();
-  tcs.getRawData(&red, &green, &blue, &clear);
-  Serial.print("R:\t"); Serial.print(int(red));
-  Serial.print("\tG:\t"); Serial.print(int(green));
-  Serial.print("\tB:\t"); Serial.print(int(blue));
-  Serial.print("\n");
-  Serial.print("\n");
+  uint16_t r, g, b, c;
+  tcs.getRawData(&r, &g, &b, &c);
+  Serial.print(" R: "); Serial.print(r);
+  Serial.print(" G: "); Serial.print(g);
+  Serial.print(" B: "); Serial.print(b);
+  Serial.println();
 }
 
 void scan() {
@@ -90,5 +104,5 @@ void scan() {
   else
     Serial.println("done\n");
 
-  delay(2000);           // wait 5 seconds for next scan
+  delay(2000); // wait 2 seconds for next scan
 }
