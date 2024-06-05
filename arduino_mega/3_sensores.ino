@@ -200,5 +200,5 @@ void lerGiroscopio() {
 }
 
 void lerLaserFrente() {
-  laserFrente.rangingTest(&medidaLaserFrente, false);
+  distanciaFrente = laserFrente.readRangeSingleMillimeters();
 }

@@ -6,8 +6,8 @@ VL53L0X sensor1;
 unsigned int dist1;
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
-int laser_xshut = 14;
-int tcsa = 42;
+  int laser_xshut = 14;
+  int tcsa = 42;
 
 void setup()
 {

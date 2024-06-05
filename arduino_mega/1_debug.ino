@@ -60,7 +60,7 @@ void calibrar()
 
 #if DEBUG_TCS_AREA
     tcaDesliga();
-    tcaSelecionar(0);
+    tcaSelecionar(canalTcsFrente);
     lerSensorCorFrente(&tcsFrente, rgbFrente);
 
     Serial.print(" TCS FRENTE: ");
@@ -99,17 +99,7 @@ void calibrar()
 #if DEBUG_LASER_FRENTE
     lerLaserFrente();
     Serial.print(" LaserFrente: ");
-    Serial.print(medidaLaserFrente.RangeStatus);
-    Serial.print(" ");
-    if (medidaLaserFrente.RangeStatus != 4)
-    { // phase failures have incorrect data
-        Serial.print(medidaLaserFrente.RangeMilliMeter);
-        Serial.print(" mm");
-    }
-    else
-    {
-        Serial.print("Fora de alcance ");
-    }
+    Serial.print(distanciaFrente);
 #endif
 
 #if DEBUG_LASER_ULTRA_GARRA
