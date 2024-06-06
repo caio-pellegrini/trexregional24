@@ -68,3 +68,15 @@ void i2c_scanner() {
   else
     Serial.println("done\n");
 }
+
+void tcaSelecionar(uint8_t i) {
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();
+}
+
+void tcaDesliga() {
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(0);  // Desligar todos os canais
+  Wire.endTransmission();
+}

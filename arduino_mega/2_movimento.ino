@@ -28,9 +28,9 @@ void moverFrente()
 void moverTras()
 {
   analogWrite(MOTOR_EF, 0);
-  analogWrite(MOTOR_ET, 100);
+  analogWrite(MOTOR_ET, VEL_MOTOR_TRAS);
   analogWrite(MOTOR_DF, 0);
-  analogWrite(MOTOR_DT, 100);
+  analogWrite(MOTOR_DT, VEL_MOTOR_TRAS);
   delay(1);
 }
 

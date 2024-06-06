@@ -7,12 +7,12 @@
 */
 
 #include "mega_def.h"
-#include <QTRSensors.h>
-#include <Adafruit_TCS34725.h>
 #include <Wire.h>
+#include <Adafruit_TCS34725.h>
+#include <VL53L0X.h>
 #include <Ultrasonic.h>
 #include "MPU6050_6Axis_MotionApps612.h"
-#include <VL53L0X.h>
+
 
 #define DEBUG 1
 #define DEBUG_CALIBRACAO 1
@@ -23,7 +23,7 @@
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_GIROSCOPIO 1
-#define DEBUG_LASER_FRENTE 1
+#define DEBUG_LASER_FRENTE 0
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
@@ -46,14 +46,11 @@
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 uint8_t sf;
 
-VL53L0X laserFrente;
-uint16_t distanciaFrente;
-int laser_xshut = 14;
-int tcsa = 42;
 uint8_t canalTcsFrente = 7;
+uint8_t canalTcsEsq = 6;
 
-Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
-Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
+
+
 
 uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
 uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito
@@ -84,6 +81,12 @@ void dmpDataReady()
 
 bool er;
 
+Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
+
+VL53L0X sensorVL53L0X;
+uint16_t distanciaFrente;
+
 void setup()
 {
   for (uint8_t i = 0; i < 3; i++)
@@ -97,36 +100,27 @@ void setup()
   Serial.begin(9600);
   Wire.begin();
 
-  pinMode(laser_xshut, OUTPUT); // Configura o pino XSHUT do VL53L0X como saída
-  pinMode(tcsa, OUTPUT); // Configura o pino Vin do TCS34725 como saída
 
-  digitalWrite(laser_xshut, LOW); // Desliga o VL53L0X
-  delay(50);
-  digitalWrite(tcsa, LOW); // Desliga o TCS34725
-  delay(50);
-
-  // Configura o sensor VL53L0X
-  laserFrente.setTimeout(500);
-  digitalWrite(laser_xshut, HIGH); // Habilita o sensor puxando o pino XSHUT para alto
-  delay(10);
-
-  i2c_scanner();
-
-  if (!laserFrente.init()) {
+    // Configura o sensor VL53L0X
+  // laserFrente.setTimeout(500);
+  if (!sensorVL53L0X.init()) {
     Serial.println("Laser Frente conexão falhou :(");
     while (1) {}
   } else {
     Serial.println("Laser Frente conectado :)");
   }
   
-  laserFrente.setAddress(0x31); // Define o endereço I2C do sensor
+  // laserFrente.setAddress(0x31); // Define o endereço I2C do sensor
   delay(10);
   // laserFrente.startContinuous(); // Inicia leituras contínuas
-  
-  digitalWrite(tcsa, HIGH); // Liga o sensor TCS34725
-  delay(10);
-  
 
+  
+  i2c_scanner();
+
+
+
+  
+  tcaSelecionar(canalTcsEsq);
   Serial.println(tcsEsq.begin() ? "TCS34725 Esq conectado :)" : "TCS34725 Esq conexão falhou :(");
 
   tcaSelecionar(canalTcsFrente);
@@ -154,6 +148,8 @@ void setup()
   pinMode(3, INPUT);
 
   ligarGiroscopio();
+
+
 
   desligarLed(AMBOS);
 }
@@ -290,16 +286,4 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
   }
 
   pararMotor();
-}
-
-void tcaSelecionar(uint8_t i) {
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << i);
-  Wire.endTransmission();
-}
-
-void tcaDesliga() {
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(0);  // Desligar todos os canais
-  Wire.endTransmission();
 }

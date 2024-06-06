@@ -22,7 +22,7 @@ void lerReflFrente() {
 
 void lerVerde() {
   Serial2.println("caio");
-  lerSensorCor(&tcsEsq, rgbEsq);
+  lerSensorCorEsq(rgbEsq);
   lerDadosSensorRemoto(rgbDir);
 }
 
@@ -85,11 +85,11 @@ void lerDadosSensorRemoto(uint8_t *rgbValues)
   index = 0;
 }
 
-void lerSensorCor(Adafruit_TCS34725 *tcs, uint8_t *rgbValues)
+void lerSensorCorEsq(uint8_t *rgbValues)
 {
   uint16_t r, g, b, c;
-
-  tcs->getRawData(&r, &g, &b, &c);
+  tcaSelecionar(canalTcsEsq);
+  tcsEsq.getRawData(&r, &g, &b, &c);
 
   rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255); // usar constrain para limitar um valor específico
   rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
@@ -99,11 +99,10 @@ void lerSensorCor(Adafruit_TCS34725 *tcs, uint8_t *rgbValues)
   // rgbValues[2] = b;
 }
 
-void lerSensorCorFrente(Adafruit_TCS34725 *tcs, uint16_t *rgbValues)
+void lerSensorCorFrente(uint16_t *rgbValues)
 {
-    uint16_t r, g, b, c;
-
-  tcs->getRawData(&r, &g, &b, &c);
+  uint16_t r, g, b, c;
+  tcsFrente.getRawData(&r, &g, &b, &c);
 
   rgbValues[0] = r;
   rgbValues[1] = g;
@@ -128,12 +127,12 @@ void ligarGiroscopio() {
   devStatus = mpu.dmpInitialize();
 
   // supply your own gyro offsets here, scaled for min sensitivity
-  mpu.setXAccelOffset(-2187);
-  mpu.setYAccelOffset(1953);
-  mpu.setZAccelOffset(1456);
-  mpu.setXGyroOffset(42);
-  mpu.setYGyroOffset(-28);
-  mpu.setZGyroOffset(9);
+  mpu.setXAccelOffset(1123);
+  mpu.setYAccelOffset(3163);
+  mpu.setZAccelOffset(1538);
+  mpu.setXGyroOffset(69);
+  mpu.setYGyroOffset(14);
+  mpu.setZGyroOffset(-34);
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
     // // Calibration Time: generate offsets and calibrate our MPU6050 (uncomment to calibrate)
@@ -200,5 +199,5 @@ void lerGiroscopio() {
 }
 
 void lerLaserFrente() {
-  distanciaFrente = laserFrente.readRangeSingleMillimeters();
+  distanciaFrente = sensorVL53L0X.readRangeSingleMillimeters();
 }

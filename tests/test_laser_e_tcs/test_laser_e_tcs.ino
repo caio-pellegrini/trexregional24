@@ -1,13 +1,25 @@
 #include <Wire.h>
+#include <Adafruit_TCS34725.h>
 #include <VL53L0X.h>
-#include "Adafruit_TCS34725.h"
 
-VL53L0X sensor1;
-unsigned int dist1;
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
+VL53L0X sensor1;
+unsigned int dist1;
   int laser_xshut = 14;
   int tcsa = 42;
+
+  // Endereço do multiplexador
+#define TCA9548A_ADDRESS 0x70
+
+// Função para selecionar o canal do multiplexador
+void tcaSelect(uint8_t i) {
+  if (i > 7) return;
+  Wire.beginTransmission(TCA9548A_ADDRESS);
+  Wire.write(1 << i);
+  Wire.endTransmission();
+}
+
 
 void setup()
 {
@@ -27,10 +39,10 @@ void setup()
   //pinMode(laser_xshut, INPUT); // ??
   //delay(1000);
   
-  scan(); // Escaneia dispositivos I2C
+  // scan(); // Escaneia dispositivos I2C
   
   // Configura o sensor VL53L0X
-  sensor1.setTimeout(500);
+  // sensor1.setTimeout(500);
   digitalWrite(laser_xshut, HIGH); // Habilita o sensor puxando o pino XSHUT para alto
   delay(10);
 
@@ -39,13 +51,14 @@ void setup()
     while (1) {}
   }
   
-  sensor1.setAddress(0x31); // Define o endereço I2C do sensor
+  //sensor1.setAddress(0x31); // Define o endereço I2C do sensor
   delay(10);
   // sensor1.startContinuous(); // Inicia leituras contínuas
   
   digitalWrite(tcsa, HIGH); // Liga o sensor TCS34725
   delay(10);
   
+  tcaSelect(6); // Supondo que o TCS34725 está no canal 0 do multiplexador
   if (!tcs.begin()) {
     Serial.println("Failed to initialize TCS34725 sensor!");
     while (1) {}
@@ -66,6 +79,7 @@ void getDist() {
 
 void RGB() {
   uint16_t r, g, b, c;
+  tcaSelect(6); // Supondo que o TCS34725 está no canal 0 do multiplexador
   tcs.getRawData(&r, &g, &b, &c);
   Serial.print(" R: "); Serial.print(r);
   Serial.print(" G: "); Serial.print(g);
