@@ -8,7 +8,7 @@
     #define MOTOR_DF   8  // azul claro
     #define MOTOR_DT   9  // azul escuro
 
-    // SENSORES DE REFLETÂNCIA
+    // PLACA DE SENSORES DE REFLETÂNCIA
     #define SE3_PIN    A8
     #define SE2_PIN    A9
     #define SE1_PIN    A15
@@ -18,7 +18,8 @@
     #define SD2_PIN    A10
     #define SD3_PIN    A11
 
-    #define SF_PIN     A5
+    // SENSOR DE REFLETÂNCIA FRENTE
+    #define SF_PIN     A7
 
     #define MPU6050_INTERRUPT_PIN 2
 
@@ -38,8 +39,10 @@
     const uint8_t rgbE[3] = {53, 51, 49}; // Vermelho, Verde, Azul
     const uint8_t rgbD[3] = {52, 50, 48}; // Vermelho, Verde, Azul
 
-    #define LOX1_I2C_ADDR 0x2B
-
     #define TCAADDR 0x70
+
+    uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
+    uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito
+    uint16_t rgbFrente[3];
 
 #endif

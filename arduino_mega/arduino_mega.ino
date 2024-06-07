@@ -18,28 +18,28 @@
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
-#define DEBUG_REFL_FRENTE 0
+#define DEBUG_REFL_FRENTE 1
 #define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
-#define DEBUG_GIROSCOPIO 0
+#define DEBUG_GIROSCOPIO 1
 #define DEBUG_LASER_FRENTE 1
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 220              // 900 quando range = 0-1023
-#define LUZ_FRENTE 30           // 6 no branco e 110 no preto
+#define LUZ 210              // 900 quando range = 0-1023
+#define LUZ_FRENTE 50           // 6 no branco e 110 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define CORTE_VERDE_ESQ 80   // abaixo disso é verde
 #define CORTE_VERDE_DIR 70
 #define CORTE_VERMELHO_CRUZ 100
 
 #define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
-#define VEL_MOTOR_FRENTE  CONVERT_8B_DEC(52)
+#define VEL_MOTOR_FRENTE  CONVERT_8B_DEC(45)
 #define VEL_MOTOR_CURVA   CONVERT_8B_DEC(43)
-#define VEL_MOTOR_TRAS    CONVERT_8B_DEC(39)
+#define VEL_MOTOR_TRAS    CONVERT_8B_DEC(40)
 #define VEL_MOTOR_SEG_MAX CONVERT_8B_DEC(78)
-#define VEL_MOTOR_SEG_MIN CONVERT_8B_DEC(71)
+#define VEL_MOTOR_SEG_MIN CONVERT_8B_DEC(75)
 
 #define TEMPO_MOVER_ANTES_CRUZ 350
 
@@ -50,11 +50,6 @@ uint8_t canalTcsFrente = 7;
 uint8_t canalTcsEsq = 6;
 
 
-
-
-uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
-uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito
-uint16_t rgbFrente[3];
 
 // Variáveis e definições para o MPU-6050 com DMP
 MPU6050 mpu;
@@ -98,17 +93,14 @@ void setup()
 
   Serial2.begin(9600);
   Serial.begin(9600);
+  Serial.println();
   Wire.begin();
 
 
   // Configura o sensor VL53L0X
-  // laserFrente.setTimeout(500);
-  if (!laserFrente.init()) {
-    Serial.println("Laser Frente conexão falhou :(");
-    while (1) {}
-  } else {
-    Serial.println("Laser Frente conectado :)");
-  }
+  laserFrente.setTimeout(500);
+  Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente conexão falhou :(");
+  // while (1) {}
   
   // laserFrente.setAddress(0x31); // Define o endereço I2C do sensor
   delay(10);
@@ -148,17 +140,22 @@ void setup()
   ligarGiroscopio();
 
   desligarLed(AMBOS);
+
+  #if defined(DEBUG) && (DEBUG == 0)
+    Serial.print("Desligando Serial");
+    Serial.end();
+  #endif
 }
 
 void loop()
 {
 #if DEBUG
-#if DEBUG_CALIBRACAO
-  calibrar();
-#endif
-#if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
-  return;
-#endif
+  #if DEBUG_CALIBRACAO
+    calibrar();
+  #endif
+  #if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
+    return;
+  #endif
 #endif
   
 
@@ -170,9 +167,13 @@ void loop()
   //   desligarLed(AMBOS);
   // }
 
+  lerLaserFrente();
+  if (distanciaFrente <= 75) {
+    desviarObstaculo();
+  }
+
 
   lerQTRATodos();
-
   lerReflFrente();
 
   // MEIO CRUZAMENTO ESQUERDO
@@ -221,65 +222,4 @@ void loop()
   {
     segueLinhaDireita();
   }
-}
-
-void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
-{
-  lerVerde();
-  lerVerde();
-
-  desligarLed(AMBOS);
-
-  bool verdeEsq = false;
-  bool verdeDir = false;
-
-  if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
-  {
-    ligarLed(ESQ, VERDE, 0);
-    verdeEsq = true;
-  }
-
-  if (rgbDir[1] != 0)
-  {
-    if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
-    {
-      ligarLed(DIR, VERDE, 0);
-      verdeDir = true;
-    }
-  }
-  else
-  {
-    ligarLed(DIR, VERMELHO, 0); // avisa que o rgbdir não recebeu dados do TCS
-  }
-
-  moverFrentePorMS(TEMPO_MOVER_ANTES_CRUZ); // mover pra frente antes de virar 
-  
-  // Beco sem saida
-  if (isBeco && verdeEsq && verdeDir)
-  {
-    virarEsquerdaGiro(210);
-    moverFrentePorMS(300);
-  }
-
-  // Curva à esquerda
-  if (isVerdeEsquerdo && verdeEsq && !verdeDir)
-  {
-    virarEsquerdaGiro(105);
-    moverFrentePorMS(200);
-  }
-
-  // Curva à direita
-  if (isVerdeDireito && !verdeEsq && verdeDir)
-  {
-    virarDireitaGiro(105);
-    moverFrentePorMS(200);
-  }
-
-  // Seguir reto
-  if (!verdeEsq && !verdeDir)
-  {
-    moverFrentePorMS(200);
-  }
-
-  pararMotor();
 }
