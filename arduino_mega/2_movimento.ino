@@ -16,13 +16,20 @@ void segueLinhaDireita()
   delay(3);
 }
 
+void moverFrenteSeguidor() {
+  analogWrite(MOTOR_EF, VEL_MOTOR_SEG_FRENTE);
+  analogWrite(MOTOR_ET, 0);
+  analogWrite(MOTOR_DF, VEL_MOTOR_SEG_FRENTE);
+  analogWrite(MOTOR_DT, 0);
+  delay(1);
+}
+
 void moverFrente()
 {
   analogWrite(MOTOR_EF, VEL_MOTOR_FRENTE);
   analogWrite(MOTOR_ET, 0);
   analogWrite(MOTOR_DF, VEL_MOTOR_FRENTE);
   analogWrite(MOTOR_DT, 0);
-  delay(1);
 }
 
 void moverTras()
@@ -31,7 +38,6 @@ void moverTras()
   analogWrite(MOTOR_ET, VEL_MOTOR_TRAS);
   analogWrite(MOTOR_DF, 0);
   analogWrite(MOTOR_DT, VEL_MOTOR_TRAS);
-  delay(1);
 }
 
 void pararMotor()
@@ -117,4 +123,12 @@ void virarDireitaGiro(uint8_t graus)
 
     if (abs(yaw - targetYaw) <= 1) break;  // Tolerância de 1 grau
   }
+}
+
+void virarDireitaGiro90() {
+  virarDireitaGiro(110);
+}
+
+void virarEsquerdaGiro90() {
+  virarEsquerdaGiro(110);
 }

@@ -35,11 +35,12 @@
 #define CORTE_VERMELHO_CRUZ 100
 
 #define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
-#define VEL_MOTOR_FRENTE  CONVERT_8B_DEC(45)
-#define VEL_MOTOR_CURVA   CONVERT_8B_DEC(43)
-#define VEL_MOTOR_TRAS    CONVERT_8B_DEC(40)
-#define VEL_MOTOR_SEG_MAX CONVERT_8B_DEC(78)
-#define VEL_MOTOR_SEG_MIN CONVERT_8B_DEC(75)
+#define VEL_MOTOR_FRENTE     CONVERT_8B_DEC(50)
+#define VEL_MOTOR_CURVA      CONVERT_8B_DEC(43)
+#define VEL_MOTOR_TRAS       CONVERT_8B_DEC(40)
+#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(40)
+#define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(78)
+#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(75)
 
 #define TEMPO_MOVER_ANTES_CRUZ 350
 
@@ -168,10 +169,10 @@ void loop()
   // }
 
   lerLaserFrente();
-  if (distanciaFrente <= 75) {
+
+  if (distanciaFrente <= 60) {
     desviarObstaculo();
   }
-
 
   lerQTRATodos();
   lerReflFrente();
@@ -211,7 +212,7 @@ void loop()
 
   lerQTRASegueLinha();
 
-  moverFrente();
+  moverFrenteSeguidor();
 
   if (se1 >= LUZ || se2 >= LUZ)
   {
