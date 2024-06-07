@@ -90,6 +90,7 @@ void lerSensorCorEsq(uint8_t *rgbValues)
   uint16_t r, g, b, c;
   tcaSelecionar(canalTcsEsq);
   tcsEsq.getRawData(&r, &g, &b, &c);
+  tcaDesliga();
 
   rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255); // usar constrain para limitar um valor específico
   rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
@@ -199,5 +200,5 @@ void lerGiroscopio() {
 }
 
 void lerLaserFrente() {
-  distanciaFrente = sensorVL53L0X.readRangeSingleMillimeters();
+  distanciaFrente = laserFrente.readRangeSingleMillimeters();
 }

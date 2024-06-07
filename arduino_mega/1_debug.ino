@@ -98,7 +98,7 @@ void calibrar()
 
 #if DEBUG_LASER_FRENTE
     lerLaserFrente();
-    Serial.print(" LaserFrente: ");
+    Serial.print(" | LaserFrente: ");
     Serial.print(distanciaFrente);
 #endif
 

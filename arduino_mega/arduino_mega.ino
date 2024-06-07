@@ -14,20 +14,20 @@
 #include "MPU6050_6Axis_MotionApps612.h"
 
 
-#define DEBUG 1
+#define DEBUG 0
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 0
+#define DEBUG_QTRA 1
 #define DEBUG_REFL_FRENTE 0
 #define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
-#define DEBUG_GIROSCOPIO 1
-#define DEBUG_LASER_FRENTE 0
+#define DEBUG_GIROSCOPIO 0
+#define DEBUG_LASER_FRENTE 1
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 225                // 900 quando range = 0-1023
+#define LUZ 220              // 900 quando range = 0-1023
 #define LUZ_FRENTE 30           // 6 no branco e 110 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define CORTE_VERDE_ESQ 80   // abaixo disso é verde
@@ -84,7 +84,7 @@ bool er;
 Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
-VL53L0X sensorVL53L0X;
+VL53L0X laserFrente;
 uint16_t distanciaFrente;
 
 void setup()
@@ -101,9 +101,9 @@ void setup()
   Wire.begin();
 
 
-    // Configura o sensor VL53L0X
+  // Configura o sensor VL53L0X
   // laserFrente.setTimeout(500);
-  if (!sensorVL53L0X.init()) {
+  if (!laserFrente.init()) {
     Serial.println("Laser Frente conexão falhou :(");
     while (1) {}
   } else {
@@ -114,17 +114,15 @@ void setup()
   delay(10);
   // laserFrente.startContinuous(); // Inicia leituras contínuas
 
-  
   i2c_scanner();
 
-
-
-  
   tcaSelecionar(canalTcsEsq);
   Serial.println(tcsEsq.begin() ? "TCS34725 Esq conectado :)" : "TCS34725 Esq conexão falhou :(");
+  tcaDesliga();
 
   tcaSelecionar(canalTcsFrente);
   Serial.println(tcsFrente.begin() ? "TCS34725 area conectado :)" : "TCS34725 area conexão falhou :(");
+  tcaDesliga();
 
   pinMode(MOTOR_DF, OUTPUT);
   pinMode(MOTOR_DT, OUTPUT);
@@ -149,8 +147,6 @@ void setup()
 
   ligarGiroscopio();
 
-
-
   desligarLed(AMBOS);
 }
 
@@ -166,29 +162,18 @@ void loop()
 #endif
   
 
-  er = digitalRead(3);
+  // er = digitalRead(3);
 
-  if (er) {
-    ligarLed(AMBOS, ROXO, 0);
-  } else {
-    desligarLed(AMBOS);
-  }
+  // if (er) {
+  //   ligarLed(AMBOS, ROXO, 0);
+  // } else {
+  //   desligarLed(AMBOS);
+  // }
 
 
   lerQTRATodos();
 
   lerReflFrente();
-
-  // CRUZAMENTO
-  if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
-  {
-    pararMotor();
-    ligarLed(AMBOS, BRANCO, 0);
-    moverTrasPorMS(100);
-    pararMotor();
-    analisarVerde(true, true, true);
-    desligarLed(AMBOS);
-  }
 
   // MEIO CRUZAMENTO ESQUERDO
   if (sf >= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
@@ -209,6 +194,17 @@ void loop()
     moverTrasPorMS(100);
     pararMotor();
     analisarVerde(false, false, true);
+    desligarLed(AMBOS);
+  }
+
+  // CRUZAMENTO
+  if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
+  {
+    pararMotor();
+    ligarLed(AMBOS, BRANCO, 0);
+    moverTrasPorMS(100);
+    pararMotor();
+    analisarVerde(true, true, true);
     desligarLed(AMBOS);
   }
 
