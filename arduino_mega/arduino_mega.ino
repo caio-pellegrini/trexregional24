@@ -14,7 +14,7 @@
 #include "MPU6050_6Axis_MotionApps612.h"
 
 
-#define DEBUG 0
+#define DEBUG 1
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
@@ -22,12 +22,12 @@
 #define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
-#define DEBUG_GIROSCOPIO 1
+#define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 1
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 210              // 900 quando range = 0-1023
+#define LUZ 200              // 900 quando range = 0-1023
 #define LUZ_FRENTE 50           // 6 no branco e 110 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define CORTE_VERDE_ESQ 80   // abaixo disso é verde
@@ -38,9 +38,9 @@
 #define VEL_MOTOR_FRENTE     CONVERT_8B_DEC(50)
 #define VEL_MOTOR_CURVA      CONVERT_8B_DEC(43)
 #define VEL_MOTOR_TRAS       CONVERT_8B_DEC(40)
-#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(40)
-#define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(78)
-#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(75)
+#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(46)
+#define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(80)
+#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(85)
 
 #define TEMPO_MOVER_ANTES_CRUZ 350
 
@@ -99,8 +99,8 @@ void setup()
 
 
   // Configura o sensor VL53L0X
-  laserFrente.setTimeout(500);
-  Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente conexão falhou :(");
+  // laserFrente.setTimeout(500);
+  // Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente conexão falhou :(");
   // while (1) {}
   
   // laserFrente.setAddress(0x31); // Define o endereço I2C do sensor
@@ -168,14 +168,25 @@ void loop()
   //   desligarLed(AMBOS);
   // }
 
-  lerLaserFrente();
+  // lerLaserFrente();
 
-  if (distanciaFrente <= 60) {
-    desviarObstaculo();
-  }
+  // if (distanciaFrente <= 60) {
+  //   desviarObstaculo();
+  // }
 
   lerQTRATodos();
   lerReflFrente();
+
+  // CRUZAMENTO
+  if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
+  {
+    pararMotor();
+    ligarLed(AMBOS, BRANCO, 0);
+    moverTrasPorMS(100);
+    pararMotor();
+    analisarVerde(true, true, true);
+    desligarLed(AMBOS);
+  }
 
   // MEIO CRUZAMENTO ESQUERDO
   if (sf >= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
@@ -199,14 +210,17 @@ void loop()
     desligarLed(AMBOS);
   }
 
-  // CRUZAMENTO
-  if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
+  // 90 GRAUS DIREITO
+  if (sf <= 10 && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
   {
-    pararMotor();
-    ligarLed(AMBOS, BRANCO, 0);
-    moverTrasPorMS(100);
-    pararMotor();
-    analisarVerde(true, true, true);
+    // pararMotor();
+    ligarLed(DIR, BRANCO, 0);
+    // moverTrasPorMS(100);
+    // pararMotor();
+    moverFrentePorMS(250);
+    virarDireitaGiro90();
+    moverFrentePorMS(200);
+    // analisarVerde(false, false, true);
     desligarLed(AMBOS);
   }
 
