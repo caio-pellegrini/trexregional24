@@ -40,6 +40,9 @@
     const uint8_t rgbD[3] = {52, 50, 48}; // Vermelho, Verde, Azul
 
     #define TCAADDR 0x70
+    #define CANAL_TCS_FRENTE  7
+    #define CANAL_TCS_ESQ  6
+
 
     uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
     uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito

@@ -88,7 +88,7 @@ void lerDadosSensorRemoto(uint8_t *rgbValues)
 void lerSensorCorEsq(uint8_t *rgbValues)
 {
   uint16_t r, g, b, c;
-  tcaSelecionar(canalTcsEsq);
+  tcaSelecionar(CANAL_TCS_ESQ);
   tcsEsq.getRawData(&r, &g, &b, &c);
   tcaDesliga();
 
@@ -103,7 +103,9 @@ void lerSensorCorEsq(uint8_t *rgbValues)
 void lerSensorCorFrente(uint16_t *rgbValues)
 {
   uint16_t r, g, b, c;
+  tcaSelecionar(CANAL_TCS_FRENTE);
   tcsFrente.getRawData(&r, &g, &b, &c);
+  tcaDesliga();
 
   rgbValues[0] = r;
   rgbValues[1] = g;

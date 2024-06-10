@@ -14,7 +14,7 @@
 #include "MPU6050_6Axis_MotionApps612.h"
 
 
-#define DEBUG 1
+#define DEBUG 0
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
@@ -40,17 +40,12 @@
 #define VEL_MOTOR_TRAS       CONVERT_8B_DEC(40)
 #define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(46)
 #define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(80)
-#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(85)
+#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(80)
 
 #define TEMPO_MOVER_ANTES_CRUZ 350
 
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 uint8_t sf;
-
-uint8_t canalTcsFrente = 7;
-uint8_t canalTcsEsq = 6;
-
-
 
 // Variáveis e definições para o MPU-6050 com DMP
 MPU6050 mpu;
@@ -99,21 +94,21 @@ void setup()
 
 
   // Configura o sensor VL53L0X
-  // laserFrente.setTimeout(500);
-  // Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente conexão falhou :(");
+  laserFrente.setTimeout(500);
+  Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente conexão falhou :(");
   // while (1) {}
   
   // laserFrente.setAddress(0x31); // Define o endereço I2C do sensor
-  delay(10);
+  // delay(10);
   // laserFrente.startContinuous(); // Inicia leituras contínuas
 
   i2c_scanner();
 
-  tcaSelecionar(canalTcsEsq);
+  tcaSelecionar(CANAL_TCS_ESQ);
   Serial.println(tcsEsq.begin() ? "TCS34725 Esq conectado :)" : "TCS34725 Esq conexão falhou :(");
   tcaDesliga();
 
-  tcaSelecionar(canalTcsFrente);
+  tcaSelecionar(CANAL_TCS_FRENTE);
   Serial.println(tcsFrente.begin() ? "TCS34725 area conectado :)" : "TCS34725 area conexão falhou :(");
   tcaDesliga();
 
@@ -168,11 +163,11 @@ void loop()
   //   desligarLed(AMBOS);
   // }
 
-  // lerLaserFrente();
+  lerLaserFrente();
 
-  // if (distanciaFrente <= 60) {
-  //   desviarObstaculo();
-  // }
+  if (distanciaFrente <= 60) {
+    desviarObstaculo();
+  }
 
   lerQTRATodos();
   lerReflFrente();
@@ -211,16 +206,24 @@ void loop()
   }
 
   // 90 GRAUS DIREITO
-  if (sf <= 10 && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
+  if (sf <= LUZ_FRENTE && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
   {
-    // pararMotor();
     ligarLed(DIR, BRANCO, 0);
-    // moverTrasPorMS(100);
-    // pararMotor();
-    moverFrentePorMS(250);
-    virarDireitaGiro90();
-    moverFrentePorMS(200);
-    // analisarVerde(false, false, true);
+    segueLinhaDireita();
+    segueLinhaDireita();
+    segueLinhaDireita();
+    segueLinhaDireita();
+    desligarLed(AMBOS);
+  }
+
+  // 90 GRAUS ESQUERDO
+  if (sf <= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
+  {
+    ligarLed(ESQ, BRANCO, 0);
+    segueLinhaEsquerda();
+    segueLinhaEsquerda();
+    segueLinhaEsquerda();
+    segueLinhaEsquerda();
     desligarLed(AMBOS);
   }
 
