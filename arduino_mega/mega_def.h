@@ -2,11 +2,26 @@
 
     #define MEGA_PINS_H
 
-    // MOTORES
+    // BIBLIOTECAS
+    #include <Wire.h>
+    #include <Adafruit_TCS34725.h>
+    #include <VL53L0X.h>
+    #include <Ultrasonic.h>
+    #include "MPU6050_6Axis_MotionApps612.h"
+    #include <Servo.h>
+
+    // MOTORES GRANDES
     #define MOTOR_EF   11 // verde escuro
     #define MOTOR_ET   10 // verde claro
     #define MOTOR_DF   8  // azul claro
     #define MOTOR_DT   9  // azul escuro
+
+    // SERVOMOTORES
+    #define SERVO_PA_GARRA_PIN 2
+    #define SERVO_SUBIR_GARRA_PIN 3
+    #define SERVO_ROTACIONAR_GARRA_PIN 4
+    #define SERVO_CANCELA_DIREITO_PIN 5
+    #define SERVO_CANCELA_ESQUERDO_PIN 6
 
     // PLACA DE SENSORES DE REFLETÂNCIA
     #define SE3_PIN    A8
@@ -52,5 +67,8 @@
     uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
     uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito
     uint16_t rgbFrente[3]; // lista de valores RGB do sensor TCS da frente
+
+    // OUTROS
+    #define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
 
 #endif

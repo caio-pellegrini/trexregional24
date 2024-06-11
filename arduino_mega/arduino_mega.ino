@@ -7,42 +7,36 @@
 */
 
 #include "mega_def.h"
-#include <Wire.h>
-#include <Adafruit_TCS34725.h>
-#include <VL53L0X.h>
-#include <Ultrasonic.h>
-#include "MPU6050_6Axis_MotionApps612.h"
-
 
 #define DEBUG 0
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
 #define DEBUG_REFL_FRENTE 1
-#define DEBUG_TCS_VERDE 0
+#define DEBUG_TCS_VERDE 1
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 1
+#define DEBUG_LASER_FRENTE 0
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
 #define LUZ 200              // 900 quando range = 0-1023
 #define LUZ_FRENTE 50           // 6 no branco e 110 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
-#define CORTE_VERDE_ESQ 80   // abaixo disso é verde
+#define CORTE_VERDE_ESQ 90   // abaixo disso é verde
 #define CORTE_VERDE_DIR 70
 #define CORTE_VERMELHO_CRUZ 100
 
-#define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
 #define VEL_MOTOR_FRENTE     CONVERT_8B_DEC(50)
 #define VEL_MOTOR_CURVA      CONVERT_8B_DEC(43)
 #define VEL_MOTOR_TRAS       CONVERT_8B_DEC(40)
-#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(46)
-#define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(80)
-#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(80)
+#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(38)
+#define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(76)
+#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(73)
 
-#define TEMPO_MOVER_ANTES_CRUZ 350
+#define TEMPO_MOVER_ANTES_CRUZ 370
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 100
 
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 uint8_t sf;
@@ -76,6 +70,14 @@ Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS
 VL53L0X laserFrente;
 uint16_t distanciaLaserFrente;
 
+// Servo servoPaGarra;
+// Servo servoSubirGarra;
+// Servo servoRotacionarGarra;
+// Servo servoCancelaDireito;
+// Servo servoCancelaEsquerdo;
+// uint8_t posicaoServoPaGarra = 0, posicaoServoSubirGarra = 0, posicaoServoRotacionarGarra = 0;
+// uint8_t posicaoServoCancelaDireito = 0, posicaoServoCancelaEsquerdo = 0;
+
 void setup()
 {
   // DEFINIÇÕES DE PINOS DOS LEDS
@@ -92,7 +94,6 @@ void setup()
   Serial.begin(9600);
   Serial.println();
   Wire.begin();
-
 
   // Configura o sensor VL53L0X
   laserFrente.setTimeout(500);
@@ -112,25 +113,38 @@ void setup()
   Serial.println(tcsFrente.begin() ? "TCS34725 area conectado :)" : "TCS34725 area conexão falhou :(");
   tcaDesliga();
 
-  pinMode(MOTOR_DF, OUTPUT);
-  pinMode(MOTOR_DT, OUTPUT);
   pinMode(MOTOR_EF, OUTPUT);
   pinMode(MOTOR_ET, OUTPUT);
+  pinMode(MOTOR_DF, OUTPUT);
+  pinMode(MOTOR_DT, OUTPUT);
 
   // PORTA SENSORES REFLETANCIA
+  pinMode(SE3_PIN, INPUT);
   pinMode(SE2_PIN, INPUT);
   pinMode(SE1_PIN, INPUT);
+  pinMode(SE0_PIN, INPUT);
+  pinMode(SD0_PIN, INPUT);
   pinMode(SD1_PIN, INPUT);
   pinMode(SD2_PIN, INPUT);
-  pinMode(SE3_PIN, INPUT);
-  pinMode(SE0_PIN, INPUT);
   pinMode(SD3_PIN, INPUT);
-  pinMode(SD0_PIN, INPUT);
 
   // PORTA SENSOR DA FRENTE
   pinMode(SF_PIN, INPUT);
 
   ligarGiroscopio();
+
+  // SERVOS
+  // servoPaGarra.attach(SERVO_PA_GARRA_PIN);
+  // servoPaGarra.write(90);
+  
+  // servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+
+  // servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
+
+  // servoCancelaDireito.attach(SERVO_CANCELA_DIREITO_PIN);
+
+  // servoCancelaEsquerdo.attach(SERVO_CANCELA_ESQUERDO_PIN);
+
 
   #if defined(DEBUG) && (DEBUG == 0)
     Serial.print("Desligando Serial");
@@ -200,7 +214,6 @@ void loop()
     seguirLinhaDireita();
     seguirLinhaDireita();
     seguirLinhaDireita();
-    seguirLinhaDireita();
     desligarLed(AMBOS);
   }
 
@@ -208,7 +221,6 @@ void loop()
   if (sf <= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
   {
     ligarLed(ESQ, BRANCO, 0);
-    seguirLinhaEsquerda();
     seguirLinhaEsquerda();
     seguirLinhaEsquerda();
     seguirLinhaEsquerda();
