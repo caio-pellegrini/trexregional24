@@ -97,12 +97,11 @@ void setup()
   laserFrente.setTimeout(500);
   Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente conexão falhou :(");
   // while (1) {}
-  
   // laserFrente.setAddress(0x31); // Define o endereço I2C do sensor
   // delay(10);
   // laserFrente.startContinuous(); // Inicia leituras contínuas
 
-  i2c_scanner();
+  // i2c_scanner();
 
   tcaSelecionar(CANAL_TCS_ESQ);
   Serial.println(tcsEsq.begin() ? "TCS34725 Esq conectado :)" : "TCS34725 Esq conexão falhou :(");
