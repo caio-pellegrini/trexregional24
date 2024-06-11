@@ -152,7 +152,6 @@ void loop()
     return;
   #endif
 #endif
-  
 
   // er = digitalRead(3);
 
