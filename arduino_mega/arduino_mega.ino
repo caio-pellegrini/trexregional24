@@ -70,21 +70,22 @@ void dmpDataReady()
   mpuInterrupt = true;
 }
 
-bool er;
-
 Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
 VL53L0X laserFrente;
-uint16_t distanciaFrente;
+uint16_t distanciaLaserFrente;
 
 void setup()
 {
-  for (uint8_t i = 0; i < 3; i++)
-  {
-    pinMode(rgbD[i], OUTPUT);
-    pinMode(rgbE[i], OUTPUT);
-  }
+  // DEFINIÇÕES DE PINOS DOS LEDS
+  pinMode(LED_ESQ_RED_PIN, OUTPUT);
+  pinMode(LED_ESQ_GREEN_PIN, OUTPUT);
+  pinMode(LED_ESQ_BLUE_PIN, OUTPUT);
+  pinMode(LED_DIR_RED_PIN, OUTPUT);
+  pinMode(LED_DIR_GREEN_PIN, OUTPUT);
+  pinMode(LED_DIR_BLUE_PIN, OUTPUT);
+
   ligarLed(AMBOS, VERMELHO, 0);
 
   Serial2.begin(9600);
@@ -129,17 +130,14 @@ void setup()
   // PORTA SENSOR DA FRENTE
   pinMode(SF_PIN, INPUT);
 
-  // EMISSOR RECEPTOR
-  pinMode(3, INPUT);
-
   ligarGiroscopio();
-
-  desligarLed(AMBOS);
 
   #if defined(DEBUG) && (DEBUG == 0)
     Serial.print("Desligando Serial");
     Serial.end();
   #endif
+
+  desligarLed(AMBOS);
 }
 
 void loop()
@@ -153,17 +151,9 @@ void loop()
   #endif
 #endif
 
-  // er = digitalRead(3);
-
-  // if (er) {
-  //   ligarLed(AMBOS, ROXO, 0);
-  // } else {
-  //   desligarLed(AMBOS);
-  // }
-
   lerLaserFrente();
 
-  if (distanciaFrente <= 60) {
+  if (distanciaLaserFrente <= 60) {
     desviarObstaculo();
   }
 
@@ -207,10 +197,10 @@ void loop()
   if (sf <= LUZ_FRENTE && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
   {
     ligarLed(DIR, BRANCO, 0);
-    segueLinhaDireita();
-    segueLinhaDireita();
-    segueLinhaDireita();
-    segueLinhaDireita();
+    seguirLinhaDireita();
+    seguirLinhaDireita();
+    seguirLinhaDireita();
+    seguirLinhaDireita();
     desligarLed(AMBOS);
   }
 
@@ -218,24 +208,24 @@ void loop()
   if (sf <= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
   {
     ligarLed(ESQ, BRANCO, 0);
-    segueLinhaEsquerda();
-    segueLinhaEsquerda();
-    segueLinhaEsquerda();
-    segueLinhaEsquerda();
+    seguirLinhaEsquerda();
+    seguirLinhaEsquerda();
+    seguirLinhaEsquerda();
+    seguirLinhaEsquerda();
     desligarLed(AMBOS);
   }
 
   lerQTRASegueLinha();
 
-  moverFrenteSeguidor();
+  seguidorMoverFrente();
 
   if (se1 >= LUZ || se2 >= LUZ)
   {
-    segueLinhaEsquerda();
+    seguirLinhaEsquerda();
   }
 
   if (sd1 >= LUZ || sd2 >= LUZ)
   {
-    segueLinhaDireita();
+    seguirLinhaDireita();
   }
 }

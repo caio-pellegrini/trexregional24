@@ -26,6 +26,21 @@ void lerVerde() {
   lerDadosSensorRemoto(rgbDir);
 }
 
+void lerSensorCorEsq(uint8_t *rgbValues)
+{
+  uint16_t r, g, b, c;
+  tcaSelecionar(CANAL_TCS_ESQ);
+  tcsEsq.getRawData(&r, &g, &b, &c);
+  tcaDesliga();
+
+  rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255); // usar constrain para limitar um valor específico
+  rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
+  rgbValues[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
+  // rgbValues[0] = r;
+  // rgbValues[1] = g;
+  // rgbValues[2] = b;
+}
+
 void lerDadosSensorRemoto(uint8_t *rgbValues)
 {
   static char buffer[64] = {0};
@@ -67,10 +82,10 @@ void lerDadosSensorRemoto(uint8_t *rgbValues)
       rgbValues[1] = g;
       rgbValues[2] = b;
     }
-    else
-    {
-      // Serial.print(" Formato de dados inválido.");
-    }
+    // else
+    // {
+    //   Serial.print(" Formato de dados inválido.");
+    // }
   }
   else
   {
@@ -85,20 +100,6 @@ void lerDadosSensorRemoto(uint8_t *rgbValues)
   index = 0;
 }
 
-void lerSensorCorEsq(uint8_t *rgbValues)
-{
-  uint16_t r, g, b, c;
-  tcaSelecionar(CANAL_TCS_ESQ);
-  tcsEsq.getRawData(&r, &g, &b, &c);
-  tcaDesliga();
-
-  rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255); // usar constrain para limitar um valor específico
-  rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
-  rgbValues[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
-  // rgbValues[0] = r;
-  // rgbValues[1] = g;
-  // rgbValues[2] = b;
-}
 
 void lerSensorCorFrente(uint16_t *rgbValues)
 {
@@ -202,6 +203,9 @@ void lerGiroscopio() {
 }
 
 void lerLaserFrente() {
-  distanciaFrente = laserFrente.readRangeSingleMillimeters();
+  distanciaLaserFrente = laserFrente.readRangeSingleMillimeters();
 }
 
+void lerLaserGarra() {
+  // distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
+}

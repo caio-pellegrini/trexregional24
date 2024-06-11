@@ -1,4 +1,4 @@
-void segueLinhaEsquerda()
+void seguirLinhaEsquerda()
 {
   analogWrite(MOTOR_EF, 0);
   analogWrite(MOTOR_ET, VEL_MOTOR_SEG_MIN);
@@ -7,7 +7,7 @@ void segueLinhaEsquerda()
   delay(3);
 }
 
-void segueLinhaDireita()
+void seguirLinhaDireita()
 {
   analogWrite(MOTOR_EF, VEL_MOTOR_SEG_MAX);
   analogWrite(MOTOR_ET, 0);
@@ -16,7 +16,7 @@ void segueLinhaDireita()
   delay(3);
 }
 
-void moverFrenteSeguidor() {
+void seguidorMoverFrente() {
   analogWrite(MOTOR_EF, VEL_MOTOR_SEG_FRENTE);
   analogWrite(MOTOR_ET, 0);
   analogWrite(MOTOR_DF, VEL_MOTOR_SEG_FRENTE);
@@ -48,18 +48,6 @@ void pararMotor()
   analogWrite(MOTOR_DT, 0);
 }
 
-void moverFrentePorMS(unsigned long ms)
-{
-  moverFrente();
-  delay(ms);
-}
-
-void moverTrasPorMS(unsigned long ms)
-{
-  moverTras();
-  delay(ms);
-}
-
 void virarEsquerda()
 {
   analogWrite(MOTOR_EF, 0);
@@ -74,6 +62,18 @@ void virarDireita()
   analogWrite(MOTOR_ET, 0);
   analogWrite(MOTOR_DF, 0);
   analogWrite(MOTOR_DT, VEL_MOTOR_CURVA);
+}
+
+void moverFrentePorMS(unsigned long ms)
+{
+  moverFrente();
+  delay(ms);
+}
+
+void moverTrasPorMS(unsigned long ms)
+{
+  moverTras();
+  delay(ms);
 }
 
 void virarEsquerdaPorMS(unsigned long ms)

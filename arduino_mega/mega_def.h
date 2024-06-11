@@ -36,16 +36,21 @@
     #define ESQ        true, false
     #define DIR        false, true
 
-    const uint8_t rgbE[3] = {53, 51, 49}; // Vermelho, Verde, Azul
-    const uint8_t rgbD[3] = {52, 50, 48}; // Vermelho, Verde, Azul
 
+    #define LED_ESQ_RED_PIN   53
+    #define LED_ESQ_GREEN_PIN 51
+    #define LED_ESQ_BLUE_PIN  49
+    #define LED_DIR_RED_PIN   52
+    #define LED_DIR_GREEN_PIN 50
+    #define LED_DIR_BLUE_PIN  48
+
+    // DEFINIÇÕES PARA MULTIPLEXADOR I2C
     #define TCAADDR 0x70
     #define CANAL_TCS_FRENTE  7
     #define CANAL_TCS_ESQ  6
 
-
     uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
     uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito
-    uint16_t rgbFrente[3];
+    uint16_t rgbFrente[3]; // lista de valores RGB do sensor TCS da frente
 
 #endif
