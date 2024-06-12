@@ -12,7 +12,7 @@ void tcaSelecionar(uint8_t i) {
   Wire.endTransmission();
 }
 
-void tcadesliga() {
+void tcaDesligar() {
   Wire.beginTransmission(TCAADDR);
   Wire.write(0);  // Desligar todos os canais
   Wire.endTransmission();
@@ -42,7 +42,7 @@ void setup()
 {
   Serial.begin(9600);
   Wire.begin();
-  tcadesliga();
+  tcaDesligar();
   tcaSelecionar(canalTcsMulti);
   sensor.setTimeout(500);
   tcaSelecionar(canalTcsMulti);
@@ -71,7 +71,7 @@ void setup()
 
 void loop()
 {
-  tcadesliga();
+  tcaDesligar();
     tcaSelecionar(canalTcsMulti);
 
   Serial.print(sensor.readRangeSingleMillimeters());

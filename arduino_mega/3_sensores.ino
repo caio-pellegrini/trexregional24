@@ -1,4 +1,5 @@
-void lerQTRATodos() {
+void lerQTRATodos()
+{
   se3 = analogRead(SE3_PIN) >> 2; // >> 2 transforma o valor de 10-bits (0-1023) para 8-bits (0-255)
   se2 = analogRead(SE2_PIN) >> 2;
   se1 = analogRead(SE1_PIN) >> 2;
@@ -9,39 +10,43 @@ void lerQTRATodos() {
   sd3 = analogRead(SD3_PIN) >> 2;
 }
 
-void lerQTRASegueLinha() {
+void lerQTRASegueLinha()
+{
   se2 = analogRead(SE2_PIN) >> 2;
   se1 = analogRead(SE1_PIN) >> 2;
   sd1 = analogRead(SD1_PIN) >> 2;
   sd2 = analogRead(SD2_PIN) >> 2;
 }
 
-void lerReflFrente() {
+void lerReflFrente()
+{
   sf = analogRead(SF_PIN) >> 2;
 }
 
-void lerVerde() {
+void lerVerde()
+{
   Serial2.println("caio");
-  lerTcsEsq(rgbTcsEsq);
-  lerDadosSensorRemoto(rgbTcsDir);
+  lerTcsEsq();
+  lerTcsDir();
 }
 
-void lerTcsEsq(uint8_t *rgbValues)
+void lerTcsEsq()
 {
   uint16_t r, g, b, c;
   tcaSelecionar(CANAL_TCS_ESQ);
   tcsEsq.getRawData(&r, &g, &b, &c);
-  tcaDesliga();
+  tcaDesligar();
 
-  rgbValues[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255); // usar constrain para limitar um valor específico
-  rgbValues[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
-  rgbValues[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
-  // rgbValues[0] = r;
-  // rgbValues[1] = g;
-  // rgbValues[2] = b;
+  rgbTcsEsq[0] = map(r, 0, TCS_SATURACAO_MAX, 0, 255); // usar constrain para limitar um valor específico
+  rgbTcsEsq[1] = map(g, 0, TCS_SATURACAO_MAX, 0, 255);
+  rgbTcsEsq[2] = map(b, 0, TCS_SATURACAO_MAX, 0, 255);
+  // rgbTcsEsq[0] = r;
+  // rgbTcsEsq[1] = g;
+  // rgbTcsEsq[2] = b;
 }
 
-void lerDadosSensorRemoto(uint8_t *rgbValues)
+/// @brief Lê os valores RGB do sensor TCS34725 direito, conectado ao Arduino Nano via Serial2.
+void lerTcsDir()
 {
   static char buffer[64] = {0};
   static int index = 0;
@@ -78,21 +83,18 @@ void lerDadosSensorRemoto(uint8_t *rgbValues)
     // Tenta extrair os valores R, G, B da string recebida
     if (sscanf(buffer, "R:%d,G:%d,B:%d", &r, &g, &b) == 3)
     { // Se três valores forem lidos com sucesso
-      rgbValues[0] = r;
-      rgbValues[1] = g;
-      rgbValues[2] = b;
+      rgbTcsDir[0] = r;
+      rgbTcsDir[1] = g;
+      rgbTcsDir[2] = b;
     }
-    // else
-    // {
-    //   Serial.print(" Formato de dados inválido.");
-    // }
+    // else { Serial.print(" Formato de dados inválido."); }
   }
   else
   {
     Serial.print("Timeout");
-    rgbValues[0] = 0;
-    rgbValues[1] = 0;
-    rgbValues[2] = 0;
+    rgbTcsDir[0] = 0;
+    rgbTcsDir[1] = 0;
+    rgbTcsDir[2] = 0;
   }
 
   // Limpa o buffer e reseta o índice após processar a mensagem
@@ -100,20 +102,20 @@ void lerDadosSensorRemoto(uint8_t *rgbValues)
   index = 0;
 }
 
-
-void lerSensorCorFrente(uint16_t *rgbValues)
+void lerTcsFrente()
 {
   uint16_t r, g, b, c;
   tcaSelecionar(CANAL_TCS_FRENTE);
   tcsFrente.getRawData(&r, &g, &b, &c);
-  tcaDesliga();
+  tcaDesligar();
 
-  rgbValues[0] = r;
-  rgbValues[1] = g;
-  rgbValues[2] = b;
+  rgbTcsFrente[0] = r;
+  rgbTcsFrente[1] = g;
+  rgbTcsFrente[2] = b;
 }
 
-void ligarGiroscopio() {
+void ligarGiroscopio()
+{
   // initialize device
   mpu.initialize();
   pinMode(MPU6050_INTERRUPT_PIN, INPUT);
@@ -122,7 +124,7 @@ void ligarGiroscopio() {
   Serial.println(mpu.testConnection() ? "MPU6050 conectado :)" : "MPU6050 conexão falhou :(");
 
   // rate 999 => 1 Hz / rate 49 => 20 Hz /  9 => 100 Hz
-  mpu.setRate(9); // Taxa de amostragem
+  mpu.setRate(9);     // Taxa de amostragem
   mpu.setDLPFMode(1); // Filtro Digital de Passa Baixa
   mpu.setIntDataReadyEnabled(true);
 
@@ -138,7 +140,8 @@ void ligarGiroscopio() {
   mpu.setYGyroOffset(14);
   mpu.setZGyroOffset(-34);
   // make sure it worked (returns 0 if so)
-  if (devStatus == 0) {
+  if (devStatus == 0)
+  {
     // // Calibration Time: generate offsets and calibrate our MPU6050 (uncomment to calibrate)
     // mpu.CalibrateAccel(6);
     // mpu.CalibrateGyro(6);
@@ -147,7 +150,7 @@ void ligarGiroscopio() {
 
     // turn on the DMP, now that it's ready
     mpu.setDMPEnabled(true);
-    
+
     // enable Arduino interrupt detection
     // Serial.print("Enabling interrupt detection - Arduino external interrupt " + digitalPinToInterrupt(INTERRUPT_PIN));
     attachInterrupt(digitalPinToInterrupt(MPU6050_INTERRUPT_PIN), dmpDataReady, RISING);
@@ -159,7 +162,9 @@ void ligarGiroscopio() {
 
     // get expected DMP packet size for later comparison
     packetSize = mpu.dmpGetFIFOPacketSize();
-  } else {
+  }
+  else
+  {
     // ERROR!
     // 1 = initial memory load failed
     // 2 = DMP configuration updates failed
@@ -169,13 +174,16 @@ void ligarGiroscopio() {
   }
 }
 
-void lerGiroDMP() {
-  while (!mpuInterrupt) {
-      // Fica esperando
-      delay(1);  // Adicione um pequeno delay para evitar a sobrecarga da CPU
+void lerGiroDMP()
+{
+  while (!mpuInterrupt)
+  {
+    // Fica esperando
+    delay(1); // Adicione um pequeno delay para evitar a sobrecarga da CPU
   }
   // read a packet from FIFO
-  if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) { // Get the Latest packet 
+  if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer))
+  { // Get the Latest packet
     // Serial.print("a");
 
     // display Euler angles in degrees
@@ -191,38 +199,46 @@ void lerGiroDMP() {
   }
 }
 
-void lerGiroscopio() {
-  while (!mpuInterrupt) {
-      // Fica esperando
-      delay(10);  // Adicione um pequeno delay para evitar a sobrecarga da CPU
+void lerGiroscopio()
+{
+  while (!mpuInterrupt)
+  {
+    // Fica esperando
+    delay(10); // Adicione um pequeno delay para evitar a sobrecarga da CPU
   }
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
   pitch = map(ax, -17000, 17000, 0, 255);
   mpuInterrupt = false;
 }
 
-void lerLaserFrente() {
+void lerLaserFrente()
+{
   distanciaLaserFrente = laserFrente.readRangeSingleMillimeters();
 }
 
-void lerLaserGarra() {
+void lerLaserGarra()
+{
   // distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
 }
 
-void lerBtnArea() {
+void lerBtnArea()
+{
   btnAreaEsq = digitalRead(BTN_AREA_ESQ_PIN);
   btnAreaDir = digitalRead(BTN_AREA_DIR_PIN);
 }
 
-void lerBtnParede() {
+void lerBtnParede()
+{
   btnParedeEsq = digitalRead(BTN_PAREDE_ESQ_PIN);
   btnParedeDir = digitalRead(BTN_PAREDE_DIR_PIN);
 }
 
-void lerUltraEsq() {
+void lerUltraEsq()
+{
   // ultraEsq = ultrasonicEsq.read(CM);
 }
 
-void lerUltraDir() {
+void lerUltraDir()
+{
   // ultraDir = ultrasonicDir.read(CM);
 }

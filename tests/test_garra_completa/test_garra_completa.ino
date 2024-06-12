@@ -9,11 +9,11 @@
 Servo servoPaGarra; // 180 fechada, 60 aberta
 Servo servoSubirGarra; // 0 baixo, 160 cima
 Servo servoRotacionarGarra; // 0 esq, 110 dir 55 padrao
-Servo servoCancelaDireito; 
-Servo servoCancelaEsquerdo; 
+Servo servoCancelaDir; 
+Servo servoCancelaEsq; 
 
 uint8_t posicaoServoPaGarra = 180, posicaoServoSubirGarra = 160, posicaoServoRotacionarGarra = 55;
-uint8_t posicaoServoCancelaDireito = 0, posicaoServoCancelaEsquerdo = 0;
+uint8_t posicaoServoCancelaDir = 0, posicaoServoCancelaEsq = 0;
 
 void setup()
 {

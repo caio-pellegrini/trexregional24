@@ -1,6 +1,11 @@
-void ligarLed(bool esq, bool dir, uint8_t r, uint8_t g, uint8_t b, unsigned long delayTempo)
+/// @brief Ligar LEDS RGB que funcionam como setas do robô
+/// @param esq 
+/// @param dir 
+/// @param r 
+/// @param g 
+/// @param b 
+void ligarLed(bool esq, bool dir, uint8_t r, uint8_t g, uint8_t b)
 {
-
   if (esq)
   {
     analogWrite(LED_ESQ_RED_PIN, r);
@@ -13,23 +18,27 @@ void ligarLed(bool esq, bool dir, uint8_t r, uint8_t g, uint8_t b, unsigned long
     analogWrite(LED_DIR_GREEN_PIN, g);
     analogWrite(LED_DIR_BLUE_PIN, b);
   }
+}
 
-  if (delayTempo != 0)
+void ligarLed(bool esq, bool dir, uint8_t r, uint8_t g, uint8_t b, unsigned long delayTempo)
+{
+  ligarLed(esq, dir, r, g, b);
+
+  delay(delayTempo);
+
+  if (esq)
   {
-    delay(delayTempo);
-    if (esq)
-    {
-      analogWrite(LED_ESQ_RED_PIN, 0);
-      analogWrite(LED_ESQ_GREEN_PIN, 0);
-      analogWrite(LED_ESQ_BLUE_PIN, 0);
-    }
-    if (dir)
-    {
-      analogWrite(LED_DIR_RED_PIN, 0);
-      analogWrite(LED_DIR_GREEN_PIN, 0);
-      analogWrite(LED_DIR_BLUE_PIN, 0);
-    }
+    analogWrite(LED_ESQ_RED_PIN, 0);
+    analogWrite(LED_ESQ_GREEN_PIN, 0);
+    analogWrite(LED_ESQ_BLUE_PIN, 0);
   }
+  if (dir)
+  {
+    analogWrite(LED_DIR_RED_PIN, 0);
+    analogWrite(LED_DIR_GREEN_PIN, 0);
+    analogWrite(LED_DIR_BLUE_PIN, 0);
+  }
+
 }
 
 void desligarLed(bool esq, bool dir)
@@ -94,14 +103,14 @@ void i2c_scanner()
 
 void tcaSelecionar(uint8_t i)
 {
-  Wire.beginTransmission(TCAADDR);
-  Wire.write(1 << i);
+  Wire.beginTransmission(TCA_ENDERECO);
+  Wire.write(1 << i); // Acessa o canal desejado
   Wire.endTransmission();
 }
 
-void tcaDesliga()
+void tcaDesligar()
 {
-  Wire.beginTransmission(TCAADDR);
+  Wire.beginTransmission(TCA_ENDERECO);
   Wire.write(0); // Desligar todos os canais
   Wire.endTransmission();
 }

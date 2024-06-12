@@ -14,7 +14,7 @@ void tcaSelecionar(uint8_t i) {
   Wire.endTransmission();
 }
 
-void tcadesliga() {
+void tcaDesligar() {
   Wire.beginTransmission(TCAADDR);
   Wire.write(0);  // Desligar todos os canais
   Wire.endTransmission();
@@ -26,24 +26,24 @@ void setup() {
 
   Serial.println(tcsBar.begin() ? "TCS34725 Bar conectado :)" : "TCS34725 Bar conexão falhou :(");
 
-  tcadesliga();
+  tcaDesligar();
   tcaSelecionar(canalTcsMulti);  // Selecionar o primeiro sensor de cor e inicializá-lo
   Serial.println(tcsMulti.begin() ? "TCS34725 Multi conectado :)" : "TCS34725 Multi conexão falhou :(");
-  tcadesliga();
+  tcaDesligar();
 }
 
 void loop() {
   Serial.print("TCS BAR: ");
   lerSensorCor(&tcsBar);
-  tcadesliga();
+  tcaDesligar();
 
   delay(500);
 
   Serial.print("  TCS MULTI: ");
-  tcadesliga();
+  tcaDesligar();
   tcaSelecionar(canalTcsMulti);
   lerSensorCor(&tcsMulti);
-  tcadesliga();
+  tcaDesligar();
 
   Serial.println();
 }

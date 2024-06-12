@@ -10,7 +10,7 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
 
   if (rgbTcsEsq[1] < CORTE_VERDE_ESQ && rgbTcsEsq[0] < CORTE_VERMELHO_CRUZ)
   {
-    ligarLed(ESQ, VERDE, 0);
+    ligarLed(ESQ, VERDE);
     verdeEsq = true;
   }
 
@@ -18,13 +18,13 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
   {
     if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[0] < CORTE_VERMELHO_CRUZ)
     {
-      ligarLed(DIR, VERDE, 0);
+      ligarLed(DIR, VERDE);
       verdeDir = true;
     }
   }
   else
   {
-    ligarLed(DIR, VERMELHO, 0); // avisa que o rgbTcsDir não recebeu dados do TCS
+    ligarLed(DIR, VERMELHO); // avisa que o rgbTcsDir não recebeu dados do TCS
   }
 
   moverFrentePorMS(TEMPO_MOVER_ANTES_CRUZ); // mover pra frente antes de virar 
@@ -61,7 +61,7 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
 
 void desviarObstaculo() {
     pararMotor();
-    ligarLed(AMBOS, VERMELHO, 0);
+    ligarLed(AMBOS, VERMELHO);
     moverTrasPorMS(300);
     virarEsquerdaGiro90();
     moverFrentePorMS(1100);

@@ -1,7 +1,7 @@
 /*
   Nome do Projeto: Seguidor de Linha
   Descrição: Sketch para controlar um robô seguidor de linha.
-  Autor: Seu Nome
+  Autor: Caio P.
   Data: 10/01/2024
   Versão: 1.0
 */
@@ -77,12 +77,12 @@ uint16_t distanciaLaserFrente;
 Servo servoPaGarra;
 // Servo servoSubirGarra;
 // Servo servoRotacionarGarra;
-// Servo servoCancelaDireito;
-// Servo servoCancelaEsquerdo;
+// Servo servoCancelaDir;
+// Servo servoCancelaEsqu;
 
 // a posição inicial dos servos é armazenada nessas variáveis
 uint8_t posicaoServoPaGarra = 90, posicaoServoSubirGarra = 0, posicaoServoRotacionarGarra = 0;
-uint8_t posicaoServoCancelaDireito = 0, posicaoServoCancelaEsquerdo = 0;
+uint8_t posicaoServoCancelaDir = 0, posicaoServoCancelaEsq = 0;
 
 void setup()
 {
@@ -94,7 +94,7 @@ void setup()
   pinMode(LED_DIR_GREEN_PIN, OUTPUT);
   pinMode(LED_DIR_BLUE_PIN, OUTPUT);
 
-  ligarLed(AMBOS, VERMELHO, 0);
+  ligarLed(AMBOS, VERMELHO);
 
   Serial2.begin(9600);
   Serial.begin(9600);
@@ -112,12 +112,12 @@ void setup()
   // i2c_scanner();
 
   tcaSelecionar(CANAL_TCS_ESQ);
-  Serial.println(tcsEsq.begin() ? "TCS34725 Esq conectado :)" : "TCS34725 Esq conexão falhou :(");
-  tcaDesliga();
+  Serial.println(tcsEsq.begin() ? "TCS Esq conectado :)" : "TCS Esq conexão falhou :(");
+  tcaDesligar();
 
   tcaSelecionar(CANAL_TCS_FRENTE);
-  Serial.println(tcsFrente.begin() ? "TCS34725 Frente conectado :)" : "TCS34725 Frente conexão falhou :(");
-  tcaDesliga();
+  Serial.println(tcsFrente.begin() ? "TCS Frente conectado :)" : "TCS Frente conexão falhou :(");
+  tcaDesligar();
 
   pinMode(MOTOR_EF, OUTPUT);
   pinMode(MOTOR_ET, OUTPUT);
@@ -155,11 +155,11 @@ void setup()
   // servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
   // servoRotacionarGarra.write(posicaoServoRotacionarGarra);
 
-  // servoCancelaDireito.attach(SERVO_CANCELA_DIREITO_PIN);
-  // servoCancelaDireito.write(posicaoServoCancelaDireito);
+  // servoCancelaDir.attach(SERVO_CANCELA_DIREITO_PIN);
+  // servoCancelaDir.write(posicaoServoCancelaDir);
 
-  // servoCancelaEsquerdo.attach(SERVO_CANCELA_ESQUERDO_PIN);
-  // servoCancelaEsquerdo.write(posicaoServoCancelaEsquerdo);
+  // servoCancelaEsq.attach(SERVO_CANCELA_ESQUERDO_PIN);
+  // servoCancelaEsq.write(posicaoServoCancelaEsq);
 
   #if defined(DEBUG) && (DEBUG == 0)
     Serial.print("Desligando Serial");
@@ -191,7 +191,7 @@ void loop()
   // CRUZAMENTO
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
   {
-    ligarLed(AMBOS, BRANCO, 0);
+    ligarLed(AMBOS, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotor();
     analisarVerde(true, true, true);
@@ -201,7 +201,7 @@ void loop()
   // MEIO CRUZAMENTO ESQUERDO
   if (sf >= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
   {
-    ligarLed(ESQ, BRANCO, 0);
+    ligarLed(ESQ, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotor();
     analisarVerde(false, true, false);
@@ -211,7 +211,7 @@ void loop()
   // MEIO CRUZAMENTO DIREITO
   if (sf >= LUZ_FRENTE && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
   {
-    ligarLed(DIR, BRANCO, 0);
+    ligarLed(DIR, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotor();
     analisarVerde(false, false, true);
@@ -221,7 +221,7 @@ void loop()
   // 90 GRAUS DIREITO
   if (sf <= LUZ_FRENTE && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
   {
-    ligarLed(DIR, BRANCO, 0);
+    ligarLed(DIR, BRANCO);
     seguirLinhaDireita();
     seguirLinhaDireita();
     seguirLinhaDireita();
