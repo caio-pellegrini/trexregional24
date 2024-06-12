@@ -70,8 +70,8 @@
     #define CANAL_TCS_FRENTE  7
     #define CANAL_TCS_ESQ     6
 
-    uint8_t rgbTcsEsq[3]; // lista de valores RGB do sensor TCS esquerdo
-    uint8_t rgbTcsDir[3]; // lista de valores RGB do sensor TCS direito
+    uint8_t rgbTcsEsq[3];  // lista de valores RGB do sensor TCS esquerdo
+    uint8_t rgbTcsDir[3];  // lista de valores RGB do sensor TCS direito
     uint16_t rgbFrente[3]; // lista de valores RGB do sensor TCS da frente
 
     // OUTROS
