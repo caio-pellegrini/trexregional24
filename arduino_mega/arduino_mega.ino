@@ -21,8 +21,8 @@
 #define DEBUG_VISAO_GARRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 200              // 900 quando range = 0-1023
-#define LUZ_FRENTE 50           // 6 no branco e 110 no preto
+#define LUZ 202              // 900 quando range = 0-1023
+#define LUZ_FRENTE 55           // 6 no branco e 110 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define CORTE_VERDE_ESQ 90   // abaixo disso é verde
 #define CORTE_VERDE_DIR 70
@@ -30,13 +30,17 @@
 
 #define VEL_MOTOR_FRENTE     CONVERT_8B_DEC(50)
 #define VEL_MOTOR_TRAS       CONVERT_8B_DEC(40)
-#define VEL_MOTOR_CURVA      CONVERT_8B_DEC(60)
-#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(65) // 38
-#define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(90) // 76
-#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(86)  // 73
+#define VEL_MOTOR_CURVA      CONVERT_8B_DEC(55)
 
-#define TEMPO_MOVER_ANTES_CRUZ 370
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 100
+// #define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(65) // 38
+// #define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(90) // 76
+// #define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(88)  // 73
+#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(38)
+#define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(76)
+#define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(73)
+
+#define TEMPO_MOVER_ANTES_CRUZ 420
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 250
 
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 uint8_t sf;
@@ -177,10 +181,9 @@ void loop()
 #endif
 
   lerLaserFrente();
-
-  if (distanciaLaserFrente <= 60) {
-    desviarObstaculo();
-  }
+  // if (distanciaLaserFrente <= 60) {
+  //   desviarObstaculo();
+  // }
 
   lerQTRATodos();
   lerReflFrente();
