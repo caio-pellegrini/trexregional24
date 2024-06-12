@@ -45,6 +45,30 @@ void loop()
 
 }
 
+void movimentarServoPaGarra(uint8_t posicaoInicial, uint8_t posicaoFinal, uint8_t velocidade)
+{
+  if (posicaoInicial > posicaoFinal)
+  {
+    posicaoServoPaGarra = posicaoInicial;
+    while (posicaoServoPaGarra > posicaoFinal) 
+    {
+      posicaoServoPaGarra--;
+      servoPaGarra.write(posicaoServoPaGarra);
+      delay(velocidade);
+    }
+  }
+  else
+  {
+    posicaoServoPaGarra = posicaoInicial;
+    while (posicaoServoPaGarra < posicaoFinal) 
+    {
+      posicaoServoPaGarra++;
+      servoPaGarra.write(posicaoServoPaGarra);
+      delay(velocidade);
+    }
+  }
+}
+
 void movimentarServo(Servo *motor, uint8_t posicaoInicial, uint8_t posicaoFinal, uint8_t velocidade)
 {
   if (posicaoInicial > posicaoFinal)
