@@ -9,13 +9,15 @@ void setup()
     pinMode(MOTOR_ET, OUTPUT);
     pinMode(MOTOR_DF, OUTPUT);
     pinMode(MOTOR_DT, OUTPUT);
+
+
+    analogWrite(MOTOR_EF, 255);
+    analogWrite(MOTOR_ET, 0);
+    analogWrite(MOTOR_DF, 255);
+    analogWrite(MOTOR_DT, 0);
 }
 
 void loop()
 {
-    analogWrite(MOTOR_EF, 200);
-    analogWrite(MOTOR_ET, 0);
-    analogWrite(MOTOR_DF, 200);
-    analogWrite(MOTOR_DT, 0);
-    delay(1000);
+
 }

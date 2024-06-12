@@ -37,9 +37,9 @@
 
     // BOTOES
     #define BTN_AREA_ESQ_PIN    22
-    #define BTN_AREA_DIR_PIN    23
+    #define BTN_AREA_DIR_PIN    28
     #define BTN_PAREDE_ESQ_PIN  24
-    #define BTN_PAREDE_DIR_PIN  25
+    #define BTN_PAREDE_DIR_PIN  26
     bool btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir;
 
     #define MPU6050_INTERRUPT_PIN 2

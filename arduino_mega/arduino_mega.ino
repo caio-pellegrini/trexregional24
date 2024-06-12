@@ -8,20 +8,20 @@
 
 #include "mega_def.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 1
-#define DEBUG_REFL_FRENTE 1
-#define DEBUG_TCS_VERDE 1
+#define DEBUG_QTRA 0
+#define DEBUG_REFL_FRENTE 0
+#define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_VISAO_GARRA 0
-#define DEBUG_BOTOES 0
+#define DEBUG_BOTOES 1
 
-#define LUZ 202              // 900 quando range = 0-1023
+#define LUZ 202              
 #define LUZ_FRENTE 55           // 6 no branco e 110 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define CORTE_VERDE_ESQ 90   // abaixo disso é verde
@@ -39,8 +39,8 @@
 #define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(76)
 #define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(73)
 
-#define TEMPO_MOVER_ANTES_CRUZ 420
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 250
+#define TEMPO_MOVER_ANTES_CRUZ 370
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 150
 
 uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
 uint8_t sf;
@@ -116,7 +116,7 @@ void setup()
   tcaDesliga();
 
   tcaSelecionar(CANAL_TCS_FRENTE);
-  Serial.println(tcsFrente.begin() ? "TCS34725 area conectado :)" : "TCS34725 area conexão falhou :(");
+  Serial.println(tcsFrente.begin() ? "TCS34725 Frente conectado :)" : "TCS34725 Frente conexão falhou :(");
   tcaDesliga();
 
   pinMode(MOTOR_EF, OUTPUT);
