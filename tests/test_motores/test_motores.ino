@@ -13,27 +13,9 @@ void setup()
 
 void loop()
 {
-    analogWrite(MOTOR_EF, 255);
+    analogWrite(MOTOR_EF, 200);
     analogWrite(MOTOR_ET, 0);
-    analogWrite(MOTOR_DF, 255);
-    analogWrite(MOTOR_DT, 0);
-    delay(1000);
-
-    analogWrite(MOTOR_EF, 0);
-    analogWrite(MOTOR_ET, 255);
-    analogWrite(MOTOR_DF, 0);
-    analogWrite(MOTOR_DT, 255);
-    delay(1000);
-
-    analogWrite(MOTOR_EF, 255);
-    analogWrite(MOTOR_ET, 0);
-    analogWrite(MOTOR_DF, 0);
-    analogWrite(MOTOR_DT, 255);
-    delay(1000);
-
-    analogWrite(MOTOR_EF, 0);
-    analogWrite(MOTOR_ET, 255);
-    analogWrite(MOTOR_DF, 255);
+    analogWrite(MOTOR_DF, 200);
     analogWrite(MOTOR_DT, 0);
     delay(1000);
 }

@@ -22,7 +22,7 @@ void lerReflFrente() {
 
 void lerVerde() {
   Serial2.println("caio");
-  lerSensorCorEsq(rgbTcsEsq);
+  lerTcsEsq(rgbTcsEsq);
   lerDadosSensorRemoto(rgbTcsDir);
 }
 
@@ -220,9 +220,9 @@ void lerBtnParede() {
 }
 
 void lerUltraEsq() {
-  ultraEsq = ultrasonicEsq.read(CM);
+  // ultraEsq = ultrasonicEsq.read(CM);
 }
 
 void lerUltraDir() {
-  ultraDir = ultrasonicDir.read(CM);
+  // ultraDir = ultrasonicDir.read(CM);
 }

@@ -38,19 +38,26 @@ void setup()
 
 void loop()
 {
-  moverPaGarra(true, 50, 90, 180);
+  movimentarServo(ServoPaGarra, 50, 90, 180);
 
+  movimentarServo(ServoPaGarra, 50, 180, 90);
 }
 
-void moverPaGarra(Servo ,bool direcao, uint8_t velocidade, uint8_t posicaoInicial, uint8_t posicaoFinal) {
-  if (direcao) {
-    for (uint8_t i = posicaoInicial; i <= posicaoFinal; i++) {
-      servoPaGarra.write(i);
+void movimentarServo(Servo *servo, uint8_t velocidade, uint8_t posicaoInicial, uint8_t posicaoFinal)
+{
+  if (posicaoInicial > posicaoFinal)
+  {
+    for (uint8_t i = posicaoInicial; i >= posicaoFinal; i--)
+    {
+      servo->write(i);
       delay(velocidade);
     }
-  } else {
-    for (uint8_t i = posicaoInicial; i >= posicaoFinal; i--) {
-      servoPaGarra.write(i);
+  }
+  else
+  {
+    for (uint8_t i = posicaoInicial; i <= posicaoFinal; i++)
+    {
+      servo->write(i);
       delay(velocidade);
     }
   }
