@@ -70,7 +70,7 @@ Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS
 VL53L0X laserFrente;
 uint16_t distanciaLaserFrente;
 
-// Servo servoPaGarra;
+Servo servoPaGarra;
 // Servo servoSubirGarra;
 // Servo servoRotacionarGarra;
 // Servo servoCancelaDireito;
@@ -134,16 +134,22 @@ void setup()
   ligarGiroscopio();
 
   // SERVOS
-  // servoPaGarra.attach(SERVO_PA_GARRA_PIN);
+  servoPaGarra.attach(SERVO_PA_GARRA_PIN);
+  servoPaGarra.read();
   // servoPaGarra.write(90);
   
   // servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+  // servoSubirGarra.write(90);
 
   // servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
+  // servoRotacionarGarra.write(0);
+  // posicao inicial 0
 
   // servoCancelaDireito.attach(SERVO_CANCELA_DIREITO_PIN);
+  // servoCancelaDireito.write(90);
 
   // servoCancelaEsquerdo.attach(SERVO_CANCELA_ESQUERDO_PIN);
+  // servoCancelaEsquerdo.write(90);
 
 
   #if defined(DEBUG) && (DEBUG == 0)

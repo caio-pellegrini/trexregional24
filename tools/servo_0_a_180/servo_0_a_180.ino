@@ -8,7 +8,7 @@ Servo servo;  // create servo object to control a servo
 
 int pos = 0;    // variable to store the servo position
 int start_position = 0;    // variable to store start positon
-int end_position = 165;    // variable to store end positon
+int end_position = 180;    // variable to store end positon
 
 void setup() {
   Serial.begin(9600);
