@@ -75,8 +75,10 @@ Servo servoPaGarra;
 // Servo servoRotacionarGarra;
 // Servo servoCancelaDireito;
 // Servo servoCancelaEsquerdo;
-// uint8_t posicaoServoPaGarra = 0, posicaoServoSubirGarra = 0, posicaoServoRotacionarGarra = 0;
-// uint8_t posicaoServoCancelaDireito = 0, posicaoServoCancelaEsquerdo = 0;
+
+// a posição inicial dos servos é armazenada nessas variáveis
+uint8_t posicaoServoPaGarra = 90, posicaoServoSubirGarra = 0, posicaoServoRotacionarGarra = 0;
+uint8_t posicaoServoCancelaDireito = 0, posicaoServoCancelaEsquerdo = 0;
 
 void setup()
 {
@@ -131,26 +133,29 @@ void setup()
   // PORTA SENSOR DA FRENTE
   pinMode(SF_PIN, INPUT);
 
+  // PORTAS DOS BOTOES
+  pinMode(BTN_AREA_ESQ_PIN, INPUT_PULLUP);
+  pinMode(BTN_AREA_DIR_PIN, INPUT_PULLUP);
+  pinMode(BTN_PAREDE_ESQ_PIN, INPUT_PULLUP);
+  pinMode(BTN_PAREDE_DIR_PIN, INPUT_PULLUP);
+
   ligarGiroscopio();
 
   // SERVOS
   servoPaGarra.attach(SERVO_PA_GARRA_PIN);
-  servoPaGarra.read();
-  // servoPaGarra.write(90);
+  servoPaGarra.write(posicaoServoPaGarra);
   
   // servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
-  // servoSubirGarra.write(90);
+  // servoSubirGarra.write(posicaoServoSubirGarra);
 
   // servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
-  // servoRotacionarGarra.write(0);
-  // posicao inicial 0
+  // servoRotacionarGarra.write(posicaoServoRotacionarGarra);
 
   // servoCancelaDireito.attach(SERVO_CANCELA_DIREITO_PIN);
-  // servoCancelaDireito.write(90);
+  // servoCancelaDireito.write(posicaoServoCancelaDireito);
 
   // servoCancelaEsquerdo.attach(SERVO_CANCELA_ESQUERDO_PIN);
-  // servoCancelaEsquerdo.write(90);
-
+  // servoCancelaEsquerdo.write(posicaoServoCancelaEsquerdo);
 
   #if defined(DEBUG) && (DEBUG == 0)
     Serial.print("Desligando Serial");
@@ -183,9 +188,8 @@ void loop()
   // CRUZAMENTO
   if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
   {
-    pararMotor();
     ligarLed(AMBOS, BRANCO, 0);
-    moverTrasPorMS(100);
+    moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotor();
     analisarVerde(true, true, true);
     desligarLed(AMBOS);
@@ -194,9 +198,8 @@ void loop()
   // MEIO CRUZAMENTO ESQUERDO
   if (sf >= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
   {
-    pararMotor();
     ligarLed(ESQ, BRANCO, 0);
-    moverTrasPorMS(100);
+    moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotor();
     analisarVerde(false, true, false);
     desligarLed(AMBOS);
@@ -205,9 +208,8 @@ void loop()
   // MEIO CRUZAMENTO DIREITO
   if (sf >= LUZ_FRENTE && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
   {
-    pararMotor();
     ligarLed(DIR, BRANCO, 0);
-    moverTrasPorMS(100);
+    moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotor();
     analisarVerde(false, false, true);
     desligarLed(AMBOS);

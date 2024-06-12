@@ -22,11 +22,11 @@ void lerReflFrente() {
 
 void lerVerde() {
   Serial2.println("caio");
-  lerSensorCorEsq(rgbEsq);
-  lerDadosSensorRemoto(rgbDir);
+  lerSensorCorEsq(rgbTcsEsq);
+  lerDadosSensorRemoto(rgbTcsDir);
 }
 
-void lerSensorCorEsq(uint8_t *rgbValues)
+void lerTcsEsq(uint8_t *rgbValues)
 {
   uint16_t r, g, b, c;
   tcaSelecionar(CANAL_TCS_ESQ);
@@ -189,7 +189,6 @@ void lerGiroDMP() {
 
     mpuInterrupt = false;
   }
-  
 }
 
 void lerGiroscopio() {
@@ -208,4 +207,22 @@ void lerLaserFrente() {
 
 void lerLaserGarra() {
   // distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
+}
+
+void lerBtnArea() {
+  btnAreaEsq = digitalRead(BTN_AREA_ESQ_PIN);
+  btnAreaDir = digitalRead(BTN_AREA_DIR_PIN);
+}
+
+void lerBtnParede() {
+  btnParedeEsq = digitalRead(BTN_PAREDE_ESQ_PIN);
+  btnParedeDir = digitalRead(BTN_PAREDE_DIR_PIN);
+}
+
+void lerUltraEsq() {
+  ultraEsq = ultrasonicEsq.read(CM);
+}
+
+void lerUltraDir() {
+  ultraDir = ultrasonicDir.read(CM);
 }

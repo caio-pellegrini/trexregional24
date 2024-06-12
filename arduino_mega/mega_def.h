@@ -1,8 +1,7 @@
 #ifndef MEGA_PINS_H
-
     #define MEGA_PINS_H
 
-    // BIBLIOTECAS
+    // IMPORTAÇÃO DE BIBLIOTECAS
     #include <Wire.h>
     #include <Adafruit_TCS34725.h>
     #include <VL53L0X.h>
@@ -36,7 +35,22 @@
     // SENSOR DE REFLETÂNCIA FRENTE
     #define SF_PIN     A7
 
+    // BOTOES
+    #define BTN_AREA_ESQ_PIN    22
+    #define BTN_AREA_DIR_PIN    23
+    #define BTN_PAREDE_ESQ_PIN  24
+    #define BTN_PAREDE_DIR_PIN  25
+    bool btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir;
+
     #define MPU6050_INTERRUPT_PIN 2
+
+    // PINOS PARA LEDS RGB ("SETA" DO ROBÔ)
+    #define LED_ESQ_RED_PIN   53
+    #define LED_ESQ_GREEN_PIN 51
+    #define LED_ESQ_BLUE_PIN  49
+    #define LED_DIR_RED_PIN   52
+    #define LED_DIR_GREEN_PIN 50
+    #define LED_DIR_BLUE_PIN  48
 
     // CONSTANTES PARA CORES
     #define DESLIGADO  0, 0, 0
@@ -51,21 +65,13 @@
     #define ESQ        true, false
     #define DIR        false, true
 
-
-    #define LED_ESQ_RED_PIN   53
-    #define LED_ESQ_GREEN_PIN 51
-    #define LED_ESQ_BLUE_PIN  49
-    #define LED_DIR_RED_PIN   52
-    #define LED_DIR_GREEN_PIN 50
-    #define LED_DIR_BLUE_PIN  48
-
     // DEFINIÇÕES PARA MULTIPLEXADOR I2C
     #define TCAADDR 0x70
     #define CANAL_TCS_FRENTE  7
-    #define CANAL_TCS_ESQ  6
+    #define CANAL_TCS_ESQ     6
 
-    uint8_t rgbEsq[3]; // lista de valores RGB do sensor TCS esquerdo
-    uint8_t rgbDir[3]; // lista de valores RGB do sensor TCS direito
+    uint8_t rgbTcsEsq[3]; // lista de valores RGB do sensor TCS esquerdo
+    uint8_t rgbTcsDir[3]; // lista de valores RGB do sensor TCS direito
     uint16_t rgbFrente[3]; // lista de valores RGB do sensor TCS da frente
 
     // OUTROS

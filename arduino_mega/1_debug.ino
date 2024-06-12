@@ -43,19 +43,19 @@ void calibrar()
 
     Serial.print(" | TCS ESQ: ");
     Serial.print("R:");
-    Serial.print(rgbEsq[0]);
+    Serial.print(rgbTcsEsq[0]);
     Serial.print(",G:");
-    Serial.print(rgbEsq[1]);
+    Serial.print(rgbTcsEsq[1]);
     Serial.print(",B:");
-    Serial.print(rgbEsq[2]);
+    Serial.print(rgbTcsEsq[2]);
 
     Serial.print(" TCS DIR: ");
     Serial.print("R:");
-    Serial.print(rgbDir[0]);
+    Serial.print(rgbTcsDir[0]);
     Serial.print(",G:");
-    Serial.print(rgbDir[1]);
+    Serial.print(rgbTcsDir[1]);
     Serial.print(",B:");
-    Serial.print(rgbDir[2]);
+    Serial.print(rgbTcsDir[2]);
 #endif
 
 #if DEBUG_TCS_AREA
@@ -70,6 +70,7 @@ void calibrar()
     Serial.print(rgbFrente[1]);
     Serial.print(",B:");
     Serial.print(rgbFrente[2]);
+
     // Serial.print(" corArea: ");
     // corArea = lerCorArea(&tcsArea);
     // Serial.print(corArea);
@@ -102,46 +103,34 @@ void calibrar()
     Serial.print(distanciaLaserFrente);
 #endif
 
-#if DEBUG_LASER_ULTRA_GARRA
-    lerLaserVit();
-    Serial.print(" LaserVitima: ");
-    if (medidaLaserVitima.RangeStatus != 4)
-    { // phase failures have incorrect data
-        Serial.print(medidaLaserVitima.RangeMilliMeter);
-        Serial.print(" mm ");
-    }
-    else
-    {
-        Serial.print("Fora de alcance ");
-    }
-
-    ultraGarra = ultrasonicoGarra.read(CM);
-    Serial.print(" ultraGarra: ");
-    Serial.print(ultraGarra);
+#if DEBUG_LASER_GARRA
+    lerLaserGarra();
+    Serial.print(" | LaserGarra: ");
+    Serial.print(distanciaLaserGarra);
 #endif
 
 #if DEBUG_ULTRA
-    ultraE = ultrasonicEsq.read(CM);
-    Serial.print(" ultraE: ");
-    Serial.print(ultraE);
-    ultraD = ultrasonicDir.read(CM);
+    lerUltraEsq();
+    Serial.print(" | ultraE: ");
+    Serial.print(ultraEsq);
+
+    lerUltraDir();
     Serial.print(" ultraD: ");
-    Serial.print(ultraD);
+    Serial.print(ultraDir);
 #endif
 
 #if DEBUG_BOTOES
-    btnE = !digitalRead(btnEpin);
-    btnD = !digitalRead(btnDpin);
-    btnPa = !digitalRead(btnPaPin);
-    btnVit = digitalRead(btnVitPin);
-    Serial.print(" | btnE: ");
-    Serial.print(btnE);
-    Serial.print(" btnD: ");
-    Serial.print(btnD);
-    Serial.print(" btnPa: ");
-    Serial.print(btnPa);
-    Serial.print(" btnVit: ");
-    Serial.print(btnVit);
+    lerBtnArea();
+    lerBtnParede();
+
+    Serial.print(" | btnAreaE: ");
+    Serial.print(btnAreaEsq);
+    Serial.print(" btnAreaD: ");
+    Serial.print(btnAreaDir);
+    Serial.print(" btnParedeE: ");
+    Serial.print(btnParedeEsq);
+    Serial.print(" btnParedeD: ");
+    Serial.print(btnParedeDir);
 #endif
 }
 #endif

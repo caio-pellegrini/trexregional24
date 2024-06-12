@@ -8,15 +8,15 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
   bool verdeEsq = false;
   bool verdeDir = false;
 
-  if (rgbEsq[1] < CORTE_VERDE_ESQ && rgbEsq[0] < CORTE_VERMELHO_CRUZ)
+  if (rgbTcsEsq[1] < CORTE_VERDE_ESQ && rgbTcsEsq[0] < CORTE_VERMELHO_CRUZ)
   {
     ligarLed(ESQ, VERDE, 0);
     verdeEsq = true;
   }
 
-  if (rgbDir[1] != 0)
+  if (rgbTcsDir[1] != 0)
   {
-    if (rgbDir[1] < CORTE_VERDE_DIR && rgbDir[0] < CORTE_VERMELHO_CRUZ)
+    if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[0] < CORTE_VERMELHO_CRUZ)
     {
       ligarLed(DIR, VERDE, 0);
       verdeDir = true;
@@ -24,7 +24,7 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
   }
   else
   {
-    ligarLed(DIR, VERMELHO, 0); // avisa que o rgbdir não recebeu dados do TCS
+    ligarLed(DIR, VERMELHO, 0); // avisa que o rgbTcsDir não recebeu dados do TCS
   }
 
   moverFrentePorMS(TEMPO_MOVER_ANTES_CRUZ); // mover pra frente antes de virar 
