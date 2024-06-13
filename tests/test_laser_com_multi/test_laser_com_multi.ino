@@ -2,7 +2,7 @@
 #include <VL53L0X.h>
 
 VL53L0X sensor;
-uint8_t canalTcsMulti = 7;
+uint8_t canalTcsMulti = 2;
 
 #define TCAADDR 0x70
 

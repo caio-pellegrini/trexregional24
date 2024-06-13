@@ -13,11 +13,11 @@
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 0
 #define DEBUG_REFL_FRENTE 0
-#define DEBUG_TCS_VERDE 0
-#define DEBUG_TCS_AREA 0
+#define DEBUG_TCS_VERDE 1
+#define DEBUG_TCS_AREA 1
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 1
-#define DEBUG_LASER_GARRA 1
+#define DEBUG_LASER_FRENTE 0
+#define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
@@ -77,7 +77,7 @@ uint16_t distanciaLaserFrente;
 VL53L0X laserGarra;
 uint16_t distanciaLaserGarra;
 
-Servo servoPaGarra;
+// Servo servoPaGarra;
 // Servo servoSubirGarra;
 // Servo servoRotacionarGarra;
 // Servo servoCancelaDir;
@@ -126,7 +126,7 @@ void setup()
   tcaSelecionar(CANAL_LASER_GARRA);
   laserGarra.setTimeout(500);
   Serial.println(laserGarra.init() ? "Laser Garra conectado :)" : "Laser Garra falhou :(");
-  laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
+  // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
   tcaDesligar();
   
 
@@ -158,8 +158,8 @@ void setup()
   ligarGiroscopio();
 
   // SERVOS
-  servoPaGarra.attach(SERVO_PA_GARRA_PIN);
-  servoPaGarra.write(posicaoServoPaGarra);
+  // servoPaGarra.attach(SERVO_PA_GARRA_PIN);
+  // servoPaGarra.write(posicaoServoPaGarra);
   
   // servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
   // servoSubirGarra.write(posicaoServoSubirGarra);
