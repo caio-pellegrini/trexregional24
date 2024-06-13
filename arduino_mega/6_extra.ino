@@ -26,19 +26,7 @@ void ligarLed(bool esq, bool dir, uint8_t r, uint8_t g, uint8_t b, unsigned long
 
   delay(delayTempo);
 
-  if (esq)
-  {
-    analogWrite(LED_ESQ_RED_PIN, 0);
-    analogWrite(LED_ESQ_GREEN_PIN, 0);
-    analogWrite(LED_ESQ_BLUE_PIN, 0);
-  }
-  if (dir)
-  {
-    analogWrite(LED_DIR_RED_PIN, 0);
-    analogWrite(LED_DIR_GREEN_PIN, 0);
-    analogWrite(LED_DIR_BLUE_PIN, 0);
-  }
-
+  desligarLed(esq, dir);
 }
 
 void desligarLed(bool esq, bool dir)

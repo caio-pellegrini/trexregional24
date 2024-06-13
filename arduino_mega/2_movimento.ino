@@ -1,67 +1,67 @@
 void seguirLinhaEsquerda()
 {
-  analogWrite(MOTOR_EF, 0);
-  analogWrite(MOTOR_ET, VEL_MOTOR_SEG_MIN);
-  analogWrite(MOTOR_DF, VEL_MOTOR_SEG_MAX);
-  analogWrite(MOTOR_DT, 0);
+  analogWrite(MOTOR_ESQ_F_PIN, 0);
+  analogWrite(MOTOR_ESQ_T_PIN, VEL_MOTOR_SEG_MIN);
+  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_SEG_MAX);
+  analogWrite(MOTOR_DIR_T_PIN, 0);
   delay(3);
 }
 
 void seguirLinhaDireita()
 {
-  analogWrite(MOTOR_EF, VEL_MOTOR_SEG_MAX);
-  analogWrite(MOTOR_ET, 0);
-  analogWrite(MOTOR_DF, 0);
-  analogWrite(MOTOR_DT, VEL_MOTOR_SEG_MIN);
+  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_SEG_MAX);
+  analogWrite(MOTOR_ESQ_T_PIN, 0);
+  analogWrite(MOTOR_DIR_F_PIN, 0);
+  analogWrite(MOTOR_DIR_T_PIN, VEL_MOTOR_SEG_MIN);
   delay(3);
 }
 
 void seguidorMoverFrente() {
-  analogWrite(MOTOR_EF, VEL_MOTOR_SEG_FRENTE);
-  analogWrite(MOTOR_ET, 0);
-  analogWrite(MOTOR_DF, VEL_MOTOR_SEG_FRENTE);
-  analogWrite(MOTOR_DT, 0);
+  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_SEG_FRENTE);
+  analogWrite(MOTOR_ESQ_T_PIN, 0);
+  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_SEG_FRENTE);
+  analogWrite(MOTOR_DIR_T_PIN, 0);
   delay(1);
 }
 
 void moverFrente()
 {
-  analogWrite(MOTOR_EF, VEL_MOTOR_FRENTE);
-  analogWrite(MOTOR_ET, 0);
-  analogWrite(MOTOR_DF, VEL_MOTOR_FRENTE);
-  analogWrite(MOTOR_DT, 0);
+  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_FRENTE);
+  analogWrite(MOTOR_ESQ_T_PIN, 0);
+  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_FRENTE);
+  analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
 void moverTras()
 {
-  analogWrite(MOTOR_EF, 0);
-  analogWrite(MOTOR_ET, VEL_MOTOR_TRAS);
-  analogWrite(MOTOR_DF, 0);
-  analogWrite(MOTOR_DT, VEL_MOTOR_TRAS);
+  analogWrite(MOTOR_ESQ_F_PIN, 0);
+  analogWrite(MOTOR_ESQ_T_PIN, VEL_MOTOR_TRAS);
+  analogWrite(MOTOR_DIR_F_PIN, 0);
+  analogWrite(MOTOR_DIR_T_PIN, VEL_MOTOR_TRAS);
 }
 
 void pararMotor()
 {
-  analogWrite(MOTOR_EF, 0);
-  analogWrite(MOTOR_ET, 0);
-  analogWrite(MOTOR_DF, 0);
-  analogWrite(MOTOR_DT, 0);
+  analogWrite(MOTOR_ESQ_F_PIN, 0);
+  analogWrite(MOTOR_ESQ_T_PIN, 0);
+  analogWrite(MOTOR_DIR_F_PIN, 0);
+  analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
 void virarEsquerda()
 {
-  analogWrite(MOTOR_EF, 0);
-  analogWrite(MOTOR_ET, VEL_MOTOR_CURVA);
-  analogWrite(MOTOR_DF, VEL_MOTOR_CURVA);
-  analogWrite(MOTOR_DT, 0);
+  analogWrite(MOTOR_ESQ_F_PIN, 0);
+  analogWrite(MOTOR_ESQ_T_PIN, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
 void virarDireita()
 {
-  analogWrite(MOTOR_EF, VEL_MOTOR_CURVA);
-  analogWrite(MOTOR_ET, 0);
-  analogWrite(MOTOR_DF, 0);
-  analogWrite(MOTOR_DT, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_ESQ_T_PIN, 0);
+  analogWrite(MOTOR_DIR_F_PIN, 0);
+  analogWrite(MOTOR_DIR_T_PIN, VEL_MOTOR_CURVA);
 }
 
 void moverFrentePorMS(unsigned long ms)

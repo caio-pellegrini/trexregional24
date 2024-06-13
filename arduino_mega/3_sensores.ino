@@ -218,7 +218,9 @@ void lerLaserFrente()
 
 void lerLaserGarra()
 {
-  // distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
+  tcaSelecionar(CANAL_LASER_GARRA);
+  distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
+  tcaDesligar();
 }
 
 void lerBtnArea()

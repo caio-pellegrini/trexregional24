@@ -8,18 +8,18 @@
 
 #include "mega_def.h"
 
-#define DEBUG 1
+#define DEBUG 0
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 0
 #define DEBUG_REFL_FRENTE 0
 #define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_AREA 0
-#define DEBUG_ULTRA 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 0
-#define DEBUG_VISAO_GARRA 0
-#define DEBUG_BOTOES 1
+#define DEBUG_LASER_FRENTE 1
+#define DEBUG_LASER_GARRA 1
+#define DEBUG_ULTRA 0
+#define DEBUG_BOTOES 0
 
 #define LUZ 202              
 #define LUZ_FRENTE 55           // 6 no branco e 110 no preto
@@ -74,6 +74,9 @@ Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS
 VL53L0X laserFrente;
 uint16_t distanciaLaserFrente;
 
+VL53L0X laserGarra;
+uint16_t distanciaLaserGarra;
+
 Servo servoPaGarra;
 // Servo servoSubirGarra;
 // Servo servoRotacionarGarra;
@@ -102,8 +105,8 @@ void setup()
   Wire.begin();
 
   // Configura o sensor VL53L0X
-  laserFrente.setTimeout(500);
-  Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente conexão falhou :(");
+  laserFrente.setTimeout(500); // padrão 500
+  Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente falhou :(");
   // while (1) {}
   // laserFrente.setAddress(0x31); // Define o endereço I2C do sensor
   // delay(10);
@@ -112,17 +115,26 @@ void setup()
   // i2c_scanner();
 
   tcaSelecionar(CANAL_TCS_ESQ);
-  Serial.println(tcsEsq.begin() ? "TCS Esq conectado :)" : "TCS Esq conexão falhou :(");
+  Serial.println(tcsEsq.begin() ? "TCS Esq conectado :)" : "TCS Esq falhou :(");
   tcaDesligar();
 
   tcaSelecionar(CANAL_TCS_FRENTE);
-  Serial.println(tcsFrente.begin() ? "TCS Frente conectado :)" : "TCS Frente conexão falhou :(");
+  Serial.println(tcsFrente.begin() ? "TCS Frente conectado :)" : "TCS Frente falhou :(");
   tcaDesligar();
 
-  pinMode(MOTOR_EF, OUTPUT);
-  pinMode(MOTOR_ET, OUTPUT);
-  pinMode(MOTOR_DF, OUTPUT);
-  pinMode(MOTOR_DT, OUTPUT);
+  
+  tcaSelecionar(CANAL_LASER_GARRA);
+  laserGarra.setTimeout(500);
+  Serial.println(laserGarra.init() ? "Laser Garra conectado :)" : "Laser Garra falhou :(");
+  laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
+  tcaDesligar();
+  
+
+  // MOTORES
+  pinMode(MOTOR_ESQ_F_PIN, OUTPUT);
+  pinMode(MOTOR_ESQ_T_PIN, OUTPUT);
+  pinMode(MOTOR_DIR_F_PIN, OUTPUT);
+  pinMode(MOTOR_DIR_T_PIN, OUTPUT);
 
   // PORTA SENSORES REFLETANCIA
   pinMode(SE3_PIN, INPUT);
@@ -181,10 +193,14 @@ void loop()
 #endif
 
   lerLaserFrente();
-  // if (distanciaLaserFrente <= 60) {
-  //   desviarObstaculo();
+  // if (!laserFrente.timeoutOccurred())
+  // {
+  //   if (distanciaLaserFrente <= 60)
+  //   {
+  //     desviarObstaculo();
+  //   }
   // }
-
+  
   lerQTRATodos();
   lerReflFrente();
 
@@ -231,7 +247,7 @@ void loop()
   // 90 GRAUS ESQUERDO
   if (sf <= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
   {
-    ligarLed(ESQ, BRANCO, 0);
+    ligarLed(ESQ, BRANCO);
     seguirLinhaEsquerda();
     seguirLinhaEsquerda();
     seguirLinhaEsquerda();

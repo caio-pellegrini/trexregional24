@@ -4,7 +4,7 @@ Servo servo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
 #define SERVO_PIN 46
-#define DELAY_TIME 5
+#define DELAY_TIME 50
 
 int pos = 0;    // variable to store the servo position
 int start_position = 0;    // variable to store start positon

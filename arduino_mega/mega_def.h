@@ -10,10 +10,10 @@
     #include <Servo.h>
 
     // MOTORES GRANDES
-    #define MOTOR_EF   11 // verde escuro
-    #define MOTOR_ET   10 // verde claro
-    #define MOTOR_DF   8  // azul claro
-    #define MOTOR_DT   9  // azul escuro
+    #define MOTOR_ESQ_F_PIN   11 // verde escuro
+    #define MOTOR_ESQ_T_PIN   10 // verde claro
+    #define MOTOR_DIR_F_PIN   8  // azul claro
+    #define MOTOR_DIR_T_PIN   9  // azul escuro
 
     // SERVOMOTORES
     #define SERVO_PA_GARRA_PIN 2
@@ -66,13 +66,14 @@
     #define DIR        false, true
 
     // DEFINIÇÕES PARA MULTIPLEXADOR I2C
-    #define TCAADDR 0x70
-    #define CANAL_TCS_FRENTE  7
-    #define CANAL_TCS_ESQ     6
+    #define TCA_ENDERECO       0x70
+    #define CANAL_TCS_FRENTE   7
+    #define CANAL_TCS_ESQ      6
+    #define CANAL_LASER_GARRA  5
 
     uint8_t rgbTcsEsq[3];  // lista de valores RGB do sensor TCS esquerdo
     uint8_t rgbTcsDir[3];  // lista de valores RGB do sensor TCS direito
-    uint16_t rgbFrente[3]; // lista de valores RGB do sensor TCS da frente
+    uint16_t rgbTcsFrente[3]; // lista de valores RGB do sensor TCS da frente
 
     // OUTROS
     #define CONVERT_8B_DEC(vel) ((vel * 255) / 100)

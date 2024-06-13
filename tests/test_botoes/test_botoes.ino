@@ -1,6 +1,5 @@
-const int buttonPin = 22;   // Pin connected to the button
-int buttonState = HIGH;     // Current state of the button
-int lastButtonState = HIGH; // Previous state of the button
+const int buttonPin = 33;   // Pin connected to the button
+int buttonState;     // Current state of the button
 
 void setup()
 {
@@ -10,7 +9,7 @@ void setup()
 
 void loop()
 {
-    buttonState = digitalRead(buttonPin); // Read the button state
+    buttonState = !digitalRead(buttonPin); // Read the button state
 
     if (buttonState == LOW)
     {
