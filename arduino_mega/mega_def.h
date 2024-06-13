@@ -40,7 +40,8 @@
     #define BTN_AREA_DIR_PIN    28
     #define BTN_PAREDE_ESQ_PIN  24
     #define BTN_PAREDE_DIR_PIN  26
-    bool btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir;
+    #define BTN_VITIMA_PIN      33
+    bool btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir, btnVitima;
 
     #define MPU6050_INTERRUPT_PIN 2
 
@@ -59,6 +60,8 @@
     #define AZUL       0, 0, 255
     #define ROXO       255, 0, 255
     #define BRANCO     255, 255, 255
+    #define AMARELO    0, 255, 255
+    #define ROXO       255, 0, 255
 
     // CONSTANTES PARA LEDS
     #define AMBOS      true, true
@@ -69,7 +72,7 @@
     #define TCA_ENDERECO       0x70
     #define CANAL_TCS_FRENTE   7
     #define CANAL_TCS_ESQ      6
-    #define CANAL_LASER_GARRA  5
+    #define CANAL_LASER_GARRA  1
 
     uint8_t rgbTcsEsq[3];  // lista de valores RGB do sensor TCS esquerdo
     uint8_t rgbTcsDir[3];  // lista de valores RGB do sensor TCS direito

@@ -110,17 +110,18 @@
 
         #if DEBUG_ULTRA
             lerUltraEsq();
-            Serial.print(" | ultraE: ");
-            Serial.print(ultraEsq);
-
             lerUltraDir();
-            Serial.print(" ultraD: ");
+
+            Serial.print(" | ultraEsq: ");
+            Serial.print(ultraEsq);
+            Serial.print(" ultraDir: ");
             Serial.print(ultraDir);
         #endif
 
         #if DEBUG_BOTOES
             lerBtnArea();
             lerBtnParede();
+            lerBtnVitima();
 
             Serial.print(" | btnAreaE: ");
             Serial.print(btnAreaEsq);
@@ -130,6 +131,8 @@
             Serial.print(btnParedeEsq);
             Serial.print(" btnParedeD: ");
             Serial.print(btnParedeDir);
+            Serial.print(" btnVitima: ");
+            Serial.print(btnVitima);
         #endif
     }
 

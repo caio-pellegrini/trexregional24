@@ -74,3 +74,30 @@ void desviarObstaculo() {
     desligarLed(AMBOS);
     loop();
 }
+
+void verificarGap() {
+  ligarLed(AMBOS, AMARELO);
+  unsigned long tempoInicial = millis();
+
+  moverFrente();
+  while (true) {
+    lerQTRATodos();
+
+    if (se3 > CORTE_QTR || se2 > CORTE_QTR || se1 > CORTE_QTR || se0 > CORTE_QTR || sd0 > CORTE_QTR || sd1 > CORTE_QTR || sd2 > CORTE_QTR || sd3 > CORTE_QTR) {
+      desligarLed(AMBOS);
+      pararMotor();
+      delay(5000);
+      break;
+    }
+
+    if (millis() - tempoInicial >= 2500)
+    {
+      ligarLed(AMBOS, ROXO);
+      pararMotor();
+      delay(5000);
+      desligarLed(AMBOS);
+      break;
+    }
+  }
+
+}

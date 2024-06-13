@@ -235,12 +235,17 @@ void lerBtnParede()
   btnParedeDir = digitalRead(BTN_PAREDE_DIR_PIN);
 }
 
+void lerBtnVitima()
+{
+  btnVitima = !digitalRead(BTN_VITIMA_PIN);
+}
+
 void lerUltraEsq()
 {
-  // ultraEsq = ultrasonicEsq.read(CM);
+  ultraEsq = ultrasonicEsq.read(CM);
 }
 
 void lerUltraDir()
 {
-  // ultraDir = ultrasonicDir.read(CM);
+  ultraDir = ultrasonicDir.read(CM);
 }

@@ -8,21 +8,21 @@
 
 #include "mega_def.h"
 
-#define DEBUG 0
+#define DEBUG 1
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 0
 #define DEBUG_REFL_FRENTE 0
-#define DEBUG_TCS_VERDE 1
-#define DEBUG_TCS_AREA 1
+#define DEBUG_TCS_VERDE 0
+#define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 0
-#define DEBUG_LASER_GARRA 0
+#define DEBUG_LASER_FRENTE 1
+#define DEBUG_LASER_GARRA 1
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ 202              
-#define LUZ_FRENTE 55           // 6 no branco e 110 no preto
+#define CORTE_QTR 202              
+#define CORTE_FRENTE 55           // 6 no branco e 110 no preto
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 #define CORTE_VERDE_ESQ 90   // abaixo disso é verde
 #define CORTE_VERDE_DIR 70
@@ -87,6 +87,10 @@ uint16_t distanciaLaserGarra;
 uint8_t posicaoServoPaGarra = 90, posicaoServoSubirGarra = 0, posicaoServoRotacionarGarra = 0;
 uint8_t posicaoServoCancelaDir = 0, posicaoServoCancelaEsq = 0;
 
+Ultrasonic ultrasonicEsq(7, 6);
+Ultrasonic ultrasonicDir(5, 4);
+int ultraEsq, ultraDir;
+
 void setup()
 {
   // DEFINIÇÕES DE PINOS DOS LEDS
@@ -114,21 +118,19 @@ void setup()
 
   // i2c_scanner();
 
+  tcaSelecionar(CANAL_LASER_GARRA);
+  laserGarra.setTimeout(500);
+  Serial.println(laserGarra.init() ? "Laser Garra conectado :)" : "Laser Garra falhou :(");
+  laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
+  tcaDesligar();
+
   tcaSelecionar(CANAL_TCS_ESQ);
   Serial.println(tcsEsq.begin() ? "TCS Esq conectado :)" : "TCS Esq falhou :(");
   tcaDesligar();
 
   tcaSelecionar(CANAL_TCS_FRENTE);
   Serial.println(tcsFrente.begin() ? "TCS Frente conectado :)" : "TCS Frente falhou :(");
-  tcaDesligar();
-
-  
-  tcaSelecionar(CANAL_LASER_GARRA);
-  laserGarra.setTimeout(500);
-  Serial.println(laserGarra.init() ? "Laser Garra conectado :)" : "Laser Garra falhou :(");
-  // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
-  tcaDesligar();
-  
+  tcaDesligar();  
 
   // MOTORES
   pinMode(MOTOR_ESQ_F_PIN, OUTPUT);
@@ -154,6 +156,7 @@ void setup()
   pinMode(BTN_AREA_DIR_PIN, INPUT_PULLUP);
   pinMode(BTN_PAREDE_ESQ_PIN, INPUT_PULLUP);
   pinMode(BTN_PAREDE_DIR_PIN, INPUT_PULLUP);
+  pinMode(BTN_VITIMA_PIN, INPUT_PULLUP);
 
   ligarGiroscopio();
 
@@ -205,7 +208,7 @@ void loop()
   lerReflFrente();
 
   // CRUZAMENTO
-  if (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ && se0 >= LUZ && sd0 >= LUZ && sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ)
+  if (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR && se0 >= CORTE_QTR && sd0 >= CORTE_QTR && sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)
   {
     ligarLed(AMBOS, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
@@ -215,7 +218,7 @@ void loop()
   }
 
   // MEIO CRUZAMENTO ESQUERDO
-  if (sf >= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
+  if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR))
   {
     ligarLed(ESQ, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
@@ -225,7 +228,7 @@ void loop()
   }
 
   // MEIO CRUZAMENTO DIREITO
-  if (sf >= LUZ_FRENTE && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
+  if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR))
   {
     ligarLed(DIR, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
@@ -235,7 +238,7 @@ void loop()
   }
 
   // 90 GRAUS DIREITO
-  if (sf <= LUZ_FRENTE && (se3 <= LUZ && se2 <= LUZ && se1 <= LUZ) && (sd1 >= LUZ && sd2 >= LUZ && sd3 >= LUZ))
+  if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR))
   {
     ligarLed(DIR, BRANCO);
     seguirLinhaDireita();
@@ -245,7 +248,7 @@ void loop()
   }
 
   // 90 GRAUS ESQUERDO
-  if (sf <= LUZ_FRENTE && (se3 >= LUZ && se2 >= LUZ && se1 >= LUZ) && (sd1 <= LUZ && sd2 <= LUZ && sd3 <= LUZ))
+  if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR))
   {
     ligarLed(ESQ, BRANCO);
     seguirLinhaEsquerda();
@@ -254,17 +257,27 @@ void loop()
     desligarLed(AMBOS);
   }
 
+  // TUDO BRANCO
+  if (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR && se0 <= CORTE_QTR && sd0 <= CORTE_QTR && sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)
+  {
+    verificarGap();
+  }
+
+  // SEGUIDOR DE LINHA
+
   lerQTRASegueLinha();
 
   seguidorMoverFrente();
 
-  if (se1 >= LUZ || se2 >= LUZ)
+  if (se1 >= CORTE_QTR || se2 >= CORTE_QTR)
   {
     seguirLinhaEsquerda();
   }
 
-  if (sd1 >= LUZ || sd2 >= LUZ)
+  if (sd1 >= CORTE_QTR || sd2 >= CORTE_QTR)
   {
     seguirLinhaDireita();
   }
+
+
 }
