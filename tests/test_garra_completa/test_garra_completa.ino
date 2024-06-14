@@ -19,18 +19,13 @@ uint8_t posicaoServoCancelaEsq = 0;
 uint8_t posicaoServoCancelaDir = 95;
 
 void setup() {
-  Serial.begin(9600);
-  servoPaGarra.attach(SERVO_PA_GARRA_PIN);  // testar isso amanha
-  servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
-  servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
-  servoCancelaEsq.attach(SERVO_CANCELA_ESQ_PIN);
-  servoCancelaDir.attach(SERVO_CANCELA_DIR_PIN);
-
-  servoPaGarra.write(posicaoServoPaGarra);
-  servoSubirGarra.write(posicaoServoSubirGarra);
-  servoRotacionarGarra.write(posicaoServoRotacionarGarra);
-  servoCancelaEsq.write(posicaoServoCancelaEsq);
-  servoCancelaDir.write(posicaoServoCancelaDir);
+  // Serial.begin(9600);
+  // Não precisamos fazer attach aqui, pois faremos nas funções de movimento
+  fecharPas();
+  rotacionarGarraMeio();
+  subirGarra();
+  fecharCancelaEsq();
+  fecharCancelaDir();
 }
 
 void loop() {
