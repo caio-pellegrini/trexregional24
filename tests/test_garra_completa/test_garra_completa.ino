@@ -172,6 +172,9 @@ void rotacionarGarraMeio() {
 }
 
 void abrirCancelaEsq() {
+  if (!servoCancelaEsq.attached()) {
+    servoCancelaEsq.attach(SERVO_CANCELA_ESQ_PIN);
+  }
   movimentarServoCancelaEsq(90, 4);
 }
 
@@ -202,3 +205,6 @@ void movimentarServo(Servo *motor, uint8_t posicaoInicial, uint8_t posicaoFinal,
     }
   }
 }
+
+// enquanto a garra sobe já verificar se é viva ou morta durante o while
+// é uma boa prática ficar dando attach e detach nos servos após cada movimento?
