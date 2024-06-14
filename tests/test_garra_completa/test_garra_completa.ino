@@ -6,18 +6,21 @@
 #define SERVO_CANCELA_ESQ_PIN 13
 #define SERVO_CANCELA_DIR_PIN 12
 
-Servo servoPaGarra;          // 180 fechada, 60 aberta
-Servo servoSubirGarra;       // 0 baixo, 160 cima
-Servo servoRotacionarGarra;  // 0 esq, 110 dir 55 padrao
+Servo servoPaGarra;          // 80 fechada, 0 aberta
+Servo servoSubirGarra;       // 160 cima, 0 baixo
+Servo servoRotacionarGarra;  // 55 meio, 10 esq, 100 dir
 Servo servoCancelaEsq;       // 0 fechado, 90 aberto
-Servo servoCancelaDir;       // 90 fechado, 0 aberto
+Servo servoCancelaDir;       // 95 fechado, 0 aberto
 
-uint8_t posicaoServoPaGarra = 180, posicaoServoSubirGarra = 160, posicaoServoRotacionarGarra = 55;
-uint8_t posicaoServoCancelaEsq = 0, posicaoServoCancelaDir = 90;
+uint8_t posicaoServoPaGarra = 80;
+uint8_t posicaoServoSubirGarra = 160;
+uint8_t posicaoServoRotacionarGarra = 55;
+uint8_t posicaoServoCancelaEsq = 0;
+uint8_t posicaoServoCancelaDir = 95;
 
 void setup() {
   Serial.begin(9600);
-  servoPaGarra.attach(SERVO_PA_GARRA_PIN, 700, 2000);  // testar isso amanha
+  servoPaGarra.attach(SERVO_PA_GARRA_PIN);  // testar isso amanha
   servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
   servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
   servoCancelaEsq.attach(SERVO_CANCELA_ESQ_PIN);
@@ -28,50 +31,160 @@ void setup() {
   servoRotacionarGarra.write(posicaoServoRotacionarGarra);
   servoCancelaEsq.write(posicaoServoCancelaEsq);
   servoCancelaDir.write(posicaoServoCancelaDir);
-
-  Serial.println("fim do setup");
 }
 
 void loop() {
-  movimentarServo(&servoSubirGarra, 160, 0, 22);
+  descerGarra();
 
-  // movimentarServo(&servoPaGarra, 180, 60, 5);
-  movimentarServoPaGarra(posicaoServoPaGarra, 60, 1);
-
-  movimentarServo(&servoSubirGarra, 0, 160, 25);
-
-  movimentarServo(&servoRotacionarGarra, 55, 110, 40); // 55
-  movimentarServo(&servoPaGarra, 60, 180, 5);
-  movimentarServo(&servoPaGarra, 180, 60, 5);
-
-  movimentarServo(&servoRotacionarGarra, 110, 0, 40);
-  movimentarServo(&servoPaGarra, 60, 180, 5);
-  movimentarServo(&servoPaGarra, 180, 60, 5);
-  movimentarServo(&servoRotacionarGarra, 0, 55, 30);
-
-  movimentarServo(&servoCancelaEsq, 0, 90, 4);
-  movimentarServo(&servoCancelaDir, 100, 0, 4);
+  abrirPas();
   delay(1000);
-  movimentarServo(&servoCancelaEsq, 90, 0, 4);
-  movimentarServo(&servoCancelaDir, 0, 100, 4);
+  fecharPas();
+
+  subirGarra();
+
+  rotacionarGarraDir();
+
+  abrirPas();
+  delay(1000);
+  fecharPas();
+
+  rotacionarGarraEsq();
+
+  abrirPas();
+  delay(1000);
+  fecharPas();
+
+  rotacionarGarraMeio();
+
+  abrirCancelaEsq();  
+  abrirCancelaDir();
+  delay(1000);
+  fecharCancelaEsq();
+  fecharCancelaDir();
 }
 
-void movimentarServoPaGarra(uint8_t posicaoInicial, uint8_t posicaoFinal, uint8_t velocidade) {
-  if (posicaoInicial > posicaoFinal) {
-    posicaoServoPaGarra = posicaoInicial;
+void movimentarServoPaGarra(uint8_t posicaoFinal, uint8_t velocidade) {
+  if (posicaoServoPaGarra > posicaoFinal) {
     while (posicaoServoPaGarra > posicaoFinal) {
       posicaoServoPaGarra--;
       servoPaGarra.write(posicaoServoPaGarra);
       delay(velocidade);
     }
   } else {
-    posicaoServoPaGarra = posicaoInicial;
     while (posicaoServoPaGarra < posicaoFinal) {
       posicaoServoPaGarra++;
       servoPaGarra.write(posicaoServoPaGarra);
       delay(velocidade);
     }
   }
+}
+
+void movimentarServoRotacionarGarra(uint8_t posicaoFinal, uint8_t velocidade) {
+  if (posicaoServoRotacionarGarra > posicaoFinal) {
+    while (posicaoServoRotacionarGarra > posicaoFinal) {
+      posicaoServoRotacionarGarra--;
+      servoRotacionarGarra.write(posicaoServoRotacionarGarra);
+      delay(velocidade);
+    }
+  } else {
+    while (posicaoServoRotacionarGarra < posicaoFinal) {
+      posicaoServoRotacionarGarra++;
+      servoRotacionarGarra.write(posicaoServoRotacionarGarra);
+      delay(velocidade);
+    }
+  }
+}
+
+void movimentarServoSubirGarra(uint8_t posicaoFinal, uint8_t velocidade) {
+  if (posicaoServoSubirGarra > posicaoFinal) {
+    while (posicaoServoSubirGarra > posicaoFinal) {
+      posicaoServoSubirGarra--;
+      servoSubirGarra.write(posicaoServoSubirGarra);
+      delay(velocidade);
+    }
+  } else {
+    while (posicaoServoSubirGarra < posicaoFinal) {
+      posicaoServoSubirGarra++;
+      servoSubirGarra.write(posicaoServoSubirGarra);
+      delay(velocidade);
+    }
+  }
+}
+
+void movimentarServoCancelaEsq(uint8_t posicaoFinal, uint8_t velocidade) {
+  if (posicaoServoCancelaEsq > posicaoFinal) {
+    while (posicaoServoCancelaEsq > posicaoFinal) {
+      posicaoServoCancelaEsq--;
+      servoCancelaEsq.write(posicaoServoCancelaEsq);
+      delay(velocidade);
+    }
+  } else {
+    while (posicaoServoCancelaEsq < posicaoFinal) {
+      posicaoServoCancelaEsq++;
+      servoCancelaEsq.write(posicaoServoCancelaEsq);
+      delay(velocidade);
+    }
+  }
+}
+
+void movimentarServoCancelaDir(uint8_t posicaoFinal, uint8_t velocidade) {
+  if (posicaoServoCancelaDir > posicaoFinal) {
+    while (posicaoServoCancelaDir > posicaoFinal) {
+      posicaoServoCancelaDir--;
+      servoCancelaDir.write(posicaoServoCancelaDir);
+      delay(velocidade);
+    }
+  } else {
+    while (posicaoServoCancelaDir < posicaoFinal) {
+      posicaoServoCancelaDir++;
+      servoCancelaDir.write(posicaoServoCancelaDir);
+      delay(velocidade);
+    }
+  }
+}
+
+void fecharPas() {
+  movimentarServoPaGarra(80, 3);
+}
+
+void abrirPas() {
+  movimentarServoPaGarra(0, 3);
+}
+
+void subirGarra() {
+  movimentarServoSubirGarra(160, 15);
+}
+
+void descerGarra() {
+  movimentarServoSubirGarra(0, 15);
+}
+
+void rotacionarGarraDir() {
+  movimentarServoRotacionarGarra(100, 10);
+}
+
+void rotacionarGarraEsq() {
+  movimentarServoRotacionarGarra(10, 10);
+}
+
+void rotacionarGarraMeio() {
+  movimentarServoRotacionarGarra(55, 10);
+}
+
+void abrirCancelaEsq() {
+  movimentarServoCancelaEsq(90, 4);
+}
+
+void fecharCancelaEsq() {
+  movimentarServoCancelaEsq(0, 4);
+}
+
+void abrirCancelaDir() {
+  movimentarServoCancelaDir(0, 4);
+}
+
+void fecharCancelaDir() {
+  movimentarServoCancelaDir(95, 4);
 }
 
 void movimentarServo(Servo *motor, uint8_t posicaoInicial, uint8_t posicaoFinal, uint8_t velocidade) {
