@@ -6,26 +6,47 @@
 #define SERVO_CANCELA_ESQ_PIN 13
 #define SERVO_CANCELA_DIR_PIN 12
 
-Servo servoPaGarra;          // 80 fechada, 0 aberta
-Servo servoSubirGarra;       // 160 cima, 0 baixo
-Servo servoRotacionarGarra;  // 55 meio, 10 esq, 100 dir
-Servo servoCancelaEsq;       // 0 fechado, 90 aberto
-Servo servoCancelaDir;       // 95 fechado, 0 aberto
+#define SERVO_PA_GARRA_FEC   80
+#define SERVO_PA_GARRA_ABE   0
 
-uint8_t posicaoServoPaGarra = 80;
-uint8_t posicaoServoSubirGarra = 160;
-uint8_t posicaoServoRotacionarGarra = 55;
-uint8_t posicaoServoCancelaEsq = 0;
-uint8_t posicaoServoCancelaDir = 95;
+#define SERVO_SUBIR_GARRA_CIM 160
+#define SERVO_SUBIR_GARRA_BAI 0
+
+#define SERVO_ROTACIONAR_GARRA_ESQ 10
+#define SERVO_ROTACIONAR_GARRA_MEIO 55
+#define SERVO_ROTACIONAR_GARRA_DIR 90
+
+#define SERVO_CANCELA_ESQ_FEC 3
+#define SERVO_CANCELA_ESQ_ABE 95
+
+#define SERVO_CANCELA_DIR_FEC 99
+#define SERVO_CANCELA_DIR_ABE 0
+
+Servo servoPaGarra;
+Servo servoSubirGarra;
+Servo servoRotacionarGarra;
+Servo servoCancelaEsq;
+Servo servoCancelaDir;  
+
+uint8_t posicaoServoPaGarra = SERVO_PA_GARRA_FEC;
+uint8_t posicaoServoSubirGarra = SERVO_SUBIR_GARRA_CIM;
+uint8_t posicaoServoRotacionarGarra = SERVO_ROTACIONAR_GARRA_MEIO;
+uint8_t posicaoServoCancelaEsq = SERVO_CANCELA_ESQ_FEC;
+uint8_t posicaoServoCancelaDir = SERVO_CANCELA_DIR_FEC;
 
 void setup() {
-  // Serial.begin(9600);
-  // Não precisamos fazer attach aqui, pois faremos nas funções de movimento
-  fecharPas();
-  rotacionarGarraMeio();
-  subirGarra();
-  fecharCancelaEsq();
-  fecharCancelaDir();
+  Serial.begin(9600);
+  servoPaGarra.attach(SERVO_PA_GARRA_PIN);
+  servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+  servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
+  servoCancelaEsq.attach(SERVO_CANCELA_ESQ_PIN);
+  servoCancelaDir.attach(SERVO_CANCELA_DIR_PIN);
+
+  servoPaGarra.write(posicaoServoPaGarra);
+  servoSubirGarra.write(posicaoServoSubirGarra);
+  servoRotacionarGarra.write(posicaoServoRotacionarGarra);
+  servoCancelaEsq.write(posicaoServoCancelaEsq);
+  servoCancelaDir.write(posicaoServoCancelaDir);
 }
 
 void loop() {
@@ -56,6 +77,22 @@ void loop() {
   delay(1000);
   fecharCancelaEsq();
   fecharCancelaDir();
+}
+
+void movimentarServo(Servo &servo, uint8_t &posicaoAtual, uint8_t posicaoFinal, uint8_t velocidade) {
+  if (posicaoAtual > posicaoFinal) {
+    while (posicaoAtual > posicaoFinal) {
+      posicaoAtual--;
+      servo.write(posicaoAtual);
+      delay(velocidade);
+    }
+  } else {
+    while (posicaoAtual < posicaoFinal) {
+      posicaoAtual++;
+      servo.write(posicaoAtual);
+      delay(velocidade);
+    }
+  }
 }
 
 void movimentarServoPaGarra(uint8_t posicaoFinal, uint8_t velocidade) {
@@ -139,67 +176,48 @@ void movimentarServoCancelaDir(uint8_t posicaoFinal, uint8_t velocidade) {
 }
 
 void fecharPas() {
-  movimentarServoPaGarra(80, 3);
+  movimentarServoPaGarra(SERVO_PA_GARRA_FEC, 3);
 }
 
 void abrirPas() {
-  movimentarServoPaGarra(0, 3);
+  movimentarServoPaGarra(SERVO_PA_GARRA_ABE, 3);
 }
 
 void subirGarra() {
-  movimentarServoSubirGarra(160, 15);
+  movimentarServoSubirGarra(SERVO_SUBIR_GARRA_CIM, 15);
 }
 
 void descerGarra() {
-  movimentarServoSubirGarra(0, 15);
+  movimentarServoSubirGarra(SERVO_SUBIR_GARRA_BAI, 15);
 }
 
 void rotacionarGarraDir() {
-  movimentarServoRotacionarGarra(100, 10);
+  movimentarServoRotacionarGarra(SERVO_ROTACIONAR_GARRA_DIR, 10);
 }
 
 void rotacionarGarraEsq() {
-  movimentarServoRotacionarGarra(10, 10);
+  movimentarServoRotacionarGarra(SERVO_ROTACIONAR_GARRA_ESQ, 10);
 }
 
 void rotacionarGarraMeio() {
-  movimentarServoRotacionarGarra(55, 10);
+  movimentarServoRotacionarGarra(SERVO_ROTACIONAR_GARRA_MEIO, 10);
 }
 
 void abrirCancelaEsq() {
-  if (!servoCancelaEsq.attached()) {
-    servoCancelaEsq.attach(SERVO_CANCELA_ESQ_PIN);
-  }
-  movimentarServoCancelaEsq(90, 4);
+  movimentarServoCancelaEsq(SERVO_CANCELA_ESQ_ABE, 4);
 }
 
 void fecharCancelaEsq() {
-  movimentarServoCancelaEsq(0, 4);
+  movimentarServoCancelaEsq(SERVO_CANCELA_ESQ_FEC, 4);
 }
 
 void abrirCancelaDir() {
-  movimentarServoCancelaDir(0, 4);
+  movimentarServoCancelaDir(SERVO_CANCELA_DIR_ABE, 4);
 }
 
 void fecharCancelaDir() {
-  movimentarServoCancelaDir(95, 4);
-}
-
-void movimentarServo(Servo *motor, uint8_t posicaoInicial, uint8_t posicaoFinal, uint8_t velocidade) {
-  if (posicaoInicial > posicaoFinal) {
-    for (int i = posicaoInicial; i >= posicaoFinal; i--) {
-      Serial.println(i);
-      motor->write(i);
-      delay(velocidade);
-    }
-  } else {
-    for (uint8_t i = posicaoInicial; i <= posicaoFinal; i++) {
-      Serial.println(i);
-      motor->write(i);
-      delay(velocidade);
-    }
-  }
+  movimentarServoCancelaDir(SERVO_CANCELA_DIR_FEC, 4);
 }
 
 // enquanto a garra sobe já verificar se é viva ou morta durante o while
-// é uma boa prática ficar dando attach e detach nos servos após cada movimento?
+// é uma boa prática ficar dando attach e detach nos servos após cada movimento? nao, nao é.

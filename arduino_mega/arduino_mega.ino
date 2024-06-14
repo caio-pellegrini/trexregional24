@@ -8,17 +8,17 @@
 
 #include "mega_def.h"
 
-#define DEBUG 0
+#define DEBUG 1
 
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 1
-#define DEBUG_REFL_FRENTE 1
-#define DEBUG_TCS_VERDE 1
+#define DEBUG_QTRA 0
+#define DEBUG_REFL_FRENTE 0
+#define DEBUG_TCS_VERDE 0
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 0
-#define DEBUG_LASER_GARRA 0
+#define DEBUG_LASER_FRENTE 1
+#define DEBUG_LASER_GARRA 1
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
@@ -111,21 +111,33 @@ void setup()
   Serial.println();
   Wire.begin();
 
+  pinMode(LASER_FRENTE_XSHUT, OUTPUT);
+  pinMode(LASER_GARRA_XSHUT, OUTPUT);
+
+  digitalWrite(LASER_FRENTE_XSHUT, LOW);
+  digitalWrite(LASER_GARRA_XSHUT, LOW);
+  delay(50);
+
+  digitalWrite(LASER_FRENTE_XSHUT, HIGH);
+  delay(50);
   // Configura o sensor VL53L0X
   laserFrente.setTimeout(500); // padrão 500
   Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente falhou :(");
   // while (1) {}
-  // laserFrente.setAddress(0x31); // Define o endereço I2C do sensor
+  laserFrente.setAddress(0x30); // Define o endereço I2C do sensor
   // delay(10);
   // laserFrente.startContinuous(); // Inicia leituras contínuas
 
   // i2c_scanner();
 
-  tcaSelecionar(CANAL_LASER_GARRA);
+  digitalWrite(LASER_GARRA_XSHUT, HIGH);
+  delay(50);
   laserGarra.setTimeout(500);
   Serial.println(laserGarra.init() ? "Laser Garra conectado :)" : "Laser Garra falhou :(");
-  laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
-  tcaDesligar();
+  laserGarra.setAddress(0x31);
+  // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
+
+  i2c_scanner();
 
   tcaSelecionar(CANAL_TCS_ESQ);
   Serial.println(tcsEsq.begin() ? "TCS Esq conectado :)" : "TCS Esq falhou :(");

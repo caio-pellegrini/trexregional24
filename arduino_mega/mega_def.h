@@ -74,6 +74,9 @@
     #define CANAL_TCS_ESQ      6
     #define CANAL_LASER_GARRA  1
 
+    #define LASER_FRENTE_XSHUT 14
+    #define LASER_GARRA_XSHUT  19
+
     uint8_t rgbTcsEsq[3];  // lista de valores RGB do sensor TCS esquerdo
     uint8_t rgbTcsDir[3];  // lista de valores RGB do sensor TCS direito
     uint16_t rgbTcsFrente[3]; // lista de valores RGB do sensor TCS da frente
