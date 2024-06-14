@@ -8,16 +8,17 @@
 
 #include "mega_def.h"
 
-#define DEBUG 1
+#define DEBUG 0
+
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 0
-#define DEBUG_REFL_FRENTE 0
-#define DEBUG_TCS_VERDE 0
+#define DEBUG_QTRA 1
+#define DEBUG_REFL_FRENTE 1
+#define DEBUG_TCS_VERDE 1
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 1
-#define DEBUG_LASER_GARRA 1
+#define DEBUG_LASER_FRENTE 0
+#define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
@@ -90,6 +91,8 @@ uint8_t posicaoServoCancelaDir = 0, posicaoServoCancelaEsq = 0;
 Ultrasonic ultrasonicEsq(7, 6);
 Ultrasonic ultrasonicDir(5, 4);
 int ultraEsq, ultraDir;
+
+uint8_t contadorGap = 0;
 
 void setup()
 {
@@ -207,6 +210,23 @@ void loop()
   lerQTRATodos();
   lerReflFrente();
 
+  // TUDO BRANCO
+  // if (sf <= CORTE_FRENTE && se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR && se0 <= CORTE_QTR && sd0 <= CORTE_QTR && sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)
+  // {
+  //   moverFrentePorMS(1);
+  //   lerQTRATodos();
+  //   lerReflFrente();
+  //   if (sf <= CORTE_FRENTE && se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR && se0 <= CORTE_QTR && sd0 <= CORTE_QTR && sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)
+  //   { 
+  //   verificarGap();
+  //   }
+  // } 
+
+  if (sf <= 20 && se3 <= 155 && se2 <= 155 && se1 <= 155 && se0 <= 155 && sd0 <= 155 && sd1 <= 155 && sd2 <= 155 && sd3 <= 155)
+  {
+    verificarGap();
+  }
+
   // CRUZAMENTO
   if (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR && se0 >= CORTE_QTR && sd0 >= CORTE_QTR && sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)
   {
@@ -257,12 +277,6 @@ void loop()
     desligarLed(AMBOS);
   }
 
-  // TUDO BRANCO
-  if (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR && se0 <= CORTE_QTR && sd0 <= CORTE_QTR && sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)
-  {
-    verificarGap();
-  }
-
   // SEGUIDOR DE LINHA
 
   lerQTRASegueLinha();
@@ -279,5 +293,6 @@ void loop()
     seguirLinhaDireita();
   }
 
+  
 
 }

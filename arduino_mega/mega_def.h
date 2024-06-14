@@ -60,7 +60,7 @@
     #define AZUL       0, 0, 255
     #define ROXO       255, 0, 255
     #define BRANCO     255, 255, 255
-    #define AMARELO    0, 255, 255
+    #define AMARELO    255, 255, 0
     #define ROXO       255, 0, 255
 
     // CONSTANTES PARA LEDS

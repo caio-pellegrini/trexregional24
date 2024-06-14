@@ -39,8 +39,8 @@
         #endif
 
         #if DEBUG_TCS_VERDE
-            lerVerde();
-            lerVerde();
+            lerTcsAmbos();
+            lerTcsAmbos();
 
             Serial.print(" | TCS ESQ: ");
             Serial.print("R:");

@@ -1,7 +1,7 @@
 void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
 {
-  lerVerde();
-  lerVerde();
+  lerTcsAmbos();
+  lerTcsAmbos();
 
   desligarLed(AMBOS);
 
@@ -72,29 +72,41 @@ void desviarObstaculo() {
     virarEsquerdaGiro90();
     moverTrasPorMS(100);
     desligarLed(AMBOS);
-    loop();
 }
 
 void verificarGap() {
   ligarLed(AMBOS, AMARELO);
   unsigned long tempoInicial = millis();
 
-  moverFrente();
+  pararMotor();
+  delay(300);
+  lerTcsAmbos();
+  lerTcsAmbos();
+
+  if (rgbTcsEsq[0] > rgbTcsEsq[1] && rgbTcsEsq[0] > rgbTcsEsq[2] && rgbTcsDir[0] > rgbTcsDir[1] && rgbTcsDir[0] > rgbTcsDir[2]) {
+    ligarLed(AMBOS, VERMELHO);
+    delay(999999);
+    return;
+  }
+
+  moverFrentePorMS(30);
+  
   while (true) {
+    moverFrentePorMS(1);
     lerQTRATodos();
 
     if (se3 > CORTE_QTR || se2 > CORTE_QTR || se1 > CORTE_QTR || se0 > CORTE_QTR || sd0 > CORTE_QTR || sd1 > CORTE_QTR || sd2 > CORTE_QTR || sd3 > CORTE_QTR) {
       desligarLed(AMBOS);
       pararMotor();
-      delay(5000);
+      delay(200);
       break;
     }
 
-    if (millis() - tempoInicial >= 2500)
+    if (millis() - tempoInicial >= 2000)
     {
       ligarLed(AMBOS, ROXO);
       pararMotor();
-      delay(5000);
+      delay(3000);
       desligarLed(AMBOS);
       break;
     }

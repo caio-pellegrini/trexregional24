@@ -23,9 +23,9 @@ void lerReflFrente()
   sf = analogRead(SF_PIN) >> 2;
 }
 
-void lerVerde()
+void lerTcsAmbos()
 {
-  Serial2.println("caio");
+  Serial2.println("caio"); // esta linha indica ao Nano que ele deve começar a leitura
   lerTcsEsq();
   lerTcsDir();
 }
