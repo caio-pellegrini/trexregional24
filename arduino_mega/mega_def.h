@@ -16,11 +16,17 @@
     #define MOTOR_DIR_T_PIN   9  // azul escuro
 
     // SERVOMOTORES
-    #define SERVO_PA_GARRA_PIN 2
-    #define SERVO_SUBIR_GARRA_PIN 3
-    #define SERVO_ROTACIONAR_GARRA_PIN 4
-    #define SERVO_CANCELA_DIREITO_PIN 5
-    #define SERVO_CANCELA_ESQUERDO_PIN 6
+    #define SERVO_PA_GARRA_PIN 44
+    #define SERVO_SUBIR_GARRA_PIN 46
+    #define SERVO_ROTACIONAR_GARRA_PIN 45
+    #define SERVO_CANCELA_ESQ_PIN 13
+    #define SERVO_CANCELA_DIR_PIN 12
+
+    #define SERVO_PA_GARRA_POS_INICIAL 80
+    #define SERVO_SUBIR_GARRA_POS_INICIAL 160
+    #define SERVO_ROTACIONAR_GARRA_POS_INICIAL 55
+    #define SERVO_CANCELA_ESQ_POS_INICIAL 3
+    #define SERVO_CANCELA_DIR_POS_INICIAL 99
 
     // PLACA DE SENSORES DE REFLETÂNCIA
     #define SE3_PIN    A8
@@ -42,6 +48,7 @@
     #define BTN_PAREDE_DIR_PIN  26
     #define BTN_VITIMA_PIN      33
     bool btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir, btnVitima;
+    bool vitimaViva;
 
     #define MPU6050_INTERRUPT_PIN 2
 
@@ -72,9 +79,10 @@
     #define TCA_ENDERECO       0x70
     #define CANAL_TCS_FRENTE   7
     #define CANAL_TCS_ESQ      6
-    #define CANAL_LASER_GARRA  1
 
+    #define LASER_FRENTE_ENDERECO 0x30
     #define LASER_FRENTE_XSHUT 14
+    #define LASER_GARRA_ENDERECO 0x31
     #define LASER_GARRA_XSHUT  19
 
     uint8_t rgbTcsEsq[3];  // lista de valores RGB do sensor TCS esquerdo

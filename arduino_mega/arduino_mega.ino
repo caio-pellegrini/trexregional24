@@ -8,7 +8,7 @@
 
 #include "mega_def.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
@@ -78,15 +78,11 @@ uint16_t distanciaLaserFrente;
 VL53L0X laserGarra;
 uint16_t distanciaLaserGarra;
 
-// Servo servoPaGarra;
-// Servo servoSubirGarra;
-// Servo servoRotacionarGarra;
-// Servo servoCancelaDir;
-// Servo servoCancelaEsqu;
-
-// a posição inicial dos servos é armazenada nessas variáveis
-uint8_t posicaoServoPaGarra = 90, posicaoServoSubirGarra = 0, posicaoServoRotacionarGarra = 0;
-uint8_t posicaoServoCancelaDir = 0, posicaoServoCancelaEsq = 0;
+Servo servoPaGarra;
+Servo servoSubirGarra;
+Servo servoRotacionarGarra;
+Servo servoCancelaEsq;
+Servo servoCancelaDir;
 
 Ultrasonic ultrasonicEsq(7, 6);
 Ultrasonic ultrasonicDir(5, 4);
@@ -124,7 +120,7 @@ void setup()
   laserFrente.setTimeout(500); // padrão 500
   Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente falhou :(");
   // while (1) {}
-  laserFrente.setAddress(0x30); // Define o endereço I2C do sensor
+  laserFrente.setAddress(LASER_FRENTE_ENDERECO);
   // delay(10);
   // laserFrente.startContinuous(); // Inicia leituras contínuas
 
@@ -134,10 +130,10 @@ void setup()
   delay(50);
   laserGarra.setTimeout(500);
   Serial.println(laserGarra.init() ? "Laser Garra conectado :)" : "Laser Garra falhou :(");
-  laserGarra.setAddress(0x31);
+  laserGarra.setAddress(LASER_GARRA_ENDERECO);
   // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
 
-  i2c_scanner();
+  // i2c_scanner();
 
   tcaSelecionar(CANAL_TCS_ESQ);
   Serial.println(tcsEsq.begin() ? "TCS Esq conectado :)" : "TCS Esq falhou :(");
@@ -173,25 +169,27 @@ void setup()
   pinMode(BTN_PAREDE_DIR_PIN, INPUT_PULLUP);
   pinMode(BTN_VITIMA_PIN, INPUT_PULLUP);
 
+  // SERVOS
+  servoPaGarra.attach(SERVO_PA_GARRA_PIN);
+  servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+  servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
+  servoCancelaEsq.attach(SERVO_CANCELA_ESQ_PIN);
+  servoCancelaDir.attach(SERVO_CANCELA_DIR_PIN);
+
+  servoPaGarra.write(SERVO_PA_GARRA_POS_INICIAL);
+  servoSubirGarra.write(SERVO_SUBIR_GARRA_POS_INICIAL);
+  servoRotacionarGarra.write(SERVO_ROTACIONAR_GARRA_POS_INICIAL);
+  servoCancelaEsq.write(SERVO_CANCELA_ESQ_POS_INICIAL);
+  servoCancelaDir.write(SERVO_CANCELA_DIR_POS_INICIAL);
+
   ligarGiroscopio();
 
-  // SERVOS
-  // servoPaGarra.attach(SERVO_PA_GARRA_PIN);
-  // servoPaGarra.write(posicaoServoPaGarra);
-  
-  // servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
-  // servoSubirGarra.write(posicaoServoSubirGarra);
-
-  // servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
-  // servoRotacionarGarra.write(posicaoServoRotacionarGarra);
-
-  // servoCancelaDir.attach(SERVO_CANCELA_DIREITO_PIN);
-  // servoCancelaDir.write(posicaoServoCancelaDir);
-
-  // servoCancelaEsq.attach(SERVO_CANCELA_ESQUERDO_PIN);
-  // servoCancelaEsq.write(posicaoServoCancelaEsq);
-
-  
+  // Desenxa depois de ligar o giroscópio para dar tempo dele ir pra posição inicial
+  servoPaGarra.detach();
+  servoSubirGarra.detach();
+  servoRotacionarGarra.detach();
+  servoCancelaEsq.detach();
+  servoCancelaDir.detach();
 
   #if defined(DEBUG) && (DEBUG == 0)
     Serial.print("Desligando Serial");
@@ -213,13 +211,14 @@ void loop()
 #endif
 
   lerLaserFrente();
-  // if (!laserFrente.timeoutOccurred())
-  // {
-  //   if (distanciaLaserFrente <= 60)
-  //   {
-  //     desviarObstaculo();
-  //   }
-  // }
+  if (!laserFrente.timeoutOccurred())
+  {
+    if (distanciaLaserFrente <= 70)
+    {
+      // desviarObstaculo();
+      loopgarra();
+    }
+  }
   
   lerQTRATodos();
   lerReflFrente();
@@ -306,7 +305,5 @@ void loop()
   {
     seguirLinhaDireita();
   }
-
-  
 
 }

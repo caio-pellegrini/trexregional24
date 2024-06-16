@@ -1,3 +1,5 @@
+// LINHA 1-136 - MOTORES GRANDES
+
 void seguirLinhaEsquerda()
 {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
@@ -16,7 +18,8 @@ void seguirLinhaDireita()
   delay(3);
 }
 
-void seguidorMoverFrente() {
+void seguidorMoverFrente()
+{
   analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_SEG_FRENTE);
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_SEG_FRENTE);
@@ -91,44 +94,139 @@ void virarDireitaPorMS(unsigned long ms)
 void virarEsquerdaGiro(uint8_t graus)
 {
   lerGiroDMP();
-  initialYaw = yaw;  // Armazenar yaw inicial em graus
+  initialYaw = yaw; // Armazenar yaw inicial em graus
 
   float targetYaw = initialYaw - graus; // Alvo é 90 graus à direita do atual
-  if (targetYaw < -180) targetYaw += 360;  // Correção de ângulo
+  if (targetYaw < -180)
+    targetYaw += 360; // Correção de ângulo
 
   // Código para mover o robô à esquerda
   virarEsquerda();
 
-  while (true) {
+  while (true)
+  {
     // Atualize a orientação atual
     lerGiroDMP();
 
-    if (abs(yaw - targetYaw) <= 1) break;  // Tolerância de 1 grau
+    if (abs(yaw - targetYaw) <= 1)
+      break; // Tolerância de 1 grau
   }
 }
 
 void virarDireitaGiro(uint8_t graus)
 {
   lerGiroDMP();
-  initialYaw = yaw;  // Armazenar yaw inicial em graus
+  initialYaw = yaw; // Armazenar yaw inicial em graus
 
   float targetYaw = initialYaw + graus; // Alvo é 90 graus à esquerda do atual
-  if (targetYaw > 180) targetYaw -= 360;  // Correção de ângulo
+  if (targetYaw > 180)
+    targetYaw -= 360; // Correção de ângulo
   // Código para mover o robô à esquerda
   virarDireita();
 
-  while (true) {
+  while (true)
+  {
     // Atualize a orientação atual
     lerGiroDMP();
 
-    if (abs(yaw - targetYaw) <= 1) break;  // Tolerância de 1 grau
+    if (abs(yaw - targetYaw) <= 1)
+      break; // Tolerância de 1 grau
   }
 }
 
-void virarDireitaGiro90() {
+void virarDireitaGiro90()
+{
   virarDireitaGiro(110);
 }
 
-void virarEsquerdaGiro90() {
+void virarEsquerdaGiro90()
+{
   virarEsquerdaGiro(110);
+}
+
+// SERVOMOTORES
+
+void movimentarServo(Servo *servo, uint8_t posicaoFinal, uint8_t velocidade)
+{
+  uint8_t posicaoAtual = servo->read();
+  uint8_t passo = posicaoAtual > posicaoFinal ? -1 : 1;
+
+  while (posicaoAtual != posicaoFinal)
+  {
+    posicaoAtual += passo;
+    servo->write(posicaoAtual);
+    delay(velocidade);
+  }
+}
+
+void fecharPas()
+{
+  movimentarServo(&servoPaGarra, 80, 3);
+}
+
+void abrirPas()
+{
+  movimentarServo(&servoPaGarra, 0, 3);
+}
+
+void subirGarra()
+{
+  movimentarServo(&servoSubirGarra, 160, 10);
+}
+
+void subirGarraVerificaVitima()
+{
+  vitimaViva = false;
+  uint8_t posicaoAtual = servoSubirGarra.read();
+  while (posicaoAtual < 160)
+  {
+    posicaoAtual++;
+    servoSubirGarra.write(posicaoAtual);
+    delay(10);
+    lerBtnVitima();
+    if (btnVitima)
+    {
+      vitimaViva = true;
+    }
+  }
+}
+
+void descerGarra()
+{
+  movimentarServo(&servoSubirGarra, 0, 10);
+}
+
+void rotacionarGarraDir()
+{
+  movimentarServo(&servoRotacionarGarra, 90, 10);
+}
+
+void rotacionarGarraEsq()
+{
+  movimentarServo(&servoRotacionarGarra, 20, 10);
+}
+
+void rotacionarGarraMeio()
+{
+  movimentarServo(&servoRotacionarGarra, 55, 10);
+}
+
+void abrirCancelaEsq()
+{
+  movimentarServo(&servoCancelaEsq, 95, 4);
+}
+
+void fecharCancelaEsq()
+{
+  movimentarServo(&servoCancelaEsq, 3, 4);
+}
+
+void abrirCancelaDir()
+{
+  movimentarServo(&servoCancelaDir, 0, 4);
+}
+
+void fecharCancelaDir()
+{
+  movimentarServo(&servoCancelaDir, 99, 4);
 }

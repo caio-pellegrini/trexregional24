@@ -1,9 +1,9 @@
 /// @brief Ligar LEDS RGB que funcionam como setas do robô
-/// @param esq 
-/// @param dir 
-/// @param r 
-/// @param g 
-/// @param b 
+/// @param esq
+/// @param dir
+/// @param r
+/// @param g
+/// @param b
 void ligarLed(bool esq, bool dir, uint8_t r, uint8_t g, uint8_t b)
 {
   if (esq)
@@ -101,4 +101,44 @@ void tcaDesligar()
   Wire.beginTransmission(TCA_ENDERECO);
   Wire.write(0); // Desligar todos os canais
   Wire.endTransmission();
+}
+
+void loopgarra()
+{
+  pararMotor();
+  servoPaGarra.attach(SERVO_PA_GARRA_PIN);
+  servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+  servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
+  servoCancelaEsq.attach(SERVO_CANCELA_ESQ_PIN);
+  servoCancelaDir.attach(SERVO_CANCELA_DIR_PIN);
+  while (true)
+  {
+    descerGarra();
+    abrirPas();
+    while (true)
+    {
+      lerLaserGarra();
+      if (distanciaLaserGarra < 50)
+      {
+        break;
+      }
+    }
+    fecharPas();
+    subirGarraVerificaVitima();
+
+    if (btnVitima)
+    {
+      rotacionarGarraDir();
+    }
+    else
+    {
+      rotacionarGarraEsq();
+    }
+
+    abrirPas();
+    delay(400);
+    fecharPas();
+    rotacionarGarraMeio();
+    delay(400);
+  }
 }
