@@ -191,6 +191,8 @@ void setup()
   // servoCancelaEsq.attach(SERVO_CANCELA_ESQUERDO_PIN);
   // servoCancelaEsq.write(posicaoServoCancelaEsq);
 
+  
+
   #if defined(DEBUG) && (DEBUG == 0)
     Serial.print("Desligando Serial");
     Serial.end();
