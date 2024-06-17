@@ -92,4 +92,55 @@
     // OUTROS
     #define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
 
+
+
+    // VARIÁVEIS E CLASSES
+
+    uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
+    uint8_t sf;
+
+    Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
+    Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
+
+    VL53L0X laserFrente;
+    uint16_t distanciaLaserFrente;
+
+    VL53L0X laserGarra;
+    uint16_t distanciaLaserGarra;
+
+    Servo servoPaGarra;
+    Servo servoSubirGarra;
+    Servo servoRotacionarGarra;
+    Servo servoCancelaEsq;
+    Servo servoCancelaDir;
+
+    Ultrasonic ultrasonicEsq(7, 6);
+    Ultrasonic ultrasonicDir(5, 4);
+    int ultraEsq, ultraDir;
+
+    uint8_t contadorGap = 0;
+
+    // Variáveis e definições para o MPU-6050 com DMP
+    MPU6050 mpu;
+    uint8_t mpuIntStatus;
+    uint16_t fifoCount;
+    uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+    uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
+    bool dmpReady = false;  // set true if DMP init was successful
+    uint8_t fifoBuffer[64]; // FIFO storage buffer
+    // orientation/motion vars
+    Quaternion q;        // [w, x, y, z]         quaternion container
+    VectorFloat gravity; // [x, y, z]            gravity vector
+    float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+    float yaw, pitch, roll;
+    float initialYaw;
+    volatile bool mpuInterrupt = false;
+    // mpu antigo
+    int16_t ax, ay, az;
+    int16_t gx, gy, gz;
+    void dmpDataReady()
+    {
+      mpuInterrupt = true;
+    }
+
 #endif

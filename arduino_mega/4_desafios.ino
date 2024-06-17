@@ -78,6 +78,7 @@ void verificarGap() {
   ligarLed(AMBOS, AMARELO);
   unsigned long tempoInicial = millis();
 
+  moverTrasPorMS(100);
   pararMotor();
   delay(300);
   lerTcsAmbos();
@@ -89,7 +90,7 @@ void verificarGap() {
     return;
   }
 
-  moverFrentePorMS(30);
+  moverFrentePorMS(100);
   
   while (true) {
     moverFrentePorMS(1);
@@ -106,8 +107,9 @@ void verificarGap() {
     {
       ligarLed(AMBOS, ROXO);
       pararMotor();
-      delay(3000);
+      delay(1000);
       desligarLed(AMBOS);
+      entrarSalaResgate();
       break;
     }
   }

@@ -38,7 +38,7 @@
         Serial.print(" | sf: " + String(sf));
         #endif
 
-        #if DEBUG_TCS_VERDE
+        #if DEBUG_TCS_AMBOS
             lerTcsAmbos();
             lerTcsAmbos();
 

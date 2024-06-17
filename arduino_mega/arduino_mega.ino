@@ -14,81 +14,33 @@
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 0
 #define DEBUG_REFL_FRENTE 0
-#define DEBUG_TCS_VERDE 0
+#define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 1
-#define DEBUG_LASER_GARRA 1
+#define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR 202              
+#define CORTE_QTR 200              
 #define CORTE_FRENTE 55           // 6 no branco e 110 no preto
+#define CORTE_2 165
 #define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
-#define CORTE_VERDE_ESQ 90   // abaixo disso é verde
-#define CORTE_VERDE_DIR 70
+
+#define CORTE_VERDE_ESQ 65   // abaixo disso é verde
+#define CORTE_VERDE_DIR 45
 #define CORTE_VERMELHO_CRUZ 100
 
 #define VEL_MOTOR_FRENTE     CONVERT_8B_DEC(50)
 #define VEL_MOTOR_TRAS       CONVERT_8B_DEC(40)
-#define VEL_MOTOR_CURVA      CONVERT_8B_DEC(55)
+#define VEL_MOTOR_CURVA      CONVERT_8B_DEC(50)
 
-// #define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(65) // 38
-// #define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(90) // 76
-// #define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(88)  // 73
-#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(38)
+#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(36)
 #define VEL_MOTOR_SEG_MAX    CONVERT_8B_DEC(76)
 #define VEL_MOTOR_SEG_MIN    CONVERT_8B_DEC(73)
 
-#define TEMPO_MOVER_ANTES_CRUZ 370
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 150
-
-uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
-uint8_t sf;
-
-// Variáveis e definições para o MPU-6050 com DMP
-MPU6050 mpu;
-uint8_t mpuIntStatus;
-uint16_t fifoCount;
-uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
-uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-bool dmpReady = false;  // set true if DMP init was successful
-uint8_t fifoBuffer[64]; // FIFO storage buffer
-// orientation/motion vars
-Quaternion q;        // [w, x, y, z]         quaternion container
-VectorFloat gravity; // [x, y, z]            gravity vector
-float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-float yaw, pitch, roll;
-float initialYaw;
-volatile bool mpuInterrupt = false;
-// mpu antigo
-int16_t ax, ay, az;
-int16_t gx, gy, gz;
-void dmpDataReady()
-{
-  mpuInterrupt = true;
-}
-
-Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
-Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
-
-VL53L0X laserFrente;
-uint16_t distanciaLaserFrente;
-
-VL53L0X laserGarra;
-uint16_t distanciaLaserGarra;
-
-Servo servoPaGarra;
-Servo servoSubirGarra;
-Servo servoRotacionarGarra;
-Servo servoCancelaEsq;
-Servo servoCancelaDir;
-
-Ultrasonic ultrasonicEsq(7, 6);
-Ultrasonic ultrasonicDir(5, 4);
-int ultraEsq, ultraDir;
-
-uint8_t contadorGap = 0;
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 160
+#define TEMPO_MOVER_ANTES_CRUZ 375
 
 void setup()
 {
@@ -213,10 +165,10 @@ void loop()
   lerLaserFrente();
   if (!laserFrente.timeoutOccurred())
   {
-    if (distanciaLaserFrente <= 70)
+    if (distanciaLaserFrente != 0 && distanciaLaserFrente <= 70)
     {
-      // desviarObstaculo();
-      loopgarra();
+      desviarObstaculo();
+      // reconhecerPegarVitima();
     }
   }
   
@@ -235,7 +187,7 @@ void loop()
   //   }
   // } 
 
-  if (se3 <= 155 && se2 <= 155 && se1 <= 155 && se0 <= 155 && sd0 <= 155 && sd1 <= 155 && sd2 <= 155 && sd3 <= 155)
+  if (se3 <= CORTE_2 && se2 <= CORTE_2 && se1 <= CORTE_2 && se0 <= CORTE_2 && sd0 <= CORTE_2 && sd1 <= CORTE_2 && sd2 <= CORTE_2 && sd3 <= CORTE_2)
   {
     verificarGap();
   }
