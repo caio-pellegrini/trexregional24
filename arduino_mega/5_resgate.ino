@@ -157,18 +157,19 @@ void identificarEntradaDirecao()
       entradaDirecao = false;
       ligarLed(ESQ, AZUL, 1000);
 
-      if (distanciaUltraEsq != 0 && distanciaUltraEsq <= 2)
-      {
-        
-        virarDireitaGiro45();
-        moverFrentePorMS(200);
-        virarDireitaGiro45();
-      }
-      else
-      {
+      virarDireitaGiro90();
 
-        virarDireitaGiro90UmMotor();
-      }
+      // if (distanciaUltraEsq != 0 && distanciaUltraEsq <= 2)
+      // {
+      //   virarDireitaGiro45();
+      //   moverFrentePorMS(200);
+      //   virarDireitaGiro45();
+      // }
+      // else
+      // {
+      //   virarDireitaGiro90();
+      // }
+
     }
     else
     {
@@ -176,16 +177,18 @@ void identificarEntradaDirecao()
       entradaDirecao = true;
       ligarLed(DIR, AZUL, 1000);
 
-      if (distanciaUltraDir != 0 && distanciaUltraDir <= 2)
-      {
-        virarEsquerdaGiro45();
-        moverFrentePorMS(200);
-        virarEsquerdaGiro45();
-      }
-      else
-      {
-        virarEsquerdaGiro90UmMotor();
-      }
+      virarEsquerdaGiro90();
+
+      // if (distanciaUltraDir != 0 && distanciaUltraDir <= 2)
+      // {
+      //   virarEsquerdaGiro45();
+      //   moverFrentePorMS(200);
+      //   virarEsquerdaGiro45();
+      // }
+      // else
+      // {
+      //   virarEsquerdaGiro90();
+      // }
     }
 
     moverTrasPorMS(1000);
