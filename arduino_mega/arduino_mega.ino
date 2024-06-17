@@ -12,14 +12,14 @@
 
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 0
-#define DEBUG_REFL_FRENTE 0
+#define DEBUG_QTRA 1
+#define DEBUG_REFL_FRENTE 1
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 1
+#define DEBUG_LASER_FRENTE 0
 #define DEBUG_LASER_GARRA 0
-#define DEBUG_ULTRA 0
+#define DEBUG_ULTRA 1
 #define DEBUG_BOTOES 0
 
 #define CORTE_QTR 200              
@@ -149,6 +149,8 @@ void setup()
   #endif
 
   desligarLed(AMBOS);
+
+  // entrarSalaResgate();
 }
 
 void loop()
@@ -170,6 +172,17 @@ void loop()
       desviarObstaculo();
       // reconhecerPegarVitima();
     }
+  }
+
+  lerUltraEsq();
+  lerUltraDir();
+  if (distanciaUltraEsq < 8 && distanciaUltraDir < 8)
+  {
+    ligarLed(AMBOS, ROXO);
+    moverFrentePorMS(500);
+    pararMotores();
+    //entrarSalaResgate();
+    verificarGap();
   }
   
   lerQTRATodos();
@@ -197,7 +210,7 @@ void loop()
   {
     ligarLed(AMBOS, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-    pararMotor();
+    pararMotores();
     analisarVerde(true, true, true);
     desligarLed(AMBOS);
   }
@@ -207,7 +220,7 @@ void loop()
   {
     ligarLed(ESQ, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-    pararMotor();
+    pararMotores();
     analisarVerde(false, true, false);
     desligarLed(AMBOS);
   }
@@ -217,7 +230,7 @@ void loop()
   {
     ligarLed(DIR, BRANCO);
     moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-    pararMotor();
+    pararMotores();
     analisarVerde(false, false, true);
     desligarLed(AMBOS);
   }
@@ -246,6 +259,7 @@ void loop()
 
   lerQTRASegueLinha();
 
+  // se for fita estilo silver tape (com pouco reflexo)
   seguidorMoverFrente();
 
   if (se1 >= CORTE_QTR || se2 >= CORTE_QTR)
@@ -257,5 +271,7 @@ void loop()
   {
     seguirLinhaDireita();
   }
+  
+  
 
 }

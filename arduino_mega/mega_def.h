@@ -42,9 +42,9 @@
     #define SF_PIN     A7
 
     // BOTOES
-    #define BTN_AREA_ESQ_PIN    22
+    #define BTN_AREA_ESQ_PIN    24
     #define BTN_AREA_DIR_PIN    28
-    #define BTN_PAREDE_ESQ_PIN  24
+    #define BTN_PAREDE_ESQ_PIN  22
     #define BTN_PAREDE_DIR_PIN  26
     #define BTN_VITIMA_PIN      33
     bool btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir, btnVitima;
@@ -93,7 +93,6 @@
     #define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
 
 
-
     // VARIÁVEIS E CLASSES
 
     uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
@@ -116,7 +115,7 @@
 
     Ultrasonic ultrasonicEsq(7, 6);
     Ultrasonic ultrasonicDir(5, 4);
-    int ultraEsq, ultraDir;
+    int distanciaUltraEsq, distanciaUltraDir;
 
     uint8_t contadorGap = 0;
 
@@ -143,4 +142,5 @@
       mpuInterrupt = true;
     }
 
+    
 #endif

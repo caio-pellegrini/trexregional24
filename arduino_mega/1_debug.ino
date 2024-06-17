@@ -113,9 +113,9 @@
             lerUltraDir();
 
             Serial.print(" | ultraEsq: ");
-            Serial.print(ultraEsq);
+            Serial.print(distanciaUltraEsq);
             Serial.print(" ultraDir: ");
-            Serial.print(ultraDir);
+            Serial.print(distanciaUltraDir);
         #endif
 
         #if DEBUG_BOTOES

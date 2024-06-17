@@ -103,38 +103,7 @@ void tcaDesligar()
   Wire.endTransmission();
 }
 
-void reconhecerPegarVitima()
-{
-  pararMotor();
-
-  while (true)
-  {
-    descerGarra();
-    abrirPas();
-    while (true)
-    {
-      lerLaserGarra();
-      if (distanciaLaserGarra < 50)
-      {
-        break;
-      }
-    }
-    fecharPas();
-    subirGarraVerificaVitima();
-
-    if (btnVitima)
-    {
-      rotacionarGarraDir();
-    }
-    else
-    {
-      rotacionarGarraEsq();
-    }
-
-    abrirPas();
-    delay(400);
-    fecharPas();
-    rotacionarGarraMeio();
-    delay(400);
-  }
+void delayInfinito() {
+  // MUITO CUIDADO AO UTILIZAR ESTÁ FUNÇÃO!!
+  delay(999999);
 }

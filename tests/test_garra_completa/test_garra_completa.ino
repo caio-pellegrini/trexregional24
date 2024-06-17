@@ -151,7 +151,7 @@ void subirGarraVerificaVitima() {
     }
   }
 }
-
+  
 void descerGarra() {
   movimentarServo(&servoSubirGarra, 0, 10);
 }

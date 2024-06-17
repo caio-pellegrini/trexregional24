@@ -32,7 +32,7 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
   // Beco sem saida
   if (isBeco && verdeEsq && verdeDir)
   {
-    virarEsquerdaGiro(210);
+    virarEsquerdaGiro180();
     moverFrentePorMS(300);
   }
 
@@ -56,11 +56,11 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito)
     moverFrentePorMS(200);
   }
 
-  pararMotor();
+  pararMotores();
 }
 
 void desviarObstaculo() {
-    pararMotor();
+    pararMotores();
     ligarLed(AMBOS, VERMELHO);
     moverTrasPorMS(300);
     virarEsquerdaGiro90();
@@ -79,14 +79,14 @@ void verificarGap() {
   unsigned long tempoInicial = millis();
 
   moverTrasPorMS(100);
-  pararMotor();
+  pararMotores();
   delay(300);
   lerTcsAmbos();
   lerTcsAmbos();
 
   if (rgbTcsEsq[0] > rgbTcsEsq[1] && rgbTcsEsq[0] > rgbTcsEsq[2] && rgbTcsDir[0] > rgbTcsDir[1] && rgbTcsDir[0] > rgbTcsDir[2]) {
     ligarLed(AMBOS, VERMELHO);
-    delay(999999);
+    delayInfinito();
     return;
   }
 
@@ -98,17 +98,16 @@ void verificarGap() {
 
     if (se3 > CORTE_QTR || se2 > CORTE_QTR || se1 > CORTE_QTR || se0 > CORTE_QTR || sd0 > CORTE_QTR || sd1 > CORTE_QTR || sd2 > CORTE_QTR || sd3 > CORTE_QTR) {
       desligarLed(AMBOS);
-      pararMotor();
+      pararMotores();
       delay(200);
       break;
     }
 
-    if (millis() - tempoInicial >= 2000)
+    if (millis() - tempoInicial >= 2000) // VALOR DE ENTRADA PARA SALA DE RESGATE
     {
       ligarLed(AMBOS, ROXO);
-      pararMotor();
-      delay(1000);
-      desligarLed(AMBOS);
+      pararMotores();
+      delay(500);
       entrarSalaResgate();
       break;
     }

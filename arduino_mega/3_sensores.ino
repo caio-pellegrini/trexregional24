@@ -240,10 +240,10 @@ void lerBtnVitima()
 
 void lerUltraEsq()
 {
-  ultraEsq = ultrasonicEsq.read(CM);
+  distanciaUltraEsq = ultrasonicEsq.read(CM);
 }
 
 void lerUltraDir()
 {
-  ultraDir = ultrasonicDir.read(CM);
+  distanciaUltraDir = ultrasonicDir.read(CM);
 }
