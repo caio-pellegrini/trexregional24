@@ -194,9 +194,22 @@ void lerGiroscopio() {
 }
 
 // Tempo de leitura Laser = 40ms
-void lerLaserFrente() { distanciaLaserFrente = laserFrente.readRangeSingleMillimeters(); }
+void lerLaserFrente() {
+  // distanciaLaserFrente = laserFrente.readRangeSingleMillimeters();
+  laserFrente.readRangeNoBlocking(distanciaLaserFrente);
+}
 
-void lerLaserGarra() { distanciaLaserGarra = laserGarra.readRangeSingleMillimeters(); }
+void lerLaserGarra() {
+  distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
+}
+
+bool lerLaserFrenteNaoBloquante() {
+  return laserFrente.readRangeNoBlocking(distanciaLaserFrente);
+}
+
+bool lerLaserGarraNaoBloquante() {
+  return laserGarra.readRangeNoBlocking(distanciaLaserGarra);
+}
 
 void lerBtnArea() {
   btnAreaEsq = digitalRead(BTN_AREA_ESQ_PIN);

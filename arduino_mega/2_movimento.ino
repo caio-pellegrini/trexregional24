@@ -1,19 +1,19 @@
 // LINHA 1-136 - MOTORES GRANDES
 
-void seguirLinhaEsquerda() {
+void seguirLinhaEsquerda(uint8_t ms) {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
   analogWrite(MOTOR_ESQ_T_PIN, VEL_MOTOR_SEG_MIN);
   analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_SEG_MAX);
   analogWrite(MOTOR_DIR_T_PIN, 0);
-  delay(3);
+  delay(ms);
 }
 
-void seguirLinhaDireita() {
+void seguirLinhaDireita(uint8_t ms) {
   analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_SEG_MAX);
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, 0);
   analogWrite(MOTOR_DIR_T_PIN, VEL_MOTOR_SEG_MIN);
-  delay(3);
+  delay(ms);
 }
 
 void seguidorMoverFrente() {

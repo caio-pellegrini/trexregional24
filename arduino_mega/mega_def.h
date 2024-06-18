@@ -4,7 +4,7 @@
     // IMPORTAÇÃO DE BIBLIOTECAS
     #include <Wire.h>
     #include <Adafruit_TCS34725.h>
-    #include <VL53L0X.h>
+    #include <VL53L0X_mod.h>
     #include <Ultrasonic.h>
     #include "MPU6050_6Axis_MotionApps612.h"
     #include <Servo.h>
@@ -90,6 +90,7 @@
 
     // OUTROS
     #define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
+    #define TCS_SATURACAO_MAX 1500  // 4000 PARA 614ms
 
 
     // VARIÁVEIS E CLASSES
@@ -100,10 +101,10 @@
     Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
     Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
-    VL53L0X laserFrente;
+    VL53L0X_mod laserFrente;
     uint16_t distanciaLaserFrente;
 
-    VL53L0X laserGarra;
+    VL53L0X_mod laserGarra;
     uint16_t distanciaLaserGarra;
 
     Servo servoPaGarra;
@@ -136,6 +137,7 @@
     // mpu antigo
     int16_t ax, ay, az;
     int16_t gx, gy, gz;
+
     void dmpDataReady()
     {
       mpuInterrupt = true;

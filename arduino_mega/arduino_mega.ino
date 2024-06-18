@@ -16,8 +16,8 @@
 #define DEBUG_REFL_FRENTE 0
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 1
-#define DEBUG_LASER_FRENTE 0
+#define DEBUG_GIROSCOPIO 0
+#define DEBUG_LASER_FRENTE 1
 #define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
@@ -25,7 +25,6 @@
 #define CORTE_QTR 200
 #define CORTE_FRENTE 55  // 6 no branco e 110 no preto
 #define CORTE_2 165
-#define TCS_SATURACAO_MAX 1500  // 4000 PARA 614ms
 
 #define CORTE_VERDE_ESQ 65  // abaixo disso é verde
 #define CORTE_VERDE_DIR 45
@@ -63,7 +62,7 @@ void setup() {
 
   digitalWrite(LASER_FRENTE_XSHUT, LOW);
   digitalWrite(LASER_GARRA_XSHUT, LOW);
-  delay(50);
+  delay(50);  // testar mudar para 10
 
   digitalWrite(LASER_FRENTE_XSHUT, HIGH);
   delay(50);
@@ -73,8 +72,7 @@ void setup() {
                                     : "Laser Frente falhou :(");
   // while (1) {}
   laserFrente.setAddress(LASER_FRENTE_ENDERECO);
-  // delay(10);
-  // laserFrente.startContinuous(); // Inicia leituras contínuas
+  laserFrente.startContinuous();  // Inicia leituras contínuas
 
   // i2c_scanner();
 
@@ -84,6 +82,7 @@ void setup() {
   Serial.println(laserGarra.init() ? "Laser Garra conectado :)"
                                    : "Laser Garra falhou :(");
   laserGarra.setAddress(LASER_GARRA_ENDERECO);
+  laserGarra.startContinuous();
   // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
 
   // i2c_scanner();
@@ -157,22 +156,25 @@ void setup() {
 }
 
 void loop() {
-#if DEBUG
-#if DEBUG_CALIBRACAO
-  calibrar();
-#endif
-#if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
-  return;
-#endif
-#endif
+  #if DEBUG
+    #if DEBUG_CALIBRACAO
+      calibrar();
+    #endif
+    #if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
+      return;
+    #endif
+  #endif
 
-  // lerLaserFrente();
-  // if (!laserFrente.timeoutOccurred()) {
-  //   if (distanciaLaserFrente != 0 && distanciaLaserFrente <= 70) {
-  //     desviarObstaculo();
-  //     // reconhecerPegarVitima();
-  //   }
-  // }
+  // leitura não bloqueante
+  if (lerLaserFrenteNaoBloquante()) {
+    if (distanciaLaserFrente != 0 && distanciaLaserFrente <= 70) {
+      // !laserFrente.timeoutOccurred() && 
+      desviarObstaculo();
+      // reconhecerPegarVitima();
+    }
+  };
+
+  // unsigned long tempoAtual = millis();
 
   lerGiroscopioDMP();
 
@@ -238,20 +240,16 @@ void loop() {
 
   // 90 GRAUS DIREITO
   if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)) {
-    ligarLed(DIR, BRANCO);
-    seguirLinhaDireita();
-    seguirLinhaDireita();
-    seguirLinhaDireita();
-    desligarLed(AMBOS);
+    // ligarLed(DIR, BRANCO);
+    seguirLinhaDireita(12);
+    // desligarLed(AMBOS);
   }
 
   // 90 GRAUS ESQUERDO
   if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)) {
-    ligarLed(ESQ, BRANCO);
-    seguirLinhaEsquerda();
-    seguirLinhaEsquerda();
-    seguirLinhaEsquerda();
-    desligarLed(AMBOS);
+    // ligarLed(ESQ, BRANCO);
+    seguirLinhaEsquerda(12);
+    // desligarLed(AMBOS);
   }
 
   // SEGUIDOR DE LINHA
@@ -262,10 +260,14 @@ void loop() {
   seguidorMoverFrente();
 
   if (se1 >= CORTE_QTR || se2 >= CORTE_QTR) {
-    seguirLinhaEsquerda();
+    seguirLinhaEsquerda(3);
   }
 
   if (sd1 >= CORTE_QTR || sd2 >= CORTE_QTR) {
-    seguirLinhaDireita();
+    seguirLinhaDireita(3);
   }
+
+  // Serial.print("Tempo: ");
+  // Serial.print(millis() - tempoAtual);
+  // Serial.println("ms");
 }
