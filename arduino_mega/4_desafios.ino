@@ -96,13 +96,12 @@ void verificarGap() {
       break;
     }
 
-    if (millis() - tempoInicial >=
-        2000) // VALOR DE ENTRADA PARA SALA DE RESGATE
+    // VALOR DE ENTRADA PARA SALA DE RESGATE
+    if (millis() - tempoInicial >= 2000)
     {
-      ligarLed(AMBOS, ROXO);
       pararMotores();
-      delay(500);
-      entrarSalaResgate();
+      ligarLed(AMBOS, ROXO, 500);
+      salaDeResgate();
       break;
     }
   }

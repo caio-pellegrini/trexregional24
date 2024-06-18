@@ -41,6 +41,8 @@
 #define TEMPO_MOVER_ANTES_ANALISAR_VERDE 160
 #define TEMPO_MOVER_ANTES_CRUZ 375
 
+#define DIST_LASER_GARRA_VIT 40
+
 void setup() {
   // DEFINIÇÕES DE PINOS DOS LEDS
   pinMode(LED_ESQ_RED_PIN, OUTPUT);
@@ -184,7 +186,6 @@ void loop() {
     ligarLed(AMBOS, ROXO);
     moverFrentePorMS(500);
     pararMotores();
-    // entrarSalaResgate();
     verificarGap();
   }
 

@@ -195,8 +195,8 @@ void lerGiroscopio() {
 
 // Tempo de leitura Laser = 40ms
 void lerLaserFrente() {
-  // distanciaLaserFrente = laserFrente.readRangeSingleMillimeters();
-  laserFrente.readRangeNoBlocking(distanciaLaserFrente);
+  distanciaLaserFrente = laserFrente.readRangeSingleMillimeters();
+  // laserFrente.readRangeNoBlocking(distanciaLaserFrente);
 }
 
 void lerLaserGarra() {

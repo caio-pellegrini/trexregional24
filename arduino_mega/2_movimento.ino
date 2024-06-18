@@ -31,11 +31,25 @@ void moverFrente() {
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
+void moverFrenteLento() {
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(35));
+  analogWrite(MOTOR_ESQ_T_PIN, 0);
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(35));
+  analogWrite(MOTOR_DIR_T_PIN, 0);
+}
+
 void moverTras() {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
   analogWrite(MOTOR_ESQ_T_PIN, VEL_MOTOR_TRAS);
   analogWrite(MOTOR_DIR_F_PIN, 0);
   analogWrite(MOTOR_DIR_T_PIN, VEL_MOTOR_TRAS);
+}
+
+void moverTrasRapido() {
+  analogWrite(MOTOR_ESQ_F_PIN, 0);
+  analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(75));
+  analogWrite(MOTOR_DIR_F_PIN, 0);
+  analogWrite(MOTOR_DIR_T_PIN, CONVERT_8B_DEC(75));
 }
 
 void pararMotores() {
@@ -80,6 +94,11 @@ void moverFrentePorMS(unsigned long ms) {
 
 void moverTrasPorMS(unsigned long ms) {
   moverTras();
+  delay(ms);
+}
+
+void moverTrasRapidoPor(unsigned long ms) {
+  moverTrasRapido();
   delay(ms);
 }
 
@@ -142,9 +161,9 @@ void virarDireitaGiro(uint8_t graus, bool umMotor) {
   }
   // melhorar funcao de cima colocando a condicao no lugar do true
 }
-void virarEsquerdaGiro45() { virarEsquerdaGiro(55, false); }
+void virarEsquerdaGiro45() { virarEsquerdaGiro(50, false); }
 
-void virarDireitaGiro45() { virarDireitaGiro(55, false); }
+void virarDireitaGiro45() { virarDireitaGiro(50, false); }
 
 void virarEsquerdaGiro90() { virarEsquerdaGiro(105, false); }
 
@@ -171,9 +190,9 @@ void movimentarServo(Servo *servo, uint8_t posicaoFinal, uint8_t velocidade) {
   }
 }
 
-void fecharPas() { movimentarServo(&servoPaGarra, 80, 3); }
+void fecharGarra() { movimentarServo(&servoPaGarra, 80, 3); }
 
-void abrirPas() { movimentarServo(&servoPaGarra, 0, 3); }
+void abrirGarra() { movimentarServo(&servoPaGarra, 10, 3); }
 
 void subirGarra() { movimentarServo(&servoSubirGarra, 160, 7); }
 
