@@ -1,10 +1,12 @@
 bool entradaDirecao; // false = esquerda, true = direita
 bool entradaNoMeio;
-bool saidaDirecao; // false = diferente da entrada, true = mesma direção da entrada
+bool saidaDirecao; // false = diferente da entrada, true = mesma direção da
+                   // entrada
+uint8_t contadorVitimas = 0;
+bool vitimaGarraViva = false;
 
-void entrarSalaResgate()
-{
-  
+void entrarSalaResgate() {
+
   // attach servos
   servoPaGarra.attach(SERVO_PA_GARRA_PIN);
   servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
@@ -18,18 +20,16 @@ void entrarSalaResgate()
 
   identificarEntradaDirecao();
 
-  descerGarra();
   abrirPas();
+  descerGarra();
 
   moverFrente();
   // moverFrente lentamente (?)
 
-  while (true)
-  {
+  while (true) {
     // botao da area bateu
     lerBtnArea();
-    if (btnAreaEsq || btnAreaDir)
-    {
+    if (btnAreaEsq || btnAreaDir) {
       pararMotores();
       // delayInfinito();
       break;
@@ -37,8 +37,7 @@ void entrarSalaResgate()
 
     // botao da parede bateu
     lerBtnParede();
-    if (btnParedeEsq || btnParedeDir)
-    {
+    if (btnParedeEsq || btnParedeDir) {
       pararMotores();
       delayInfinito();
       // break;
@@ -49,18 +48,22 @@ void entrarSalaResgate()
   pararMotores();
 
   fecharPas();
-  // verificarVitima();
-  subirGarra();
+  subirGarraVerificaVitima();
+
+  // se houver alguma vitima na garra, parar para ler
+  // se nao, continuar a varredura
+
+  if (contadorVitimas == 0) {
+    pararMotores();
+    delayInfinito();
+  }
 
   moverFrentePorMS(800);
 
-  if (btnAreaEsq)
-  {
+  if (btnAreaEsq) {
     // virarEsquerdaGiro90();
     virarEsquerdaGiro45();
-  }
-  else
-  {
+  } else {
     // virarDireitaGiro90();
     virarDireitaGiro45();
   }
@@ -85,74 +88,54 @@ void entrarSalaResgate()
   fecharCancelaEsq();
 }
 
-void reconhecerPegarVitima()
-{
-  pararMotores();
-
-  while (true)
-  {
-    descerGarra();
-    abrirPas();
-    while (true)
-    {
-      lerLaserGarra();
-      if (distanciaLaserGarra < 50)
-      {
-        break;
-      }
+void pegarVitima() {
+  // reconhecer
+  while (true) {
+    lerLaserGarra();
+    if (distanciaLaserGarra < 50) {
+      break;
     }
-    fecharPas();
-    subirGarraVerificaVitima();
-
-    if (btnVitima)
-    {
-      rotacionarGarraDir();
-    }
-    else
-    {
-      rotacionarGarraEsq();
-    }
-
-    abrirPas();
-    delay(400);
-    fecharPas();
-    rotacionarGarraMeio();
-    delay(400);
   }
+
+  fecharPas();
+  subirGarraVerificaVitima();
+
+  if (vitimaGarraViva) {
+    rotacionarGarraDir();
+  } else {
+    rotacionarGarraEsq();
+  }
+
+  abrirPas();
+  delay(400);
+  fecharPas();
+  rotacionarGarraMeio();
+  delay(400);
 }
 
-void identificarCorArea()
-{
+void identificarCorArea() {
   lerTcsFrente();
   lerTcsFrente();
 
-  if (rgbTcsFrente[0] > rgbTcsFrente[1] && rgbTcsFrente[0] > rgbTcsFrente[2])
-  {
+  if (rgbTcsFrente[0] > rgbTcsFrente[1] && rgbTcsFrente[0] > rgbTcsFrente[2]) {
     ligarLed(AMBOS, VERMELHO, 1000);
-  }
-  else
-  {
+  } else {
     ligarLed(AMBOS, VERDE, 1000);
   }
 }
 
-void identificarEntradaDirecao()
-{
+void identificarEntradaDirecao() {
   lerUltraEsq();
   lerUltraDir();
 
-  if (distanciaUltraEsq > 20 && distanciaUltraDir > 20)
-  {
+  if (distanciaUltraEsq > 20 && distanciaUltraDir > 20) {
     entradaNoMeio = true;
     ligarLed(AMBOS, AZUL, 1000);
 
     // fazer mais facil primeiro
-  }
-  else
-  {
+  } else {
     entradaNoMeio = false;
-    if (distanciaUltraEsq < distanciaUltraDir)
-    {
+    if (distanciaUltraEsq < distanciaUltraDir) {
       // PAREDE ESTA NA ESQUERDA
       entradaDirecao = false;
       ligarLed(ESQ, AZUL, 1000);
@@ -170,9 +153,7 @@ void identificarEntradaDirecao()
       //   virarDireitaGiro90();
       // }
 
-    }
-    else
-    {
+    } else {
       // PAREDE ESTA NA DIREITA
       entradaDirecao = true;
       ligarLed(DIR, AZUL, 1000);
