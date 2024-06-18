@@ -1,5 +1,5 @@
 /*
-  Nome do Projeto: Seguidor de Linha
+  Nome do Projeto: Código para horácio júnior
   Descrição: Sketch para controlar um robô seguidor de linha.
   Autor: Caio P.
   Data: 10/01/2024
@@ -16,10 +16,10 @@
 #define DEBUG_REFL_FRENTE 0
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 1
-#define DEBUG_LASER_GARRA 1
-#define DEBUG_ULTRA 1
+#define DEBUG_GIROSCOPIO 1
+#define DEBUG_LASER_FRENTE 0
+#define DEBUG_LASER_GARRA 0
+#define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
 #define CORTE_QTR 200
@@ -166,13 +166,15 @@ void loop() {
 #endif
 #endif
 
-  lerLaserFrente();
-  if (!laserFrente.timeoutOccurred()) {
-    if (distanciaLaserFrente != 0 && distanciaLaserFrente <= 70) {
-      desviarObstaculo();
-      // reconhecerPegarVitima();
-    }
-  }
+  // lerLaserFrente();
+  // if (!laserFrente.timeoutOccurred()) {
+  //   if (distanciaLaserFrente != 0 && distanciaLaserFrente <= 70) {
+  //     desviarObstaculo();
+  //     // reconhecerPegarVitima();
+  //   }
+  // }
+
+  lerGiroscopioDMP();
 
   lerUltraEsq();
   lerUltraDir();

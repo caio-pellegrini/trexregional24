@@ -161,10 +161,10 @@ void ligarGiroscopio() {
   }
 }
 
-void lerGiroDMP() {
+void lerGiroscopioDMP() {
   while (!mpuInterrupt) {
     // Fica esperando
-    delay(1); // Adicione um pequeno delay para evitar a sobrecarga da CPU
+    // delay(1); // Pequeno delay para evitar a sobrecarga da CPU
   }
   // read a packet from FIFO
   if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) { // Get the Latest packet
@@ -186,13 +186,14 @@ void lerGiroDMP() {
 void lerGiroscopio() {
   while (!mpuInterrupt) {
     // Fica esperando
-    delay(10); // Adicione um pequeno delay para evitar a sobrecarga da CPU
+    // delay(1); // Pequeno delay para evitar a sobrecarga da CPU
   }
   mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-  pitch = map(ax, -17000, 17000, 0, 255);
+  // pitch = map(ax, -17000, 17000, 0, 255);
   mpuInterrupt = false;
 }
 
+// Tempo de leitura Laser = 40ms
 void lerLaserFrente() { distanciaLaserFrente = laserFrente.readRangeSingleMillimeters(); }
 
 void lerLaserGarra() { distanciaLaserGarra = laserGarra.readRangeSingleMillimeters(); }
@@ -209,6 +210,7 @@ void lerBtnParede() {
 
 void lerBtnVitima() { btnVitima = !digitalRead(BTN_VITIMA_PIN); }
 
+// Tempo de leitura Ultrassonico = 5ms
 void lerUltraEsq() { distanciaUltraEsq = ultrasonicEsq.read(CM); }
 
 void lerUltraDir() { distanciaUltraDir = ultrasonicDir.read(CM); }

@@ -94,7 +94,7 @@ void virarDireitaPorMS(unsigned long ms) {
 }
 
 void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
-  lerGiroDMP();
+  lerGiroscopioDMP();
   initialYaw = yaw; // Armazenar yaw inicial em graus
 
   float targetYaw = initialYaw - graus; // Alvo é 90 graus à direita do atual
@@ -110,7 +110,7 @@ void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
 
   while (true) {
     // Atualize a orientação atual
-    lerGiroDMP();
+    lerGiroscopioDMP();
 
     if (abs(yaw - targetYaw) <= 1)
       break; // Tolerância de 1 grau
@@ -118,7 +118,7 @@ void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
 }
 
 void virarDireitaGiro(uint8_t graus, bool umMotor) {
-  lerGiroDMP();
+  lerGiroscopioDMP();
   initialYaw = yaw; // Armazenar yaw inicial em graus
 
   float targetYaw = initialYaw + graus; // Alvo é 90 graus à esquerda do atual
@@ -135,7 +135,7 @@ void virarDireitaGiro(uint8_t graus, bool umMotor) {
 
   while (true) {
     // Atualize a orientação atual
-    lerGiroDMP();
+    lerGiroscopioDMP();
 
     if (abs(yaw - targetYaw) <= 1)
       break; // Tolerância de 1 grau

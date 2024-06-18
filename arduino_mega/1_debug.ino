@@ -33,9 +33,10 @@
         #endif
 
         #if DEBUG_REFL_FRENTE
-        sf = analogRead(SF_PIN) >> 2;
+            sf = analogRead(SF_PIN) >> 2;
 
-        Serial.print(" | sf: " + String(sf));
+            Serial.print(" | sf: ");
+            Serial.print(sf)
         #endif
 
         #if DEBUG_TCS_AMBOS
@@ -85,15 +86,38 @@
         #endif
 
         #if DEBUG_GIROSCOPIO
-            // lerGiroscopio();
-            lerGiroDMP();
-            
+            unsigned long tempoInicial3 = millis();
+            lerGiroscopio();
+            unsigned long tempoFinal3 = millis();
+            Serial.print(" | ax: ");
+            Serial.print(ax);
+            Serial.print(" ay: ");
+            Serial.print(ay);
+            Serial.print(" az: ");
+            Serial.print(az);
+            Serial.print(" gx: ");
+            Serial.print(gx);
+            Serial.print(" gy: ");
+            Serial.print(gy);
+            Serial.print(" gz: ");
+            Serial.print(gz);
+            Serial.print(" | Tempo: ");
+            Serial.print(tempoFinal3 - tempoInicial3);
+            Serial.print("ms");
+
+            unsigned long tempoInicial4 = millis();
+            lerGiroscopioDMP();
+            unsigned long tempoFinal4 = millis();
+
             Serial.print(" | yaw: ");
             Serial.print(yaw);
             Serial.print(" pitch: ");
             Serial.print(pitch);
             Serial.print(" roll: ");
             Serial.print(roll);
+            Serial.print(" | Tempo: ");
+            Serial.print(tempoFinal4 - tempoInicial4);
+            Serial.print("ms");
         #endif
 
         #if DEBUG_LASER_FRENTE
@@ -119,26 +143,18 @@
         #endif
 
         #if DEBUG_ULTRA
-            unsigned long tempoInicial3 = millis();
-            lerUltraEsq();
-            unsigned long tempoFinal3 = millis();
-            unsigned long tempoInicial4 = millis();
-            lerUltraDir();
-            unsigned long tempoFinal4 = millis();
-
             
-
+            lerUltraEsq();
+            
+            lerUltraDir();
+            
             Serial.print(" | ultraEsq: ");
             Serial.print(distanciaUltraEsq);
-            Serial.print(" | Tempo: ");
-            Serial.print(tempoFinal3 - tempoInicial3);
-            Serial.print("ms");
+            
 
             Serial.print(" ultraDir: ");
             Serial.print(distanciaUltraDir);
-            Serial.print(" | Tempo: ");
-            Serial.print(tempoFinal4 - tempoInicial4);
-            Serial.print("ms");
+            
             
         #endif
 
