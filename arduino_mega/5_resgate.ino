@@ -4,6 +4,7 @@ bool saidaDirecao; // false = diferente da entrada, true = mesma direção da
                    // entrada
 uint8_t contadorVitimas = 0;
 bool vitimaGarraViva = false;
+bool haVitimaNaGarra = false;
 
 void entrarSalaResgate() {
 
@@ -23,10 +24,17 @@ void entrarSalaResgate() {
   abrirPas();
   descerGarra();
 
-  moverFrente();
-  // moverFrente lentamente (?)
+  varredura();
+}
 
+void varredura() {
+
+  // esta função só termina quando encontrar área, parede ou saída
+  // enquanto não encontrar, verifica e recolhe vítimas
   while (true) {
+    moverFrente();
+    // moverFrente lentamente (?)
+
     // botao da area bateu
     lerBtnArea();
     if (btnAreaEsq || btnAreaDir) {
@@ -42,6 +50,19 @@ void entrarSalaResgate() {
       delayInfinito();
       // break;
     }
+
+    // reconhecer vitima
+    // lerLaserGarra();
+    // if (distanciaLaserGarra < 50) {
+    //   haVitimaNaGarra = true;
+    //   pararMotores();
+    //   pegarVitima();
+    //   abrirPas();
+    //   descerGarra();
+    //   moverTrasPorMS(100);
+    // }
+
+    // reconhecer saída
   }
 
   moverTrasPorMS(200);
@@ -61,10 +82,8 @@ void entrarSalaResgate() {
   moverFrentePorMS(800);
 
   if (btnAreaEsq) {
-    // virarEsquerdaGiro90();
     virarEsquerdaGiro45();
   } else {
-    // virarDireitaGiro90();
     virarDireitaGiro45();
   }
 
@@ -89,13 +108,13 @@ void entrarSalaResgate() {
 }
 
 void pegarVitima() {
-  // reconhecer
-  while (true) {
-    lerLaserGarra();
-    if (distanciaLaserGarra < 50) {
-      break;
-    }
-  }
+  // reconhecer vitima
+  // while (true) {
+  //   lerLaserGarra();
+  //   if (distanciaLaserGarra < 50) {
+  //     break;
+  //   }
+  // }
 
   fecharPas();
   subirGarraVerificaVitima();
@@ -107,10 +126,9 @@ void pegarVitima() {
   }
 
   abrirPas();
-  delay(400);
+  delay(250);
   fecharPas();
   rotacionarGarraMeio();
-  delay(400);
 }
 
 void identificarCorArea() {
@@ -175,5 +193,22 @@ void identificarEntradaDirecao() {
     moverTrasPorMS(1000);
     pararMotores();
     // delayInfinito();
+  }
+}
+
+void subirGarraVerificaVitima() {
+  vitimaGarraViva = false;
+  uint8_t posicaoAtual = servoSubirGarra.read();
+  while (posicaoAtual < 160) {
+    posicaoAtual++;
+    servoSubirGarra.write(posicaoAtual);
+    delay(7);
+    lerBtnVitima();
+    if (btnVitima) {
+      vitimaGarraViva = true;
+    }
+  }
+  if (vitimaGarraViva) {
+    contadorVitimas++;
   }
 }

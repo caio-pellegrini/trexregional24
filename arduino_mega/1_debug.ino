@@ -97,25 +97,49 @@
         #endif
 
         #if DEBUG_LASER_FRENTE
+            unsigned long tempoInicial = millis();
             lerLaserFrente();
+            unsigned long tempoFinal = millis();
             Serial.print(" | LaserFrente: ");
             Serial.print(distanciaLaserFrente);
+            Serial.print(" | Tempo: ");
+            Serial.print(tempoFinal - tempoInicial);
+            Serial.print("ms");
         #endif
 
         #if DEBUG_LASER_GARRA
+            unsigned long tempoInicial2 = millis();
             lerLaserGarra();
+            unsigned long tempoFinal2 = millis();
             Serial.print(" | LaserGarra: ");
             Serial.print(distanciaLaserGarra);
+            Serial.print(" | Tempo: ");
+            Serial.print(tempoFinal2 - tempoInicial2);
+            Serial.print("ms");
         #endif
 
         #if DEBUG_ULTRA
+            unsigned long tempoInicial3 = millis();
             lerUltraEsq();
+            unsigned long tempoFinal3 = millis();
+            unsigned long tempoInicial4 = millis();
             lerUltraDir();
+            unsigned long tempoFinal4 = millis();
+
+            
 
             Serial.print(" | ultraEsq: ");
             Serial.print(distanciaUltraEsq);
+            Serial.print(" | Tempo: ");
+            Serial.print(tempoFinal3 - tempoInicial3);
+            Serial.print("ms");
+
             Serial.print(" ultraDir: ");
             Serial.print(distanciaUltraDir);
+            Serial.print(" | Tempo: ");
+            Serial.print(tempoFinal4 - tempoInicial4);
+            Serial.print("ms");
+            
         #endif
 
         #if DEBUG_BOTOES

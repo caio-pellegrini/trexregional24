@@ -193,13 +193,9 @@ void lerGiroscopio() {
   mpuInterrupt = false;
 }
 
-void lerLaserFrente() {
-  distanciaLaserFrente = laserFrente.readRangeSingleMillimeters();
-}
+void lerLaserFrente() { distanciaLaserFrente = laserFrente.readRangeSingleMillimeters(); }
 
-void lerLaserGarra() {
-  distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
-}
+void lerLaserGarra() { distanciaLaserGarra = laserGarra.readRangeSingleMillimeters(); }
 
 void lerBtnArea() {
   btnAreaEsq = digitalRead(BTN_AREA_ESQ_PIN);

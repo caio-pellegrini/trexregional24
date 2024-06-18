@@ -12,13 +12,13 @@
 
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0  // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 1
-#define DEBUG_REFL_FRENTE 1
+#define DEBUG_QTRA 0
+#define DEBUG_REFL_FRENTE 0
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 0
-#define DEBUG_LASER_GARRA 0
+#define DEBUG_LASER_FRENTE 1
+#define DEBUG_LASER_GARRA 1
 #define DEBUG_ULTRA 1
 #define DEBUG_BOTOES 0
 
