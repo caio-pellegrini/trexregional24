@@ -4,10 +4,11 @@ bool saidaDirecao;      // false = diferente da entrada, true = mesma direção 
                         // entrada
 bool direcaoVarredura;  // true = sentido horario, false = antihorario
 uint8_t contadorVitimas = 0;
-uint8_t contadorVitimasMortas = 0;
-uint8_t contadorVitimasVivas = 0;
+uint8_t contTotalMortas = 0;
+uint8_t contTotalVivas = 0;
+uint8_t contCacambaMortas = 0;
+uint8_t contCacambaVivas = 0;
 bool vitimaGarraViva = false;
-bool haVitimaNaGarra = false;
 bool corAreaVermelha;
 uint8_t contadorVarreduras = 0;
 
@@ -50,14 +51,14 @@ void entrarSalaResgate() {
 
       // if (distanciaUltraDir != 0 && distanciaUltraDir <= 2) {
       //   virarEsquerdaGiro45();
-      //   moverFrentePorMS(200);
+      //   moverFrentePor(200);
       //   virarEsquerdaGiro45();
       // } else {
       //   virarEsquerdaGiro90();
       // }
     }
 
-    moverTrasPorMS(1000);
+    moverTrasPor(1000);
     pararMotores();
     abrirGarra();
     descerGarra();
@@ -70,10 +71,23 @@ void varredura() {
   moverFrenteLento();
   while (true) {
 
+    // reconhecer vitima
+    if (lerLaserGarraNaoBloquante()) {
+      if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
+        pararMotores();
+        pegarVitima();
+        moverTrasPor(200);
+        pararMotores();
+        abrirGarra();
+        descerGarra();
+        moverFrenteLento();
+      }
+    }
+
     // botao da parede bateu
     lerBtnParede();
     if (btnParedeEsq || btnParedeDir) {
-      bateuParedeVarredura();
+      encontrouParede();
       abrirGarra();
       descerGarra();
       break;
@@ -82,31 +96,17 @@ void varredura() {
     // botao da area bateu
     lerBtnArea();
     if (btnAreaEsq || btnAreaDir) {
-      bateuAreaVarredura();
+      encontrouArea();
       abrirGarra();
       descerGarra();
       break;
-    }
-
-    // reconhecer vitima
-    if (lerLaserGarraNaoBloquante()) {
-      if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
-        haVitimaNaGarra = true;
-        pararMotores();
-        pegarVitima();
-        abrirGarra();
-        moverTrasPorMS(200);
-        pararMotores();
-        descerGarra();
-        moverFrenteLento();
-      }
     }
 
     // reconhecer saída
   }
 
   contadorVarreduras++;
-  if (contadorVarreduras == 3) {
+  if (contadorVarreduras == 4) {
     pararMotores();
     ligarLed(AMBOS, VERDE);
     delayInfinito();
@@ -118,10 +118,10 @@ void pegarVitima() {
 
   fecharGarra();
 
+  // dupla verificação para ver se realmente há vitima na garra
   while (true) {
     if (lerLaserGarraNaoBloquante()) {
       if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
-        haVitimaNaGarra = true;
         break;
       } else {
         ligarLed(AMBOS, VERMELHO, 1000);
@@ -132,15 +132,32 @@ void pegarVitima() {
 
   subirGarraVerificaVitima();
 
+  contadorVitimas++;
   if (vitimaGarraViva) {
+    contCacambaVivas++;
     rotacionarGarraDir();
   } else {
+    contCacambaMortas++;
     rotacionarGarraEsq();
   }
 
   abrirGarra();
   delay(200);
   rotacionarGarraMeio();
+}
+
+void subirGarraVerificaVitima() {
+  vitimaGarraViva = false;
+  uint8_t posicaoAtual = servoSubirGarra.read();
+  while (posicaoAtual < 160) {
+    posicaoAtual++;
+    servoSubirGarra.write(posicaoAtual);
+    delay(7);
+    lerBtnVitima();
+    if (btnVitima) {
+      vitimaGarraViva = true;
+    }
+  }
 }
 
 void identificarCorArea() {
@@ -156,25 +173,8 @@ void identificarCorArea() {
   }
 }
 
-void subirGarraVerificaVitima() {
-  vitimaGarraViva = false;
-  uint8_t posicaoAtual = servoSubirGarra.read();
-  while (posicaoAtual < 160) {
-    posicaoAtual++;
-    servoSubirGarra.write(posicaoAtual);
-    delay(7);
-    lerBtnVitima();
-    if (btnVitima) {
-      vitimaGarraViva = true;
-    }
-  }
-  if (vitimaGarraViva) {
-    contadorVitimas++;
-  }
-}
-
-void bateuAreaVarredura() {
-  moverTrasPorMS(500);
+void encontrouArea() {
+  moverTrasPor(500);
   pararMotores();
 
   fecharGarra();
@@ -194,7 +194,7 @@ void bateuAreaVarredura() {
   //   return;
   // }
 
-  moverFrentePorMS(1100);
+  moverFrentePor(1100);
 
   if (btnAreaEsq) {
     virarEsquerdaGiro45();
@@ -202,39 +202,45 @@ void bateuAreaVarredura() {
     virarDireitaGiro45();
   }
 
-  moverFrentePorMS(1200);
+  moverFrentePor(1200);
   pararMotores();
 
   if (contadorVitimas != 0) {
     identificarCorArea();
   }
 
-  moverTrasPorMS(500);
+  moverTrasPor(500);
 
   // if direcao
   virarEsquerdaGiro180();
   // virarDireitaGiro180();
 
-  moverTrasPorMS(1500);
+  moverTrasPor(1500);
   pararMotores();
 
   // entregar
   if (contadorVitimas != 0) {
-    if (corAreaVermelha) {
-      abrirCancelaEsq();
-    } else {
+    if (!corAreaVermelha && contCacambaVivas > 0) {
       abrirCancelaDir();
+      contTotalVivas = contCacambaVivas;
+      contCacambaVivas = 0;
     }
-    moverFrentePorMS(300);
+    if (corAreaVermelha && contCacambaMortas > 0) {
+      abrirCancelaEsq();
+      contTotalMortas = contCacambaMortas;
+      contCacambaMortas = 0;
+    }
+    delay(500);
+    moverFrentePor(300);
     moverTrasRapidoPor(400);
-    moverFrentePorMS(300);
-    moverTrasRapido(400);
+    moverFrentePor(300);
+    moverTrasRapidoPor(400);
     pararMotores();
     delay(500);
-    if (corAreaVermelha) {
-      fecharCancelaEsq();
-    } else {
+    if (!corAreaVermelha) {
       fecharCancelaDir();
+    } else {
+      fecharCancelaEsq();
     }
   }
 
@@ -247,8 +253,8 @@ void bateuAreaVarredura() {
   pararMotores();
 }
 
-void bateuParedeVarredura() {
-  moverTrasPorMS(500);
+void encontrouParede() {
+  moverTrasPor(500);
   pararMotores();
 
   fecharGarra();
@@ -256,11 +262,11 @@ void bateuParedeVarredura() {
 
   unsigned long tempoInicial = millis();
   while (true) {
-    moverFrentePorMS(1);
+    moverFrentePor(1);
 
     if (lerLaserFrenteNaoBloquante()) {
       if (distanciaLaserFrente < 30) {
-        moverFrentePorMS(300);
+        moverFrentePor(300);
         break;
       }
     }
@@ -271,7 +277,7 @@ void bateuParedeVarredura() {
   }
 
   pararMotores();
-  moverTrasPorMS(700);
+  moverTrasPor(600);
   if (direcaoVarredura) {
     virarEsquerdaGiro90();
   } else {

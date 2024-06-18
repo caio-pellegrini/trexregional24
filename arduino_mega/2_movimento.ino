@@ -87,12 +87,12 @@ void virarEsquerdaUmMotor() {
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
-void moverFrentePorMS(unsigned long ms) {
+void moverFrentePor(unsigned long ms) {
   moverFrente();
   delay(ms);
 }
 
-void moverTrasPorMS(unsigned long ms) {
+void moverTrasPor(unsigned long ms) {
   moverTras();
   delay(ms);
 }
@@ -102,12 +102,12 @@ void moverTrasRapidoPor(unsigned long ms) {
   delay(ms);
 }
 
-void virarEsquerdaPorMS(unsigned long ms) {
+void virarEsquerdaPor(unsigned long ms) {
   virarEsquerda();
   delay(ms);
 }
 
-void virarDireitaPorMS(unsigned long ms) {
+void virarDireitaPor(unsigned long ms) {
   virarDireita();
   delay(ms);
 }

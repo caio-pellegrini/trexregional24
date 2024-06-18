@@ -184,7 +184,7 @@ void loop() {
   lerUltraDir();
   if (distanciaUltraEsq < 8 && distanciaUltraDir < 8) {
     ligarLed(AMBOS, ROXO);
-    moverFrentePorMS(500);
+    moverFrentePor(500);
     pararMotores();
     verificarGap();
   }
@@ -197,7 +197,7 @@ void loop() {
   // CORTE_QTR && se0 <= CORTE_QTR && sd0 <= CORTE_QTR && sd1 <= CORTE_QTR &&
   // sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)
   // {
-  //   moverFrentePorMS(1);
+  //   moverFrentePor(1);
   //   lerQTRATodos();
   //   lerReflFrente();
   //   if (sf <= CORTE_FRENTE && se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <=
@@ -215,7 +215,7 @@ void loop() {
   // CRUZAMENTO
   if (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR && se0 >= CORTE_QTR && sd0 >= CORTE_QTR && sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR) {
     ligarLed(AMBOS, BRANCO);
-    moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
     analisarVerde(true, true, true);
     desligarLed(AMBOS);
@@ -224,7 +224,7 @@ void loop() {
   // MEIO CRUZAMENTO ESQUERDO
   if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)) {
     ligarLed(ESQ, BRANCO);
-    moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
     analisarVerde(false, true, false);
     desligarLed(AMBOS);
@@ -233,7 +233,7 @@ void loop() {
   // MEIO CRUZAMENTO DIREITO
   if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)) {
     ligarLed(DIR, BRANCO);
-    moverTrasPorMS(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
     analisarVerde(false, false, true);
     desligarLed(AMBOS);

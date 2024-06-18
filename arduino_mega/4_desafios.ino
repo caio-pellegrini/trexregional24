@@ -21,29 +21,29 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
     ligarLed(DIR, VERMELHO); // avisa que o rgbTcsDir não recebeu dados do TCS
   }
 
-  moverFrentePorMS(TEMPO_MOVER_ANTES_CRUZ); // mover pra frente antes de virar
+  moverFrentePor(TEMPO_MOVER_ANTES_CRUZ); // mover pra frente antes de virar
 
   // Beco sem saida
   if (isBeco && verdeEsq && verdeDir) {
     virarEsquerdaGiro180();
-    moverFrentePorMS(300);
+    moverFrentePor(300);
   }
 
   // Curva à esquerda
   if (isVerdeEsquerdo && verdeEsq && !verdeDir) {
     virarEsquerdaGiro90();
-    moverFrentePorMS(200);
+    moverFrentePor(200);
   }
 
   // Curva à direita
   if (isVerdeDireito && !verdeEsq && verdeDir) {
     virarDireitaGiro90();
-    moverFrentePorMS(200);
+    moverFrentePor(200);
   }
 
   // Seguir reto
   if (!verdeEsq && !verdeDir) {
-    moverFrentePorMS(200);
+    moverFrentePor(200);
   }
 
   pararMotores();
@@ -52,15 +52,15 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
 void desviarObstaculo() {
   pararMotores();
   ligarLed(AMBOS, VERMELHO);
-  moverTrasPorMS(300);
+  moverTrasPor(300);
   virarEsquerdaGiro90();
-  moverFrentePorMS(1100);
+  moverFrentePor(1100);
   virarDireitaGiro90();
-  moverFrentePorMS(2300);
+  moverFrentePor(2300);
   virarDireitaGiro90();
-  moverFrentePorMS(1100);
+  moverFrentePor(1100);
   virarEsquerdaGiro90();
-  moverTrasPorMS(100);
+  moverTrasPor(100);
   desligarLed(AMBOS);
 }
 
@@ -68,7 +68,7 @@ void verificarGap() {
   ligarLed(AMBOS, AMARELO);
   unsigned long tempoInicial = millis();
 
-  moverTrasPorMS(100);
+  moverTrasPor(100);
   pararMotores();
   delay(300);
   lerTcsAmbos();
@@ -81,10 +81,10 @@ void verificarGap() {
     return;
   }
 
-  moverFrentePorMS(100);
+  moverFrentePor(100);
 
   while (true) {
-    moverFrentePorMS(1);
+    moverFrentePor(1);
     lerQTRATodos();
 
     if (se3 > CORTE_QTR || se2 > CORTE_QTR || se1 > CORTE_QTR ||
