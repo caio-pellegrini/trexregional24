@@ -18,10 +18,10 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
       verdeDir = true;
     }
   } else {
-    ligarLed(DIR, VERMELHO); // avisa que o rgbTcsDir não recebeu dados do TCS
+    ligarLed(DIR, VERMELHO);  // avisa que o rgbTcsDir não recebeu dados do TCS
   }
 
-  moverFrentePor(TEMPO_MOVER_ANTES_CRUZ); // mover pra frente antes de virar
+  moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);  // mover pra frente antes de virar
 
   // Beco sem saida
   if (isBeco && verdeEsq && verdeDir) {
@@ -49,17 +49,48 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
   pararMotores();
 }
 
-void desviarObstaculo() {
+void desviarObstaculo(bool isEsquerdo) {
   pararMotores();
+  delay(50);
+  lerLaserFrente();
+  if (distanciaLaserFrente == 0 || distanciaLaserFrente >= DIST_OBSTACULO) {
+    return;
+  }
   ligarLed(AMBOS, VERMELHO);
   moverTrasPor(300);
-  virarEsquerdaGiro90();
+  if (isEsquerdo) {
+    virarEsquerdaGiro90();
+  } else {
+    virarDireitaGiro90();
+  }
   moverFrentePor(1100);
-  virarDireitaGiro90();
+  if (isEsquerdo) {
+    virarDireitaGiro90();
+  } else {
+    virarEsquerdaGiro90();
+  }
   moverFrentePor(2300);
-  virarDireitaGiro90();
-  moverFrentePor(1100);
-  virarEsquerdaGiro90();
+  if (isEsquerdo) {
+    virarDireitaGiro90();
+  } else {
+    virarEsquerdaGiro90();
+  }
+  unsigned long tempoInicial = millis();
+  while (millis() - tempoInicial < 1100) {
+    moverFrentePor(1);
+    lerQTRATodos();
+    if (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR && se0 >= CORTE_QTR && sd0 >= CORTE_QTR && sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR) {
+      pararMotores();
+      delay(500);
+      moverFrentePor(150);
+      break;
+    }
+  }
+  if (isEsquerdo) {
+    virarEsquerdaGiro90();
+  } else {
+    virarDireitaGiro90();
+  }
   moverTrasPor(100);
   desligarLed(AMBOS);
 }
@@ -74,8 +105,7 @@ void verificarGap() {
   lerTcsAmbos();
   lerTcsAmbos();
 
-  if (rgbTcsEsq[0] > rgbTcsEsq[1] && rgbTcsEsq[0] > rgbTcsEsq[2] &&
-      rgbTcsDir[0] > rgbTcsDir[1] && rgbTcsDir[0] > rgbTcsDir[2]) {
+  if (rgbTcsEsq[0] > rgbTcsEsq[1] && rgbTcsEsq[0] > rgbTcsEsq[2] && rgbTcsDir[0] > rgbTcsDir[1] && rgbTcsDir[0] > rgbTcsDir[2]) {
     ligarLed(AMBOS, VERMELHO);
     delayInfinito();
     return;
@@ -87,9 +117,7 @@ void verificarGap() {
     moverFrentePor(1);
     lerQTRATodos();
 
-    if (se3 > CORTE_QTR || se2 > CORTE_QTR || se1 > CORTE_QTR ||
-        se0 > CORTE_QTR || sd0 > CORTE_QTR || sd1 > CORTE_QTR ||
-        sd2 > CORTE_QTR || sd3 > CORTE_QTR) {
+    if (se3 > CORTE_QTR || se2 > CORTE_QTR || se1 > CORTE_QTR || se0 > CORTE_QTR || sd0 > CORTE_QTR || sd1 > CORTE_QTR || sd2 > CORTE_QTR || sd3 > CORTE_QTR) {
       desligarLed(AMBOS);
       pararMotores();
       delay(200);
@@ -97,8 +125,7 @@ void verificarGap() {
     }
 
     // VALOR DE ENTRADA PARA SALA DE RESGATE
-    if (millis() - tempoInicial >= 2000)
-    {
+    if (millis() - tempoInicial >= 2000) {
       pararMotores();
       ligarLed(AMBOS, ROXO, 500);
       salaDeResgate();

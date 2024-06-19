@@ -2,47 +2,47 @@
 
 void seguirLinhaEsquerda(uint8_t ms) {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
-  analogWrite(MOTOR_ESQ_T_PIN, VEL_MOTOR_SEG_MIN);
-  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_SEG_MAX);
+  analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_MIN));
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_MAX));
   analogWrite(MOTOR_DIR_T_PIN, 0);
   delay(ms);
 }
 
 void seguirLinhaDireita(uint8_t ms) {
-  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_SEG_MAX);
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_MAX));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, 0);
-  analogWrite(MOTOR_DIR_T_PIN, VEL_MOTOR_SEG_MIN);
+  analogWrite(MOTOR_DIR_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_MIN));
   delay(ms);
 }
 
 void seguidorMoverFrente() {
-  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_SEG_FRENTE);
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_FRENTE));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
-  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_SEG_FRENTE);
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_FRENTE));
   analogWrite(MOTOR_DIR_T_PIN, 0);
   delay(1);
 }
 
 void moverFrente() {
-  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_FRENTE);
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_FRENTE));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
-  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_FRENTE);
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_FRENTE));
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
 void moverFrenteLento() {
-  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(35));
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(32));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
-  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(35));
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(32));
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
 void moverTras() {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
-  analogWrite(MOTOR_ESQ_T_PIN, VEL_MOTOR_TRAS);
+  analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_TRAS));
   analogWrite(MOTOR_DIR_F_PIN, 0);
-  analogWrite(MOTOR_DIR_T_PIN, VEL_MOTOR_TRAS);
+  analogWrite(MOTOR_DIR_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_TRAS));
 }
 
 void moverTrasRapido() {
@@ -61,20 +61,20 @@ void pararMotores() {
 
 void virarEsquerda() {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
-  analogWrite(MOTOR_ESQ_T_PIN, VEL_MOTOR_CURVA);
-  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
 void virarDireita() {
-  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, 0);
-  analogWrite(MOTOR_DIR_T_PIN, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_DIR_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
 }
 
 void virarDireitaUmMotor() {
-  analogWrite(MOTOR_ESQ_F_PIN, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, 0);
   analogWrite(MOTOR_DIR_T_PIN, 0);
@@ -83,7 +83,7 @@ void virarDireitaUmMotor() {
 void virarEsquerdaUmMotor() {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
   analogWrite(MOTOR_ESQ_T_PIN, 0);
-  analogWrite(MOTOR_DIR_F_PIN, VEL_MOTOR_CURVA);
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
@@ -115,7 +115,6 @@ void virarDireitaPor(unsigned long ms) {
 void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
   lerGiroscopioDMP();
   initialYaw = yaw; // Armazenar yaw inicial em graus
-
   float targetYaw = initialYaw - graus; // Alvo é 90 graus à direita do atual
   if (targetYaw < -180)
     targetYaw += 360; // Correção de ângulo
@@ -130,7 +129,6 @@ void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
   while (true) {
     // Atualize a orientação atual
     lerGiroscopioDMP();
-
     if (abs(yaw - targetYaw) <= 1)
       break; // Tolerância de 1 grau
   }
@@ -139,7 +137,6 @@ void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
 void virarDireitaGiro(uint8_t graus, bool umMotor) {
   lerGiroscopioDMP();
   initialYaw = yaw; // Armazenar yaw inicial em graus
-
   float targetYaw = initialYaw + graus; // Alvo é 90 graus à esquerda do atual
   if (targetYaw > 180) {
     targetYaw -= 360; // Correção de ângulo
@@ -155,7 +152,6 @@ void virarDireitaGiro(uint8_t graus, bool umMotor) {
   while (true) {
     // Atualize a orientação atual
     lerGiroscopioDMP();
-
     if (abs(yaw - targetYaw) <= 1)
       break; // Tolerância de 1 grau
   }
@@ -190,13 +186,15 @@ void movimentarServo(Servo *servo, uint8_t posicaoFinal, uint8_t velocidade) {
   }
 }
 
-void fecharGarra() { movimentarServo(&servoPaGarra, 80, 3); }
+void fecharGarra() { movimentarServo(&servoPaGarra, SERVO_PA_GARRA_POS_INICIAL, 3); }
 
 void abrirGarra() { movimentarServo(&servoPaGarra, 10, 3); }
 
-void subirGarra() { movimentarServo(&servoSubirGarra, 160, 7); }
+void subirGarra() { movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6); }
 
-void descerGarra() { movimentarServo(&servoSubirGarra, 0, 7); }
+void descerGarraRampa() { movimentarServo(&servoSubirGarra, 5, 3); }
+
+void descerGarra() { movimentarServo(&servoSubirGarra, 0, 6); }
 
 void rotacionarGarraDir() { movimentarServo(&servoRotacionarGarra, 90, 10); }
 

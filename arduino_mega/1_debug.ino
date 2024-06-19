@@ -70,44 +70,29 @@
             Serial.print(rgbTcsFrente[1]);
             Serial.print(",B:");
             Serial.print(rgbTcsFrente[2]);
-
-            // Serial.print(" corArea: ");
-            // corArea = lerCorArea(&tcsArea);
-            // Serial.print(corArea);
-            // tcaDesligar();
-            // if (corArea == 1)
-            // {
-            //     ligarLed(AMBOS, VERDE, 500);
-            // }
-            // else if (corArea == 2)
-            // {
-            //     ligarLed(AMBOS, VERMELHO, 500);
-            // }
         #endif
 
         #if DEBUG_GIROSCOPIO
-            unsigned long tempoInicial3 = millis();
-            lerGiroscopio();
-            unsigned long tempoFinal3 = millis();
-            Serial.print(" | ax: ");
-            Serial.print(ax);
-            Serial.print(" ay: ");
-            Serial.print(ay);
-            Serial.print(" az: ");
-            Serial.print(az);
-            Serial.print(" gx: ");
-            Serial.print(gx);
-            Serial.print(" gy: ");
-            Serial.print(gy);
-            Serial.print(" gz: ");
-            Serial.print(gz);
-            Serial.print(" | Tempo: ");
-            Serial.print(tempoFinal3 - tempoInicial3);
-            Serial.print("ms");
+            // unsigned long tempoInicial3 = millis();
+            // lerGiroscopio();
+            // unsigned long tempoFinal3 = millis();
+            // Serial.print(" | ax: ");
+            // Serial.print(ax);
+            // Serial.print(" ay: ");
+            // Serial.print(ay);
+            // Serial.print(" az: ");
+            // Serial.print(az);
+            // Serial.print(" gx: ");
+            // Serial.print(gx);
+            // Serial.print(" gy: ");
+            // Serial.print(gy);
+            // Serial.print(" gz: ");
+            // Serial.print(gz);
+            // Serial.print(" | Tempo: ");
+            // Serial.print(tempoFinal3 - tempoInicial3);
+            // Serial.print("ms");
 
-            unsigned long tempoInicial4 = millis();
             lerGiroscopioDMP();
-            unsigned long tempoFinal4 = millis();
 
             Serial.print(" | yaw: ");
             Serial.print(yaw);
@@ -115,9 +100,6 @@
             Serial.print(pitch);
             Serial.print(" roll: ");
             Serial.print(roll);
-            Serial.print(" | Tempo: ");
-            Serial.print(tempoFinal4 - tempoInicial4);
-            Serial.print("ms");
         #endif
 
         #if DEBUG_LASER_FRENTE
@@ -132,14 +114,32 @@
         #endif
 
         #if DEBUG_LASER_GARRA
-            unsigned long tempoInicial2 = millis();
-            lerLaserGarra();
-            unsigned long tempoFinal2 = millis();
-            Serial.print(" | LaserGarra: ");
+            // unsigned long tempoInicial2 = millis();
+            // lerLaserGarra();
+            // unsigned long tempoFinal2 = millis();
+
+            // Serial.print(" | LaserGarra: ");
+            // Serial.print(distanciaLaserGarra);
+            // Serial.print(" | Tempo: ");
+            // Serial.print(tempoFinal2 - tempoInicial2);
+            // Serial.print("ms");
+
+            unsigned long tempoInicial3 = millis();
+            distanciaLaserGarra = 0;
+            while(true) {
+                lerLaserGarraNaoBloquante();
+                if (distanciaLaserGarra != 0) {
+                    break;
+                }
+            };
+            unsigned long tempoFinal3 = millis();
+
+            Serial.print(" | LaserGarraNaoBlock: ");
             Serial.print(distanciaLaserGarra);
             Serial.print(" | Tempo: ");
-            Serial.print(tempoFinal2 - tempoInicial2);
+            Serial.print(tempoFinal3 - tempoInicial3);
             Serial.print("ms");
+
         #endif
 
         #if DEBUG_ULTRA

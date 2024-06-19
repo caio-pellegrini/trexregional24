@@ -15,6 +15,34 @@ uint8_t contadorVarreduras = 0;
 void salaDeResgate() {
   entrarSalaResgate();
   varredura();
+
+  laserGarra.stopContinuous();
+  // delay(10);
+  // laserGarra.init();
+  laserGarra.startContinuous();
+  
+  varredura();
+
+  laserGarra.stopContinuous();
+  // delay(10);
+  // laserGarra.init();
+  laserGarra.startContinuous();
+
+  varredura();
+
+  laserGarra.stopContinuous();
+  // delay(10);
+  // laserGarra.init();
+  laserGarra.startContinuous();
+
+  varredura();
+
+  contadorVarreduras++;
+  if (contadorVarreduras == 4) {
+    pararMotores();
+    ligarLed(AMBOS, VERDE);
+    delayInfinito();
+  }
 }
 
 void entrarSalaResgate() {
@@ -24,6 +52,8 @@ void entrarSalaResgate() {
   servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
   servoCancelaEsq.attach(SERVO_CANCELA_ESQ_PIN);
   servoCancelaDir.attach(SERVO_CANCELA_DIR_PIN);
+
+  laserGarra.startContinuous();
 
   desligarLed(AMBOS);  // desliga led roxo
 
@@ -42,54 +72,56 @@ void entrarSalaResgate() {
       entradaDirecao = false;
       ligarLed(ESQ, AZUL, 1000);
       virarDireitaGiro90();
-
     } else {
       // PAREDE ESTA NA DIREITA
       entradaDirecao = true;
       ligarLed(DIR, AZUL, 1000);
       virarEsquerdaGiro90();
-
-      // if (distanciaUltraDir != 0 && distanciaUltraDir <= 2) {
-      //   virarEsquerdaGiro45();
-      //   moverFrentePor(200);
-      //   virarEsquerdaGiro45();
-      // } else {
-      //   virarEsquerdaGiro90();
-      // }
     }
 
     moverTrasPor(1000);
     pararMotores();
-    abrirGarra();
-    descerGarra();
   }
 }
 
 void varredura() {
   // esta função só termina quando encontrar área, parede ou saída
   // enquanto não encontrar, verifica e recolhe vítimas
+  abrirGarra();
+  descerGarra();
   moverFrenteLento();
-  while (true) {
 
-    // reconhecer vitima
-    if (lerLaserGarraNaoBloquante()) {
-      if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
-        pararMotores();
-        pegarVitima();
-        moverTrasPor(200);
-        pararMotores();
-        abrirGarra();
-        descerGarra();
-        moverFrenteLento();
-      }
+  while (true) {
+    // distanciaLaserGarra = 0;
+    // // reconhecer vitima
+    // if (lerLaserGarraNaoBloquante()) {
+    //   if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
+    //     pararMotores();
+    //     pegarVitima();
+    //     moverTrasPor(200);
+    //     pararMotores();
+    //     abrirGarra();
+    //     descerGarra();
+    //     moverFrenteLento();
+    //   }
+    // }
+    lerLaserGarra();
+    // Serial.println(distanciaLaserGarra);
+    if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
+      pararMotores();
+      pegarVitima();
+      moverTrasPor(200);
+      pararMotores();
+      abrirGarra();
+      descerGarra();
+      moverFrenteLento();
     }
+
 
     // botao da parede bateu
     lerBtnParede();
     if (btnParedeEsq || btnParedeDir) {
       encontrouParede();
-      abrirGarra();
-      descerGarra();
       break;
     }
 
@@ -97,38 +129,50 @@ void varredura() {
     lerBtnArea();
     if (btnAreaEsq || btnAreaDir) {
       encontrouArea();
-      abrirGarra();
-      descerGarra();
       break;
     }
 
     // reconhecer saída
   }
-
-  contadorVarreduras++;
-  if (contadorVarreduras == 4) {
-    pararMotores();
-    ligarLed(AMBOS, VERDE);
-    delayInfinito();
-  }
-  varredura();
 }
 
 void pegarVitima() {
 
-  fecharGarra();
+  fecharGarraVerificaBotao();
 
   // dupla verificação para ver se realmente há vitima na garra
-  while (true) {
-    if (lerLaserGarraNaoBloquante()) {
-      if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
-        break;
-      } else {
-        ligarLed(AMBOS, VERMELHO, 1000);
-        return;
-      }
+  lerBtnVitima();
+  lerBtnVitima();
+  // verifica viva
+  if (!btnVitima) {
+    // unsigned long tempoInicial = millis();
+    // while (millis() - tempoInicial < 500) {
+    //   // verifica viva ou morta
+    //   if (lerLaserGarraNaoBloquante()) {
+    //     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
+    //       break;
+    //     }
+    //   }
+    // }
+    // if (distanciaLaserGarra >= DIST_LASER_GARRA_VIT) {
+    //   return;
+    // }
+
+    // while (true) {
+    //   distanciaLaserGarra = 0;
+    //   lerLaserGarraNaoBloquante();
+    //   if (distanciaLaserGarra != 0) {
+    //     break;
+    //   }
+    // }
+    lerLaserGarra();
+    lerLaserGarra();
+
+    if (distanciaLaserGarra >= DIST_LASER_GARRA_VIT) {
+      return;
     }
   }
+
 
   subirGarraVerificaVitima();
 
@@ -146,53 +190,14 @@ void pegarVitima() {
   rotacionarGarraMeio();
 }
 
-void subirGarraVerificaVitima() {
-  vitimaGarraViva = false;
-  uint8_t posicaoAtual = servoSubirGarra.read();
-  while (posicaoAtual < 160) {
-    posicaoAtual++;
-    servoSubirGarra.write(posicaoAtual);
-    delay(7);
-    lerBtnVitima();
-    if (btnVitima) {
-      vitimaGarraViva = true;
-    }
-  }
-}
-
-void identificarCorArea() {
-  lerTcsFrente();
-  lerTcsFrente();
-
-  if (rgbTcsFrente[0] > rgbTcsFrente[1] && rgbTcsFrente[0] > rgbTcsFrente[2]) {
-    ligarLed(AMBOS, VERMELHO, 1000);
-    corAreaVermelha = true;
-  } else {
-    ligarLed(AMBOS, VERDE, 1000);
-    corAreaVermelha = false;
-  }
-}
-
 void encontrouArea() {
-  moverTrasPor(500);
+  moverTrasPor(400);
   pararMotores();
 
-  fecharGarra();
-  subirGarraVerificaVitima();
-
-  // se houver alguma vitima na garra, parar para ler
-  // se nao, continuar a varredura
-
-  // if (contadorVitimas == 0) {
-  //   if (direcaoVarredura) {
-  //     virarEsquerdaGiro90();
-  //   } else {
-  //     virarDireitaGiro90();
-  //   }
-  //   pararMotores();
-
-  //   return;
-  // }
+  pegarVitima();
+  subirGarra();
+  // fecharGarra();
+  // subirGarra();
 
   moverFrentePor(1100);
 
@@ -206,7 +211,17 @@ void encontrouArea() {
   pararMotores();
 
   if (contadorVitimas != 0) {
-    identificarCorArea();
+    // identificar cor da área
+    lerTcsFrente();
+    lerTcsFrente();
+
+    if (rgbTcsFrente[0] > rgbTcsFrente[1] && rgbTcsFrente[0] > rgbTcsFrente[2]) {
+      ligarLed(AMBOS, VERMELHO);
+      corAreaVermelha = true;
+    } else {
+      ligarLed(AMBOS, VERDE);
+      corAreaVermelha = false;
+    }
   }
 
   moverTrasPor(500);
@@ -214,6 +229,8 @@ void encontrouArea() {
   // if direcao
   virarEsquerdaGiro180();
   // virarDireitaGiro180();
+
+  desligarLed(AMBOS);
 
   moverTrasPor(1500);
   pararMotores();
@@ -224,26 +241,29 @@ void encontrouArea() {
       abrirCancelaDir();
       contTotalVivas = contCacambaVivas;
       contCacambaVivas = 0;
+      delay(500);
+      moverFrentePor(300);
+      moverTrasRapidoPor(400);
+      moverFrentePor(300);
+      moverTrasRapidoPor(400);
+      pararMotores();
+      delay(500);
+      fecharCancelaDir();
     }
     if (corAreaVermelha && contCacambaMortas > 0) {
       abrirCancelaEsq();
       contTotalMortas = contCacambaMortas;
       contCacambaMortas = 0;
-    }
-    delay(500);
-    moverFrentePor(300);
-    moverTrasRapidoPor(400);
-    moverFrentePor(300);
-    moverTrasRapidoPor(400);
-    pararMotores();
-    delay(500);
-    if (!corAreaVermelha) {
-      fecharCancelaDir();
-    } else {
+      delay(500);
+      moverFrentePor(300);
+      moverTrasRapidoPor(400);
+      moverFrentePor(300);
+      moverTrasRapidoPor(400);
+      pararMotores();
+      delay(500);
       fecharCancelaEsq();
     }
   }
-
 
   if (btnAreaEsq) {
     virarEsquerdaGiro45();
@@ -254,11 +274,11 @@ void encontrouArea() {
 }
 
 void encontrouParede() {
-  moverTrasPor(500);
+  moverTrasPor(400);
   pararMotores();
 
-  fecharGarra();
-  subirGarraVerificaVitima();
+  pegarVitima();
+  subirGarra();
 
   unsigned long tempoInicial = millis();
   while (true) {
@@ -278,11 +298,64 @@ void encontrouParede() {
 
   pararMotores();
   moverTrasPor(600);
-  if (direcaoVarredura) {
-    virarEsquerdaGiro90();
-  } else {
+  if (entradaDirecao) {
     virarDireitaGiro90();
+  } else {
+    virarEsquerdaGiro90();
   }
   moverTrasRapidoPor(1000);
   pararMotores();
+}
+
+void subirGarraVerificaVitima() {
+  uint8_t posicaoFinal = SERVO_SUBIR_GARRA_POS_INICIAL;
+  uint8_t velocidade = 6;
+  vitimaGarraViva = false;
+
+  uint8_t posicaoAtual = servoSubirGarra.read();
+  while (posicaoAtual < posicaoFinal) {
+    posicaoAtual++;
+    servoSubirGarra.write(posicaoAtual);
+    delay(6);
+    lerBtnVitima();
+    if (btnVitima) {
+      vitimaGarraViva = true;
+    }
+  }
+}
+
+void fecharGarraVerificaBotao() {
+  uint8_t posicaoFinal = SERVO_PA_GARRA_POS_INICIAL;
+  uint8_t velocidade = 5;
+  uint8_t posicaoAtual = servoPaGarra.read();
+  int8_t passo = posicaoAtual > posicaoFinal ? -1 : 1;
+
+  bool btnAntes[4] = { btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir };
+
+  while (posicaoAtual != posicaoFinal) {
+    posicaoAtual += passo;
+    servoPaGarra.write(posicaoAtual);
+    delay(velocidade);
+
+    lerBtnArea();
+    lerBtnParede();
+
+    if (btnAreaEsq || btnAreaDir || btnParedeEsq || btnParedeDir) {
+      break;
+    }
+  }
+  btnAreaEsq = btnAntes[0];
+  btnAreaDir = btnAntes[1];
+  btnParedeEsq = btnAntes[2];
+  btnParedeDir = btnAntes[3];
+
+  if (posicaoAtual != posicaoFinal) {
+    moverTrasPor(75);
+    pararMotores();
+    abrirGarra();
+    fecharGarraVerificaBotao();
+  }
+}
+
+void identificarCorArea() {
 }

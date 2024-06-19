@@ -1,11 +1,3 @@
-/*
-  Nome do Projeto: Código para horácio júnior
-  Descrição: Sketch para controlar um robô seguidor de linha.
-  Autor: Caio P.
-  Data: 10/01/2024
-  Versão: 1.0
-*/
-
 #include "mega_def.h"
 
 #define DEBUG 0
@@ -16,8 +8,8 @@
 #define DEBUG_REFL_FRENTE 0
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 1
+#define DEBUG_GIROSCOPIO 1
+#define DEBUG_LASER_FRENTE 0
 #define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
@@ -30,18 +22,20 @@
 #define CORTE_VERDE_DIR 45
 #define CORTE_VERMELHO_CRUZ 100
 
-#define VEL_MOTOR_FRENTE CONVERT_8B_DEC(50)
-#define VEL_MOTOR_TRAS CONVERT_8B_DEC(40)
-#define VEL_MOTOR_CURVA CONVERT_8B_DEC(50)
+// USE VALORES DE 0 A 100
+#define VEL_MOTOR_FRENTE 50
+#define VEL_MOTOR_TRAS 40
+#define VEL_MOTOR_CURVA 50
 
-#define VEL_MOTOR_SEG_FRENTE CONVERT_8B_DEC(36)
-#define VEL_MOTOR_SEG_MAX CONVERT_8B_DEC(76)
-#define VEL_MOTOR_SEG_MIN CONVERT_8B_DEC(73)
+#define VEL_MOTOR_SEG_FRENTE 36
+#define VEL_MOTOR_SEG_MAX 75
+#define VEL_MOTOR_SEG_MIN 70
 
 #define TEMPO_MOVER_ANTES_ANALISAR_VERDE 160
 #define TEMPO_MOVER_ANTES_CRUZ 375
 
-#define DIST_LASER_GARRA_VIT 40
+#define DIST_LASER_GARRA_VIT 47
+#define DIST_OBSTACULO 70
 
 void setup() {
   // DEFINIÇÕES DE PINOS DOS LEDS
@@ -84,7 +78,7 @@ void setup() {
   Serial.println(laserGarra.init() ? "Laser Garra conectado :)"
                                    : "Laser Garra falhou :(");
   laserGarra.setAddress(LASER_GARRA_ENDERECO);
-  laserGarra.startContinuous();
+
   // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
 
   // i2c_scanner();
@@ -158,27 +152,60 @@ void setup() {
 }
 
 void loop() {
-  #if DEBUG
-    #if DEBUG_CALIBRACAO
-      calibrar();
-    #endif
-    #if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
-      return;
-    #endif
-  #endif
+#if DEBUG
+#if DEBUG_CALIBRACAO
+  calibrar();
+#endif
+#if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
+  return;
+#endif
+#endif
 
   // leitura não bloqueante
   if (lerLaserFrenteNaoBloquante()) {
-    if (distanciaLaserFrente != 0 && distanciaLaserFrente <= 70) {
-      // !laserFrente.timeoutOccurred() && 
-      desviarObstaculo();
-      // reconhecerPegarVitima();
+    if (distanciaLaserFrente != 0 && distanciaLaserFrente <= DIST_OBSTACULO) {
+      // !laserFrente.timeoutOccurred() &&
+      desviarObstaculo(false);
     }
   };
 
   // unsigned long tempoAtual = millis();
 
   lerGiroscopioDMP();
+  if (pitch > 12) {
+    ligarLed(AMBOS, AZUL);
+    pararMotores(); 
+    delay(50);
+    lerGiroscopioDMP();
+    if (pitch > 12) {
+      servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+      descerGarraRampa();
+      while (pitch > 12) {
+        lerGiroscopioDMP();
+        analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(50));
+        analogWrite(MOTOR_ESQ_T_PIN, 0);
+        analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(50));
+        analogWrite(MOTOR_DIR_T_PIN, 0);
+        delay(3);
+
+        lerQTRASegueLinha();
+
+        if (se1 >= CORTE_QTR || se2 >= CORTE_QTR) {
+          seguirLinhaEsquerda(1);
+        }
+
+        if (sd1 >= CORTE_QTR || sd2 >= CORTE_QTR) {
+          seguirLinhaDireita(1);
+        }
+      }
+      subirGarra();
+      servoSubirGarra.detach();
+    }
+    moverTrasPor(100);
+    pararMotores();
+    desligarLed(AMBOS);
+  }
+
 
   lerUltraEsq();
   lerUltraDir();
@@ -252,6 +279,7 @@ void loop() {
     seguirLinhaEsquerda(12);
     // desligarLed(AMBOS);
   }
+  // passar lá pra baixo
 
   // SEGUIDOR DE LINHA
 
