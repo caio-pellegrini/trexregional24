@@ -136,6 +136,7 @@ void varredura() {
 }
 
 void pegarVitima() {
+  // PROBLEMA DA PAREDE TÁ NESSA FUNÇÃO
 
   fecharGarraVerificaBotao();
 
@@ -144,26 +145,6 @@ void pegarVitima() {
   lerBtnVitima();
   // verifica viva
   if (!btnVitima) {
-    // unsigned long tempoInicial = millis();
-    // while (millis() - tempoInicial < 500) {
-    //   // verifica viva ou morta
-    //   if (lerLaserGarraNaoBloquante()) {
-    //     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
-    //       break;
-    //     }
-    //   }
-    // }
-    // if (distanciaLaserGarra >= DIST_LASER_GARRA_VIT) {
-    //   return;
-    // }
-
-    // while (true) {
-    //   distanciaLaserGarra = 0;
-    //   lerLaserGarraNaoBloquante();
-    //   if (distanciaLaserGarra != 0) {
-    //     break;
-    //   }
-    // }
     lerLaserGarra();
     lerLaserGarra();
 
@@ -199,7 +180,7 @@ void encontrouArea() {
 
   moverFrentePor(1100);
 
-  if (btnAreaEsq) {
+  if (entradaDirecao) {
     virarEsquerdaGiro45();
   } else {
     virarDireitaGiro45();
@@ -314,7 +295,7 @@ void subirGarraVerificaVitima() {
   while (posicaoAtual < posicaoFinal) {
     posicaoAtual++;
     servoSubirGarra.write(posicaoAtual);
-    delay(6);
+    delay(velocidade);
     lerBtnVitima();
     if (btnVitima) {
       vitimaGarraViva = true;
@@ -328,7 +309,7 @@ void fecharGarraVerificaBotao() {
   uint8_t posicaoAtual = servoPaGarra.read();
   int8_t passo = posicaoAtual > posicaoFinal ? -1 : 1;
 
-  bool btnAntes[4] = { btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir };
+  // bool btnAntes[4] = { btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir };
 
   while (posicaoAtual != posicaoFinal) {
     posicaoAtual += passo;
@@ -339,17 +320,15 @@ void fecharGarraVerificaBotao() {
     lerBtnParede();
 
     if (btnAreaEsq || btnAreaDir || btnParedeEsq || btnParedeDir) {
-      moverTrasPor(75);
+      moverTrasPor(200);
       pararMotores();
-      abrirGarra();
-      posicaoAtual = servoPaGarra.read();
-      passo = posicaoAtual > posicaoFinal ? -1 : 1;
+      delay(100);
     }
   }
-  btnAreaEsq = btnAntes[0];
-  btnAreaDir = btnAntes[1];
-  btnParedeEsq = btnAntes[2];
-  btnParedeDir = btnAntes[3];
+  // btnAreaEsq = btnAntes[0];
+  // btnAreaDir = btnAntes[1];
+  // btnParedeEsq = btnAntes[2];
+  // btnParedeDir = btnAntes[3];
 }
 
 void varreduraSaida() {

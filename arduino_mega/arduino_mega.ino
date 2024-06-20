@@ -4,22 +4,22 @@
 
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0  // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 0
-#define DEBUG_REFL_FRENTE 0
+#define DEBUG_QTRA 1
+#define DEBUG_REFL_FRENTE 1
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 1
+#define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR 200
-#define CORTE_FRENTE 55  // 6 no branco e 110 no preto
-#define CORTE_2 165
+#define CORTE_QTR_P 201 // acima é preto - papel 208
+#define CORTE_QTR_B 165  // abaixo  é branco - papel 147
+#define CORTE_FRENTE 30  // abaixo é branco e acima é preto - papel 11
 
 #define CORTE_VERDE_ESQ 65  // abaixo disso é verde
-#define CORTE_VERDE_DIR 45
+#define CORTE_VERDE_DIR 50
 #define CORTE_VERMELHO_CRUZ 100
 
 // USE VALORES DE 0 A 100
@@ -27,11 +27,11 @@
 #define VEL_MOTOR_TRAS 40
 #define VEL_MOTOR_CURVA 50
 
-#define VEL_MOTOR_SEG_FRENTE 33
-#define VEL_MOTOR_SEG_MAX 75
-#define VEL_MOTOR_SEG_MIN 69
+#define VEL_MOTOR_SEG_FRENTE 34
+#define VEL_MOTOR_SEG_MAX 73
+#define VEL_MOTOR_SEG_MIN 67
 
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 160
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 130
 #define TEMPO_MOVER_ANTES_CRUZ 375
 
 #define DIST_LASER_GARRA_VIT 47
@@ -66,7 +66,6 @@ void setup() {
   laserFrente.setTimeout(500);  // padrão 500
   Serial.println(laserFrente.init() ? "Laser Frente conectado :)"
                                     : "Laser Frente falhou :(");
-  // while (1) {}
   laserFrente.setAddress(LASER_FRENTE_ENDERECO);
   laserFrente.startContinuous();  // Inicia leituras contínuas
 
@@ -152,31 +151,21 @@ void setup() {
 }
 
 void loop() {
-#if DEBUG
-#if DEBUG_CALIBRACAO
-  calibrar();
-#endif
-#if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
-  return;
-#endif
-#endif
-
-  // leitura não bloqueante
-  if (lerLaserFrenteNaoBloquante()) {
-    if (distanciaLaserFrente != 0 && distanciaLaserFrente <= DIST_OBSTACULO) {
-      // !laserFrente.timeoutOccurred() &&
-      desviarObstaculo(false);
-    }
-  };
+  #if DEBUG
+  #if DEBUG_CALIBRACAO
+    calibrar();
+  #endif
+  #if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
+    return;
+  #endif
+  #endif
 
   // unsigned long tempoAtual = millis();
 
   lerGiroscopioDMP();
-
   if (pitch > 12) {
-    rampa();
+    rampaOuGangorra();
   }
-
 
   lerUltraEsq();
   lerUltraDir();
@@ -190,12 +179,13 @@ void loop() {
   lerQTRATodos();
   lerReflFrente();
 
-  if (se3 <= CORTE_2 && se2 <= CORTE_2 && se1 <= CORTE_2 && se0 <= CORTE_2 && sd0 <= CORTE_2 && sd1 <= CORTE_2 && sd2 <= CORTE_2 && sd3 <= CORTE_2) {
+  // se for papel - se3 <= (CORTE_QTR_B - 20)
+  if (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && se0 <= CORTE_QTR_B && sd0 <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B) {
     verificarGap();
   }
 
   // CRUZAMENTO
-  if (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR && se0 >= CORTE_QTR && sd0 >= CORTE_QTR && sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR) {
+  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
     ligarLed(AMBOS, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
@@ -204,33 +194,24 @@ void loop() {
   }
 
   // MEIO CRUZAMENTO ESQUERDO
-  if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)) {
+  if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
     ligarLed(ESQ, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(false, true, false);
+    analisarVerde(true, true, true); // false, true, false
     desligarLed(AMBOS);
   }
 
   // MEIO CRUZAMENTO DIREITO
-  if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)) {
+  if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
     ligarLed(DIR, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(false, false, true);
+    analisarVerde(true, true, true); // false, false, true
     desligarLed(AMBOS);
   }
 
-  // 90 GRAUS DIREITO
-  if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)) {
-    seguirLinhaDireita(12);
-  }
-
-  // 90 GRAUS ESQUERDO
-  if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)) {
-    seguirLinhaEsquerda(12);
-  }
-  // passar lá pra baixo
+  
 
   // SEGUIDOR DE LINHA
   lerQTRASegueLinha();
@@ -238,13 +219,35 @@ void loop() {
   // se for fita estilo silver tape (com pouco reflexo)
   seguidorMoverFrente();
 
-  if (se1 >= CORTE_QTR || se2 >= CORTE_QTR) {
+  if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
     seguirLinhaEsquerda(3);
   }
 
-  if (sd1 >= CORTE_QTR || sd2 >= CORTE_QTR) {
+  if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
     seguirLinhaDireita(3);
   }
+
+  // leitura não bloqueante
+  if (lerLaserFrenteNaoBloquante()) {
+    if (distanciaLaserFrente != 0 && distanciaLaserFrente <= DIST_OBSTACULO) {
+      // !laserFrente.timeoutOccurred() &&
+      desviarObstaculo(false);
+    }
+  }
+
+
+  lerQTRATodos();
+  lerReflFrente();
+  // 90 GRAUS DIREITO
+  if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+    seguirLinhaDireita(10);
+  }
+
+  // 90 GRAUS ESQUERDO
+  if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+    seguirLinhaEsquerda(10);
+  }
+  // passar lá pra baixo
 
   // Serial.print("Tempo: ");
   // Serial.print(millis() - tempoAtual);

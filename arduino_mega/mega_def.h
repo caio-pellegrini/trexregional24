@@ -47,7 +47,7 @@
     #define BTN_PAREDE_ESQ_PIN  22
     #define BTN_PAREDE_DIR_PIN  26
     #define BTN_VITIMA_PIN      33
-    bool btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir, btnVitima;
+    bool btnAreaEsq = false, btnAreaDir = false, btnParedeEsq = false, btnParedeDir = false, btnVitima = false;
 
     #define MPU6050_INTERRUPT_PIN 2
 

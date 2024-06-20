@@ -36,7 +36,7 @@
             sf = analogRead(SF_PIN) >> 2;
 
             Serial.print(" | sf: ");
-            Serial.print(sf)
+            Serial.print(sf);
         #endif
 
         #if DEBUG_TCS_AMBOS

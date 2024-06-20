@@ -165,9 +165,9 @@ void virarEsquerdaGiro90() { virarEsquerdaGiro(105, false); }
 
 void virarDireitaGiro90() { virarDireitaGiro(105, false); }
 
-void virarEsquerdaGiro180() { virarEsquerdaGiro(210, false); }
+void virarEsquerdaGiro180() { virarEsquerdaGiro(208, false); }
 
-void virarDireitaGiro180() { virarDireitaGiro(210, false); }
+void virarDireitaGiro180() { virarDireitaGiro(208, false); }
 
 void virarEsquerdaGiro90UmMotor() { virarEsquerdaGiro(105, true); }
 
