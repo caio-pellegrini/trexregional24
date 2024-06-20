@@ -27,9 +27,9 @@
 #define VEL_MOTOR_TRAS 40
 #define VEL_MOTOR_CURVA 50
 
-#define VEL_MOTOR_SEG_FRENTE 36
+#define VEL_MOTOR_SEG_FRENTE 33
 #define VEL_MOTOR_SEG_MAX 75
-#define VEL_MOTOR_SEG_MIN 70
+#define VEL_MOTOR_SEG_MIN 69
 
 #define TEMPO_MOVER_ANTES_ANALISAR_VERDE 160
 #define TEMPO_MOVER_ANTES_CRUZ 375
@@ -172,38 +172,9 @@ void loop() {
   // unsigned long tempoAtual = millis();
 
   lerGiroscopioDMP();
+
   if (pitch > 12) {
-    ligarLed(AMBOS, AZUL);
-    pararMotores(); 
-    delay(50);
-    lerGiroscopioDMP();
-    if (pitch > 12) {
-      servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
-      descerGarraRampa();
-      while (pitch > 12) {
-        lerGiroscopioDMP();
-        analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(50));
-        analogWrite(MOTOR_ESQ_T_PIN, 0);
-        analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(50));
-        analogWrite(MOTOR_DIR_T_PIN, 0);
-        delay(3);
-
-        lerQTRASegueLinha();
-
-        if (se1 >= CORTE_QTR || se2 >= CORTE_QTR) {
-          seguirLinhaEsquerda(1);
-        }
-
-        if (sd1 >= CORTE_QTR || sd2 >= CORTE_QTR) {
-          seguirLinhaDireita(1);
-        }
-      }
-      subirGarra();
-      servoSubirGarra.detach();
-    }
-    moverTrasPor(100);
-    pararMotores();
-    desligarLed(AMBOS);
+    rampa();
   }
 
 
@@ -218,22 +189,6 @@ void loop() {
 
   lerQTRATodos();
   lerReflFrente();
-
-  // TUDO BRANCO
-  // if (sf <= CORTE_FRENTE && se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <=
-  // CORTE_QTR && se0 <= CORTE_QTR && sd0 <= CORTE_QTR && sd1 <= CORTE_QTR &&
-  // sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)
-  // {
-  //   moverFrentePor(1);
-  //   lerQTRATodos();
-  //   lerReflFrente();
-  //   if (sf <= CORTE_FRENTE && se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <=
-  //   CORTE_QTR && se0 <= CORTE_QTR && sd0 <= CORTE_QTR && sd1 <= CORTE_QTR &&
-  //   sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)
-  //   {
-  //   verificarGap();
-  //   }
-  // }
 
   if (se3 <= CORTE_2 && se2 <= CORTE_2 && se1 <= CORTE_2 && se0 <= CORTE_2 && sd0 <= CORTE_2 && sd1 <= CORTE_2 && sd2 <= CORTE_2 && sd3 <= CORTE_2) {
     verificarGap();
@@ -268,21 +223,16 @@ void loop() {
 
   // 90 GRAUS DIREITO
   if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)) {
-    // ligarLed(DIR, BRANCO);
     seguirLinhaDireita(12);
-    // desligarLed(AMBOS);
   }
 
   // 90 GRAUS ESQUERDO
   if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)) {
-    // ligarLed(ESQ, BRANCO);
     seguirLinhaEsquerda(12);
-    // desligarLed(AMBOS);
   }
   // passar lá pra baixo
 
   // SEGUIDOR DE LINHA
-
   lerQTRASegueLinha();
 
   // se for fita estilo silver tape (com pouco reflexo)

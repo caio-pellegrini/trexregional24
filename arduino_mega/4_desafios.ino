@@ -133,3 +133,139 @@ void verificarGap() {
     }
   }
 }
+
+void rampa() {
+  ligarLed(AMBOS, AZUL);
+  moverFrentePor(350);
+  pararMotores();
+  delay(100);
+  lerGiroscopioDMP();
+  // gangorra
+  if (pitch > 12 && pitch < 21) {
+    ligarLed(AMBOS, AZUL);
+    servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+    servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
+    descerGarraRampa();
+    while (pitch > 15) {
+      lerGiroscopioDMP();
+      analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(48));
+      analogWrite(MOTOR_ESQ_T_PIN, 0);
+      analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(48));
+      analogWrite(MOTOR_DIR_T_PIN, 0);
+      delay(3);
+
+      lerQTRASegueLinha();
+
+      if (se1 >= CORTE_QTR || se2 >= CORTE_QTR) {
+        seguirLinhaEsquerda(1);
+      }
+
+      if (sd1 >= CORTE_QTR || sd2 >= CORTE_QTR) {
+        seguirLinhaDireita(1);
+      }
+    }
+    moverFrenteLento();
+    delay(300);
+    pararMotores();
+    subirGarra();
+    servoSubirGarra.detach();
+    servoRotacionarGarra.detach();
+    moverTrasPor(100);
+    pararMotores();
+  } else if (pitch > 21) {
+    // rampa
+    ligarLed(AMBOS, VERMELHO);
+    servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+    servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
+    descerGarraRampa();
+    while (pitch > 5) {
+      analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(48));
+      analogWrite(MOTOR_ESQ_T_PIN, 0);
+      analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(48));
+      analogWrite(MOTOR_DIR_T_PIN, 0);
+      delay(3);
+
+      lerQTRASegueLinha();
+
+      if (se1 >= CORTE_QTR || se2 >= CORTE_QTR) {
+        seguirLinhaEsquerda(1);
+      }
+
+      if (sd1 >= CORTE_QTR || sd2 >= CORTE_QTR) {
+        seguirLinhaDireita(1);
+      }
+      lerGiroscopioDMP();
+    }
+
+    pararMotores();
+    subirGarra();
+    servoSubirGarra.detach();
+    servoRotacionarGarra.detach();
+    // moverTrasPor(100);
+    pararMotores();
+    delay(50);
+    lerGiroscopioDMP();
+
+    while (pitch > -5) {
+      lerQTRATodos();
+      lerReflFrente();
+
+      // CRUZAMENTO
+      if (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR && se0 >= CORTE_QTR && sd0 >= CORTE_QTR && sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR) {
+        ligarLed(AMBOS, BRANCO);
+        moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+        pararMotores();
+        analisarVerde(true, true, true);
+        desligarLed(AMBOS);
+      }
+
+      // MEIO CRUZAMENTO ESQUERDO
+      if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)) {
+        ligarLed(ESQ, BRANCO);
+        moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+        pararMotores();
+        analisarVerde(false, true, false);
+        desligarLed(AMBOS);
+      }
+
+      // MEIO CRUZAMENTO DIREITO
+      if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)) {
+        ligarLed(DIR, BRANCO);
+        moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+        pararMotores();
+        analisarVerde(false, false, true);
+        desligarLed(AMBOS);
+      }
+
+      // 90 GRAUS DIREITO
+      if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR && se2 <= CORTE_QTR && se1 <= CORTE_QTR) && (sd1 >= CORTE_QTR && sd2 >= CORTE_QTR && sd3 >= CORTE_QTR)) {
+        seguirLinhaDireita(12);
+      }
+
+      // 90 GRAUS ESQUERDO
+      if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR && se2 >= CORTE_QTR && se1 >= CORTE_QTR) && (sd1 <= CORTE_QTR && sd2 <= CORTE_QTR && sd3 <= CORTE_QTR)) {
+        seguirLinhaEsquerda(12);
+      }
+
+      seguidorMoverFrente();
+
+      lerQTRASegueLinha();
+
+      if (se1 >= CORTE_QTR || se2 >= CORTE_QTR) {
+        seguirLinhaEsquerda(3);
+      }
+
+      if (sd1 >= CORTE_QTR || sd2 >= CORTE_QTR) {
+        seguirLinhaDireita(3);
+      }
+
+      
+      lerGiroscopioDMP();
+    }
+
+    if (pitch <= -5)
+    moverFrenteLento();
+    delay(1200);
+  }
+  desligarLed(AMBOS);
+}

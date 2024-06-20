@@ -20,7 +20,7 @@ void salaDeResgate() {
   // delay(10);
   // laserGarra.init();
   laserGarra.startContinuous();
-  
+
   varredura();
 
   laserGarra.stopContinuous();
@@ -117,7 +117,6 @@ void varredura() {
       moverFrenteLento();
     }
 
-
     // botao da parede bateu
     lerBtnParede();
     if (btnParedeEsq || btnParedeDir) {
@@ -172,7 +171,6 @@ void pegarVitima() {
       return;
     }
   }
-
 
   subirGarraVerificaVitima();
 
@@ -309,7 +307,7 @@ void encontrouParede() {
 
 void subirGarraVerificaVitima() {
   uint8_t posicaoFinal = SERVO_SUBIR_GARRA_POS_INICIAL;
-  uint8_t velocidade = 6;
+  uint8_t velocidade = 8;
   vitimaGarraViva = false;
 
   uint8_t posicaoAtual = servoSubirGarra.read();
@@ -326,7 +324,7 @@ void subirGarraVerificaVitima() {
 
 void fecharGarraVerificaBotao() {
   uint8_t posicaoFinal = SERVO_PA_GARRA_POS_INICIAL;
-  uint8_t velocidade = 5;
+  uint8_t velocidade = 3;
   uint8_t posicaoAtual = servoPaGarra.read();
   int8_t passo = posicaoAtual > posicaoFinal ? -1 : 1;
 
@@ -341,21 +339,80 @@ void fecharGarraVerificaBotao() {
     lerBtnParede();
 
     if (btnAreaEsq || btnAreaDir || btnParedeEsq || btnParedeDir) {
-      break;
+      moverTrasPor(75);
+      pararMotores();
+      abrirGarra();
+      posicaoAtual = servoPaGarra.read();
+      passo = posicaoAtual > posicaoFinal ? -1 : 1;
     }
   }
   btnAreaEsq = btnAntes[0];
   btnAreaDir = btnAntes[1];
   btnParedeEsq = btnAntes[2];
   btnParedeDir = btnAntes[3];
-
-  if (posicaoAtual != posicaoFinal) {
-    moverTrasPor(75);
-    pararMotores();
-    abrirGarra();
-    fecharGarraVerificaBotao();
-  }
 }
 
-void identificarCorArea() {
+void varreduraSaida() {
+  // andar na mesma direçãpo da varredura
+  // se encontrar parede, virar 90 graus
+  // se encontrar area, alinhar e virar
+  // se algos dos ultra ver menor que x, virar nessa direção e andar
+  // andar até encontrar saída (verificar com refletancia)
+  // em outro caso, caso a saida esteka na mesma reta, verificar com refletancia
+  // esta função só termina quando encontrar área, parede ou saída
+  // enquanto não encontrar, verifica e recolhe vítimas
+
+
+  abrirGarra();
+  descerGarra();
+  moverFrenteLento();
+
+  while (true) {
+    // ultrassonico
+    lerUltraEsq();
+    lerUltraDir();
+    if (distanciaUltraEsq > 100) {
+      pararMotores();
+      lerUltraEsq();
+      if (distanciaUltraEsq > 100) {
+        virarEsquerdaGiro90();
+      }
+    }
+    if (distanciaUltraDir > 100) {
+      pararMotores();
+      lerUltraDir();
+      if (distanciaUltraDir > 100) {
+        virarDireitaGiro90();
+      }
+    }
+
+
+    lerLaserGarra();
+    // Serial.println(distanciaLaserGarra);
+    if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
+      pararMotores();
+      pegarVitima();
+      moverTrasPor(200);
+      pararMotores();
+      abrirGarra();
+      descerGarra();
+      moverFrenteLento();
+    }
+
+    // botao da parede bateu
+    lerBtnParede();
+    if (btnParedeEsq || btnParedeDir) {
+      encontrouParede();
+      break;
+    }
+
+    // botao da area bateu
+    lerBtnArea();
+    if (btnAreaEsq || btnAreaDir) {
+      encontrouArea();
+      break;
+    }
+
+    // reconhecer saída
+  }
 }

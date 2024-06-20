@@ -3,12 +3,12 @@
 Servo servo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
-#define SERVO_PIN 46
-#define DELAY_TIME 6
+#define SERVO_PIN 45
+#define DELAY_TIME 15
 
 int pos = 0;    // variable to store the servo position
 int start_position = 0;    // variable to store start positon
-int end_position = 130;    // variable to store end positon
+int end_position = 180;    // variable to store end positon
 
 void setup() {
   Serial.begin(9600);
@@ -23,6 +23,7 @@ void loop() {
     Serial.println(pos);
   }
   delay(1000);
+
   for (pos = end_position; pos >= start_position; pos -= 1) { // goes from 180 degrees to 0 degrees
     servo.write(pos);
     delay(DELAY_TIME);

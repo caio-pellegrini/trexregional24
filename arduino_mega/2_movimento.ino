@@ -188,11 +188,11 @@ void movimentarServo(Servo *servo, uint8_t posicaoFinal, uint8_t velocidade) {
 
 void fecharGarra() { movimentarServo(&servoPaGarra, SERVO_PA_GARRA_POS_INICIAL, 3); }
 
-void abrirGarra() { movimentarServo(&servoPaGarra, 10, 3); }
+void abrirGarra() { movimentarServo(&servoPaGarra, 20, 3); }
 
 void subirGarra() { movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6); }
 
-void descerGarraRampa() { movimentarServo(&servoSubirGarra, 5, 3); }
+void descerGarraRampa() { movimentarServo(&servoSubirGarra, 30, 3); }
 
 void descerGarra() { movimentarServo(&servoSubirGarra, 0, 6); }
 
