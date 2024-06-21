@@ -7,13 +7,13 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
   bool verdeEsq = false;
   bool verdeDir = false;
 
-  if (rgbTcsEsq[1] < CORTE_VERDE_ESQ && rgbTcsEsq[0] < CORTE_VERMELHO_CRUZ) {
+  if (rgbTcsEsq[1] < CORTE_VERDE_ESQ && rgbTcsEsq[1] > 35) {
     ligarLed(ESQ, VERDE);
     verdeEsq = true;
   }
 
   if (rgbTcsDir[1] != 0) {
-    if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[0] < CORTE_VERMELHO_CRUZ) {
+    if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[0] > 30) {
       ligarLed(DIR, VERDE);
       verdeDir = true;
     }
@@ -73,7 +73,7 @@ void desviarObstaculo(bool isEsquerdo) {
   } else {
     virarEsquerdaGiro90();
   }
-  moverFrentePor(2100); // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO
+  moverFrentePor(2100);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO
   if (isEsquerdo) {
     virarDireitaGiro90();
   } else {
@@ -103,9 +103,9 @@ void verificarGap() {
   ligarLed(AMBOS, AMARELO);
   unsigned long tempoInicial = millis();
 
-  moverTrasPor(100);
+  moverFrentePor(100);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
   pararMotores();
-  delay(300);
+  delay(200);
   lerTcsAmbos();
   lerTcsAmbos();
 
@@ -145,6 +145,7 @@ void rampaOuGangorra() {
   delay(100);
   lerGiroscopioDMP();
 
+  #if (GANGORRA == 1)
   // GANGORRA
   if (pitch > 12 && pitch < 21) {
     ligarLed(AMBOS, AZUL);
@@ -184,7 +185,10 @@ void rampaOuGangorra() {
     servoRotacionarGarra.detach();
     moverTrasPor(100);
     pararMotores();
-  } else if (pitch > 21) {
+  }
+  #endif
+  #if (RAMPA == 1)
+  if (pitch > 21) {
     // RAMPA
 
     ligarLed(AMBOS, VERMELHO);
@@ -288,5 +292,6 @@ void rampaOuGangorra() {
       delay(1200);
     }
   }
+  #endif
   desligarLed(AMBOS);
 }

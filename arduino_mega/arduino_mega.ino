@@ -1,6 +1,6 @@
 #include "mega_def.h"
 
-#define DEBUG 1
+#define DEBUG 0
 
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0  // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
@@ -32,11 +32,12 @@
 #define VEL_MOTOR_SEG_MAX 78
 #define VEL_MOTOR_SEG_MIN 73 // 75
 
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 130
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 135
 #define TEMPO_MOVER_ANTES_CRUZ 325  // 375
 
 #define DIST_LASER_GARRA_VIT 45
 #define DIST_OBSTACULO 70
+
 
 void setup() {
   // DEFINIÇÕES DE PINOS DOS LEDS
@@ -165,11 +166,14 @@ void loop() {
 
   // unsigned long tempoAtual = millis();
 
+  #if (RAMPA == 1) || (GANGORRA == 1)
   lerGiroscopioDMP();
   if (pitch > 12) {
     rampaOuGangorra();
   }
+  #endif
 
+  #if defined(FITA_PRATEADA) && (FITA_PRATEADA == 0)
   if (contUltra == 4) {
     lerUltraEsq();
     lerUltraDir();
@@ -183,6 +187,7 @@ void loop() {
   } else {
     contUltra++;
   }
+  #endif
 
   lerQTRATodos();
   lerReflFrente();
@@ -251,6 +256,7 @@ void loop() {
     seguirLinhaDireita(3);
   }
 
+  #if defined(OBSTACULO) && (OBSTACULO == 1)
   // leitura não bloqueante
   if (lerLaserFrenteNaoBloquante()) {
     if (distanciaLaserFrente != 0 && distanciaLaserFrente <= DIST_OBSTACULO) {
@@ -258,6 +264,7 @@ void loop() {
       desviarObstaculo(false);
     }
   }
+  #endif
 
   lerQTRATodos();
   lerReflFrente();

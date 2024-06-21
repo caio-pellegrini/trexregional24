@@ -142,6 +142,10 @@
     {
       mpuInterrupt = true;
     }
-
     
+    #define FITA_PRATEADA 1
+    #define RAMPA 1
+    #define GANGORRA 1
+    #define OBSTACULO 1
+
 #endif

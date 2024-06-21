@@ -157,17 +157,17 @@ void virarDireitaGiro(uint8_t graus, bool umMotor) {
   }
   // melhorar funcao de cima colocando a condicao no lugar do true
 }
-void virarEsquerdaGiro45() { virarEsquerdaGiro(50, false); }
+void virarEsquerdaGiro45() { virarEsquerdaGiro(52, false); }
 
-void virarDireitaGiro45() { virarDireitaGiro(50, false); }
+void virarDireitaGiro45() { virarDireitaGiro(52, false); }
 
 void virarEsquerdaGiro90() { virarEsquerdaGiro(105, false); }
 
 void virarDireitaGiro90() { virarDireitaGiro(105, false); }
 
-void virarEsquerdaGiro180() { virarEsquerdaGiro(208, false); }
+void virarEsquerdaGiro180() { virarEsquerdaGiro(213, false); }
 
-void virarDireitaGiro180() { virarDireitaGiro(208, false); }
+void virarDireitaGiro180() { virarDireitaGiro(213, false); }
 
 void virarEsquerdaGiro90UmMotor() { virarEsquerdaGiro(105, true); }
 

@@ -14,35 +14,53 @@ uint8_t contadorVarreduras = 0;
 
 void salaDeResgate() {
   entrarSalaResgate();
-  varredura();
+  varredura(false);
 
   laserGarra.stopContinuous();
-  // delay(10);
-  // laserGarra.init();
   laserGarra.startContinuous();
 
-  varredura();
+  varredura(false);
 
   laserGarra.stopContinuous();
-  // delay(10);
-  // laserGarra.init();
   laserGarra.startContinuous();
 
-  varredura();
+  varredura(false);
 
   laserGarra.stopContinuous();
-  // delay(10);
-  // laserGarra.init();
   laserGarra.startContinuous();
 
-  varredura();
+  varredura(false);
 
-  contadorVarreduras++;
-  if (contadorVarreduras == 4) {
-    pararMotores();
-    ligarLed(AMBOS, VERDE);
-    delayInfinito();
-  }
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
+
+  // 2º VARREDURA - ENTREGA QUALQUER BASE
+
+  varredura(true);
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
+
+  varredura(true);
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
+
+  varredura(true);
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
+
+  varredura(true);
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
+
+  // 3º VARREDURA - DUAS EXTRAS
+
+  varredura(true);
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
+
+  varredura(true);
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
 }
 
 void entrarSalaResgate() {
@@ -89,7 +107,7 @@ void entrarSalaResgate() {
   }
 }
 
-void varredura() {
+void varredura(bool entregarQualquerBase) {
   // esta função só termina quando encontrar área, parede ou saída
   // enquanto não encontrar, verifica e recolhe vítimas
   abrirGarra();
@@ -134,7 +152,7 @@ void varredura() {
     // botao da area bateu
     lerBtnArea();
     if (btnAreaEsq || btnAreaDir) {
-      encontrouArea();
+      encontrouArea(entregarQualquerBase);
       break;
     }
 
@@ -175,7 +193,7 @@ void pegarVitima() {
   rotacionarGarraMeio();
 }
 
-void encontrouArea() {
+void encontrouArea(bool entregarQualquerBase) {
   moverTrasPor(150);
   pararMotores();
 
@@ -211,9 +229,12 @@ void encontrouArea() {
 
   moverTrasPor(500);
 
-  // if direcao
-  virarEsquerdaGiro180();
-  // virarDireitaGiro180();
+  if (entradaDirecao) {
+    virarDireitaGiro180();
+
+  } else {
+    virarEsquerdaGiro180();
+  }
 
   desligarLed(AMBOS);
 
@@ -222,31 +243,49 @@ void encontrouArea() {
 
   // entregar
   if (contadorVitimas != 0) {
-    if (!corAreaVermelha && contCacambaVivas > 0) {
+    if (!entregarQualquerBase) {
+      if (!corAreaVermelha && contCacambaVivas > 0) {
+        abrirCancelaDir();
+        contTotalVivas = contCacambaVivas;
+        contCacambaVivas = 0;
+        delay(500);
+        moverFrentePor(300);
+        moverTrasRapidoPor(400);
+        moverFrentePor(300);
+        moverTrasRapidoPor(400);
+        pararMotores();
+        delay(500);
+        fecharCancelaDir();
+      }
+      if (corAreaVermelha && contCacambaMortas > 0) {
+        abrirCancelaEsq();
+        contTotalMortas = contCacambaMortas;
+        contCacambaMortas = 0;
+        delay(500);
+        moverFrentePor(300);
+        moverTrasRapidoPor(400);
+        moverFrentePor(300);
+        moverTrasRapidoPor(400);
+        pararMotores();
+        delay(500);
+        fecharCancelaEsq();
+      }
+    } else {
+      abrirCancelaEsq();
       abrirCancelaDir();
       contTotalVivas = contCacambaVivas;
       contCacambaVivas = 0;
-      delay(500);
-      moverFrentePor(300);
-      moverTrasRapidoPor(400);
-      moverFrentePor(300);
-      moverTrasRapidoPor(400);
-      pararMotores();
-      delay(500);
-      fecharCancelaDir();
-    }
-    if (corAreaVermelha && contCacambaMortas > 0) {
-      abrirCancelaEsq();
       contTotalMortas = contCacambaMortas;
       contCacambaMortas = 0;
       delay(500);
-      moverFrentePor(300);
+      moverFrentePor(350);
       moverTrasRapidoPor(400);
       moverFrentePor(300);
       moverTrasRapidoPor(400);
       pararMotores();
       delay(500);
       fecharCancelaEsq();
+      fecharCancelaDir();
     }
   }
 
@@ -394,7 +433,7 @@ void varreduraSaida() {
     // botao da area bateu
     lerBtnArea();
     if (btnAreaEsq || btnAreaDir) {
-      encontrouArea();
+      encontrouArea(true);
       break;
     }
 
