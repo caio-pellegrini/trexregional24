@@ -71,15 +71,20 @@ void entrarSalaResgate() {
       // PAREDE ESTA NA ESQUERDA
       entradaDirecao = false;
       ligarLed(ESQ, AZUL, 1000);
-      virarDireitaGiro90();
+      // virarDireitaGiro90();
+      virarDireitaGiro45();
+      moverFrentePor(50);
+      virarDireitaGiro45();
     } else {
       // PAREDE ESTA NA DIREITA
       entradaDirecao = true;
       ligarLed(DIR, AZUL, 1000);
-      virarEsquerdaGiro90();
+      virarEsquerdaGiro45();
+      moverFrentePor(50);
+      virarEsquerdaGiro45();
     }
 
-    moverTrasPor(1000);
+    moverTrasPor(700);
     pararMotores();
   }
 }
@@ -108,6 +113,7 @@ void varredura() {
     lerLaserGarra();
     // Serial.println(distanciaLaserGarra);
     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
+      ligarLed(AMBOS, BRANCO);
       pararMotores();
       pegarVitima();
       moverTrasPor(200);
@@ -115,6 +121,7 @@ void varredura() {
       abrirGarra();
       descerGarra();
       moverFrenteLento();
+      desligarLed(AMBOS);
     }
 
     // botao da parede bateu
@@ -136,7 +143,6 @@ void varredura() {
 }
 
 void pegarVitima() {
-  // PROBLEMA DA PAREDE TÁ NESSA FUNÇÃO
 
   fecharGarraVerificaBotao();
 
@@ -170,7 +176,7 @@ void pegarVitima() {
 }
 
 void encontrouArea() {
-  moverTrasPor(400);
+  moverTrasPor(150);
   pararMotores();
 
   pegarVitima();
@@ -253,9 +259,10 @@ void encontrouArea() {
 }
 
 void encontrouParede() {
-  moverTrasPor(400);
+  moverTrasPor(300);
   pararMotores();
 
+  // fecharGarraVerificaBotao();
   pegarVitima();
   subirGarra();
 
@@ -276,13 +283,13 @@ void encontrouParede() {
   }
 
   pararMotores();
-  moverTrasPor(600);
+  moverTrasPor(700);
   if (entradaDirecao) {
     virarDireitaGiro90();
   } else {
     virarEsquerdaGiro90();
   }
-  moverTrasRapidoPor(1000);
+  moverTrasPor(1100);
   pararMotores();
 }
 
@@ -316,10 +323,9 @@ void fecharGarraVerificaBotao() {
     servoPaGarra.write(posicaoAtual);
     delay(velocidade);
 
-    lerBtnArea();
     lerBtnParede();
 
-    if (btnAreaEsq || btnAreaDir || btnParedeEsq || btnParedeDir) {
+    if (btnParedeEsq || btnParedeDir) {
       moverTrasPor(200);
       pararMotores();
       delay(100);

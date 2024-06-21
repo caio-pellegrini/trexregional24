@@ -10,31 +10,31 @@
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
-#define DEBUG_LASER_GARRA 0
+#define DEBUG_LASER_GARRA 1
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 201 // acima é preto - papel 208
-#define CORTE_QTR_B 165  // abaixo  é branco - papel 147
-#define CORTE_FRENTE 30  // abaixo é branco e acima é preto - papel 11
+#define CORTE_QTR_P 200 // acima é preto - papel 208
+#define CORTE_QTR_B 165  // abaixo é branco - papel 147 - madeira 165 // abaixe mais
+#define CORTE_FRENTE 40  // abaixo é branco e acima é preto - papel 11
 
-#define CORTE_VERDE_ESQ 65  // abaixo disso é verde
-#define CORTE_VERDE_DIR 50
+#define CORTE_VERDE_ESQ 65  // abaixo disso é verde // 65 no verde escuro
+#define CORTE_VERDE_DIR 70
 #define CORTE_VERMELHO_CRUZ 100
 
 // USE VALORES DE 0 A 100
 #define VEL_MOTOR_FRENTE 50
 #define VEL_MOTOR_TRAS 40
-#define VEL_MOTOR_CURVA 50
+#define VEL_MOTOR_CURVA 52
 
 #define VEL_MOTOR_SEG_FRENTE 34
 #define VEL_MOTOR_SEG_MAX 73
 #define VEL_MOTOR_SEG_MIN 67
 
 #define TEMPO_MOVER_ANTES_ANALISAR_VERDE 130
-#define TEMPO_MOVER_ANTES_CRUZ 375
+#define TEMPO_MOVER_ANTES_CRUZ 325 // 375
 
-#define DIST_LASER_GARRA_VIT 47
+#define DIST_LASER_GARRA_VIT 45
 #define DIST_OBSTACULO 70
 
 void setup() {
@@ -77,7 +77,7 @@ void setup() {
   Serial.println(laserGarra.init() ? "Laser Garra conectado :)"
                                    : "Laser Garra falhou :(");
   laserGarra.setAddress(LASER_GARRA_ENDERECO);
-
+  laserGarra.startContinuous();
   // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
 
   // i2c_scanner();
@@ -180,8 +180,25 @@ void loop() {
   lerReflFrente();
 
   // se for papel - se3 <= (CORTE_QTR_B - 20)
-  if (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && se0 <= CORTE_QTR_B && sd0 <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B) {
+  if (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && se0 <= CORTE_QTR_B && sd0 <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B) {
+    // se nao estiver func, colocar todos os sensores
     verificarGap();
+  }
+
+   // 90 GRAUS DIREITO
+  if (sf <= 10 && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+    seguirLinhaDireita(100);
+    // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
+    // virarDireitaGiro90();
+    // pararMotores();
+  }
+
+  // 90 GRAUS ESQUERDO
+  if (sf <= 10 && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+    seguirLinhaEsquerda(100);
+    // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
+    // virarEsquerdaGiro90();
+    // pararMotores();
   }
 
   // CRUZAMENTO
@@ -198,7 +215,7 @@ void loop() {
     ligarLed(ESQ, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(true, true, true); // false, true, false
+    analisarVerde(false, true, false); // false, true, false
     desligarLed(AMBOS);
   }
 
@@ -207,10 +224,9 @@ void loop() {
     ligarLed(DIR, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(true, true, true); // false, false, true
+    analisarVerde(false, false, true); // false, false, true
     desligarLed(AMBOS);
   }
-
   
 
   // SEGUIDOR DE LINHA
@@ -234,7 +250,6 @@ void loop() {
       desviarObstaculo(false);
     }
   }
-
 
   lerQTRATodos();
   lerReflFrente();

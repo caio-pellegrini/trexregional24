@@ -32,9 +32,9 @@ void moverFrente() {
 }
 
 void moverFrenteLento() {
-  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(32));
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(35));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
-  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(32));
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(35));
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
@@ -47,9 +47,9 @@ void moverTras() {
 
 void moverTrasRapido() {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
-  analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(75));
+  analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(72));
   analogWrite(MOTOR_DIR_F_PIN, 0);
-  analogWrite(MOTOR_DIR_T_PIN, CONVERT_8B_DEC(75));
+  analogWrite(MOTOR_DIR_T_PIN, CONVERT_8B_DEC(72));
 }
 
 void pararMotores() {
@@ -188,7 +188,7 @@ void movimentarServo(Servo *servo, uint8_t posicaoFinal, uint8_t velocidade) {
 
 void fecharGarra() { movimentarServo(&servoPaGarra, SERVO_PA_GARRA_POS_INICIAL, 3); }
 
-void abrirGarra() { movimentarServo(&servoPaGarra, 20, 3); }
+void abrirGarra() { movimentarServo(&servoPaGarra, 35, 3); }
 
 void subirGarra() { movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6); }
 

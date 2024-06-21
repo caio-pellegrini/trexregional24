@@ -114,31 +114,31 @@
         #endif
 
         #if DEBUG_LASER_GARRA
-            // unsigned long tempoInicial2 = millis();
-            // lerLaserGarra();
-            // unsigned long tempoFinal2 = millis();
+            unsigned long tempoInicial2 = millis();
+            lerLaserGarra();
+            unsigned long tempoFinal2 = millis();
 
-            // Serial.print(" | LaserGarra: ");
-            // Serial.print(distanciaLaserGarra);
-            // Serial.print(" | Tempo: ");
-            // Serial.print(tempoFinal2 - tempoInicial2);
-            // Serial.print("ms");
-
-            unsigned long tempoInicial3 = millis();
-            distanciaLaserGarra = 0;
-            while(true) {
-                lerLaserGarraNaoBloquante();
-                if (distanciaLaserGarra != 0) {
-                    break;
-                }
-            };
-            unsigned long tempoFinal3 = millis();
-
-            Serial.print(" | LaserGarraNaoBlock: ");
+            Serial.print(" | LaserGarra: ");
             Serial.print(distanciaLaserGarra);
             Serial.print(" | Tempo: ");
-            Serial.print(tempoFinal3 - tempoInicial3);
+            Serial.print(tempoFinal2 - tempoInicial2);
             Serial.print("ms");
+
+            // unsigned long tempoInicial3 = millis();
+            // distanciaLaserGarra = 0;
+            // while(true) {
+            //     lerLaserGarraNaoBloquante();
+            //     if (distanciaLaserGarra != 0) {
+            //         break;
+            //     }
+            // };
+            // unsigned long tempoFinal3 = millis();
+
+            // Serial.print(" | LaserGarraNaoBlock: ");
+            // Serial.print(distanciaLaserGarra);
+            // Serial.print(" | Tempo: ");
+            // Serial.print(tempoFinal3 - tempoInicial3);
+            // Serial.print("ms");
 
         #endif
 

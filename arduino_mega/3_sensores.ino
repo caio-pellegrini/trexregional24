@@ -200,8 +200,8 @@ void lerLaserFrente() {
 }
 
 void lerLaserGarra() {
-  // distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
-  distanciaLaserGarra = laserGarra.readRangeContinuousMillimeters();
+  distanciaLaserGarra = laserGarra.readRangeSingleMillimeters();
+  // distanciaLaserGarra = laserGarra.readRangeContinuousMillimeters();
 }
 
 bool lerLaserFrenteNaoBloquante() {
