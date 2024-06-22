@@ -14,21 +14,21 @@
 #define DEBUG_REFL_FRENTE 1
 #define DEBUG_TCS_AMBOS 1
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 0
+#define DEBUG_GIROSCOPIO 1
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 1
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 201    // acima é preto - papel 208 - 202
-#define CORTE_QTR_B 140    // abaixo é branco - papel 147 - madeira 165 // abaixe mais
+#define CORTE_QTR_P 195    // acima é preto - papel 208 - 202
+#define CORTE_QTR_B 135    // abaixo é branco - papel 145 - madeira 165 // abaixe mais
 #define CORTE_FRENTE 120   // abaixo é branco e acima é preto - papel 11
 #define CORTE_FRENTE_B 25  // corte frente branco
 
-#define CORTE_VERDE_ESQ 80  // abaixo disso é verde // 65 no verde escuro
-#define CORTE_VERDE_DIR 76
-#define CORTE_VERDE_ESQ2 24
-#define CORTE_VERDE_DIR2 24
+#define CORTE_VERDE_ESQ 62  // abaixo disso é verde // 65 no verde escuro
+#define CORTE_VERDE_DIR 60
+#define CORTE_VERDE_ESQ2 9
+#define CORTE_VERDE_DIR2 9
 #define CORTE_VERMELHO_CRUZ 80  // 100
 
 // USE VALORES DE 0 A 100
@@ -36,8 +36,8 @@
 #define VEL_MOTOR_TRAS 40
 #define VEL_MOTOR_CURVA 59 // 52
 #define VEL_MOTOR_SEG_FRENTE 38
-#define VEL_MOTOR_SEG_MAX 78
-#define VEL_MOTOR_SEG_MIN 70  // 75
+#define VEL_MOTOR_SEG_MAX 75
+#define VEL_MOTOR_SEG_MIN 68  // 75
 
 #define TEMPO_MOVER_ANTES_ANALISAR_VERDE 145
 #define TEMPO_MOVER_ANTES_CRUZ 360  // 375
@@ -46,6 +46,7 @@
 #define DIST_OBSTACULO 70
 
 #define CORTE_ULTRA_SALA_RESGATE 7
+#define INCLINACAO 7
 
 
 void setup() {
@@ -175,7 +176,7 @@ void loop() {
 
   #if (RAMPA == 1) || (GANGORRA == 1)
     lerGiroscopioDMP();
-    if (pitch > 12) {
+    if (pitch > INCLINACAO) {
       rampaOuGangorra();
     }
   #endif
@@ -291,7 +292,7 @@ void loop() {
   if (lerLaserFrenteNaoBloquante()) {
     if (distanciaLaserFrente != 0 && distanciaLaserFrente <= DIST_OBSTACULO) {
       // !laserFrente.timeoutOccurred() &&
-      desviarObstaculo(false);
+      desviarObstaculo(true);
     }
   }
 #endif

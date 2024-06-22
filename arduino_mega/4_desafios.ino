@@ -76,20 +76,20 @@ void desviarObstaculo(bool isEsquerdo) {
   } else {
     virarEsquerdaGiro90();
   }
-  moverFrentePor(2250);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2500
+  moverFrentePor(2460);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2500
   if (isEsquerdo) {
     virarDireitaGiro90();
   } else {
     virarEsquerdaGiro90();
   }
   unsigned long tempoInicial = millis();
-  while (millis() - tempoInicial < 1350) { // AJUSTAR TAMBÉM
+  while (millis() - tempoInicial < 1350) {  // AJUSTAR TAMBÉM
     moverFrentePor(1);
     lerQTRATodos();
     if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
       pararMotores();
       delay(500);
-      moverFrentePor(150);
+      moverFrentePor(250);
       break;
     }
   }
@@ -98,7 +98,7 @@ void desviarObstaculo(bool isEsquerdo) {
   } else {
     virarDireitaGiro90();
   }
-  moverTrasPor(300); // AJUSTAR RÉ
+  moverTrasPor(250);  // AJUSTAR RÉ
   desligarLed(AMBOS);
 }
 
@@ -107,6 +107,7 @@ void verificarGap() {
   unsigned long tempoInicial = millis();
 
   // moverFrentePor(50);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
+  
   pararMotores();
   delay(200);
   lerTcsAmbos();
@@ -118,7 +119,7 @@ void verificarGap() {
     return;
   }
 
-  moverFrentePor(50); //  AJUSTE LINHA PRETA
+  moverFrentePor(70);  //  AJUSTE LINHA PRETA
 
   while (true) {
     moverFrentePor(1);
@@ -143,23 +144,17 @@ void verificarGap() {
 
 void rampaOuGangorra() {
   ligarLed(AMBOS, AZUL);
-  moverFrentePor(350);
+  moverFrentePor(300);
   pararMotores();
   delay(100);
 
-  #if (RAMPA_SALA_RESGATE == 1)
-    lerUltraDir();
-    lerUltraEsq();
-    if (distanciaUltraEsq > CORTE_ULTRA_SALA_RESGATE || distanciaUltraEsq > CORTE_ULTRA_SALA_RESGATE) {
-      return;
-    }
-  #endif 
-
   lerGiroscopioDMP();
+  lerUltraDir();
+  lerUltraEsq();
 
 #if (GANGORRA == 1)
   // GANGORRA
-  if (pitch > 10 && pitch < 21) {
+  if (pitch > INCLINACAO && (distanciaUltraEsq > CORTE_ULTRA_SALA_RESGATE || distanciaUltraEsq > CORTE_ULTRA_SALA_RESGATE)) {
     ligarLed(AMBOS, AZUL);
     servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
     servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
@@ -197,7 +192,44 @@ void rampaOuGangorra() {
     servoRotacionarGarra.detach();
     moverTrasPor(200);
     pararMotores();
+
+    unsigned long tempo = millis();
+    while (millis() - tempo < 10000) {
+      lerQTRASegueLinha();
+
+      seguidorMoverFrente();
+
+      if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
+        seguirLinhaEsquerda(3);
+      }
+
+      if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
+        seguirLinhaDireita(3);
+      }
+
+      lerQTRATodos();
+      lerReflFrente();
+
+      // CRUZAMENTO
+      if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+        ligarLed(AMBOS, BRANCO);
+        moverFrentePor(200);
+        desligarLed(AMBOS);
+      }
+
+      // 90 GRAUS DIREITO
+      if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+        seguirLinhaDireita(10);
+      }
+
+      // 90 GRAUS ESQUERDO
+      if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+        seguirLinhaEsquerda(10);
+      }
+    }
   }
+
+
 #endif
 #if (RAMPA == 1)
   if (pitch > 21) {
@@ -338,9 +370,9 @@ void rampaSalaResgate() {
 
     // CRUZAMENTO
     if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
-    ligarLed(AMBOS, BRANCO);
-    moverFrenteRapidoPor(400);
-    desligarLed(AMBOS);
+      ligarLed(AMBOS, BRANCO);
+      moverFrenteRapidoPor(400);
+      desligarLed(AMBOS);
     }
   }
 
