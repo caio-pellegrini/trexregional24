@@ -38,6 +38,13 @@ void moverFrenteLento() {
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
+void moverFrenteRapido() {
+  analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(60));
+  analogWrite(MOTOR_ESQ_T_PIN, 0);
+  analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(60));
+  analogWrite(MOTOR_DIR_T_PIN, 0);
+}
+
 void moverTras() {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
   analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_TRAS));
@@ -161,9 +168,9 @@ void virarEsquerdaGiro45() { virarEsquerdaGiro(52, false); }
 
 void virarDireitaGiro45() { virarDireitaGiro(52, false); }
 
-void virarEsquerdaGiro90() { virarEsquerdaGiro(105, false); }
+void virarEsquerdaGiro90() { virarEsquerdaGiro(106, false); }
 
-void virarDireitaGiro90() { virarDireitaGiro(105, false); }
+void virarDireitaGiro90() { virarDireitaGiro(106, false); }
 
 void virarEsquerdaGiro180() { virarEsquerdaGiro(213, false); }
 
@@ -192,7 +199,9 @@ void abrirGarra() { movimentarServo(&servoPaGarra, 35, 3); }
 
 void subirGarra() { movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6); }
 
-void descerGarraRampa() { movimentarServo(&servoSubirGarra, 30, 3); }
+void descerGarraRampa() { movimentarServo(&servoSubirGarra, 15, 3); }
+// GANGORRA OU RAMPA - 30
+// RAMPA SALA RESGATE - 15
 
 void descerGarra() { movimentarServo(&servoSubirGarra, 0, 6); }
 

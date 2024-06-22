@@ -144,7 +144,8 @@
     }
     
     #define FITA_PRATEADA 1
-    #define RAMPA 1
+    #define RAMPA_SALA_RESGATE 1
+    #define RAMPA 0
     #define GANGORRA 1
     #define OBSTACULO 1
 

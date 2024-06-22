@@ -7,13 +7,13 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
   bool verdeEsq = false;
   bool verdeDir = false;
 
-  if (rgbTcsEsq[1] < CORTE_VERDE_ESQ && rgbTcsEsq[1] > 35) {
+  if (rgbTcsEsq[1] < CORTE_VERDE_ESQ && rgbTcsEsq[1] > CORTE_VERDE_ESQ2) {
     ligarLed(ESQ, VERDE);
     verdeEsq = true;
   }
 
   if (rgbTcsDir[1] != 0) {
-    if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[0] > 30) {
+    if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[0] > CORTE_VERDE_DIR2) {
       ligarLed(DIR, VERDE);
       verdeDir = true;
     }
@@ -61,26 +61,29 @@ void desviarObstaculo(bool isEsquerdo) {
     return;
   }
   ligarLed(AMBOS, VERMELHO);
+
+  // ADIONAR CURVINHA COM DELAY APENAS PARA ALINHAR
+
   moverTrasPor(300);
   if (isEsquerdo) {
     virarEsquerdaGiro90();
   } else {
     virarDireitaGiro90();
   }
-  moverFrentePor(1100);
+  moverFrentePor(1150);
   if (isEsquerdo) {
     virarDireitaGiro90();
   } else {
     virarEsquerdaGiro90();
   }
-  moverFrentePor(2100);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO
+  moverFrentePor(2500);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2500
   if (isEsquerdo) {
     virarDireitaGiro90();
   } else {
     virarEsquerdaGiro90();
   }
   unsigned long tempoInicial = millis();
-  while (millis() - tempoInicial < 1100) {
+  while (millis() - tempoInicial < 1350) { // AJUSTAR TAMBÉM
     moverFrentePor(1);
     lerQTRATodos();
     if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
@@ -95,7 +98,7 @@ void desviarObstaculo(bool isEsquerdo) {
   } else {
     virarDireitaGiro90();
   }
-  moverTrasPor(100);
+  moverTrasPor(300); // AJUSTAR RÉ
   desligarLed(AMBOS);
 }
 
@@ -115,7 +118,7 @@ void verificarGap() {
     return;
   }
 
-  moverFrentePor(100);
+  moverFrentePor(50); //  AJUSTE LINHA PRETA
 
   while (true) {
     moverFrentePor(1);
@@ -143,16 +146,25 @@ void rampaOuGangorra() {
   moverFrentePor(350);
   pararMotores();
   delay(100);
+
+  #if (RAMPA_SALA_RESGATE == 1)
+    lerUltraDir();
+    lerUltraEsq();
+    if (distanciaUltraEsq > CORTE_ULTRA_SALA_RESGATE || distanciaUltraEsq > CORTE_ULTRA_SALA_RESGATE) {
+      return;
+    }
+  #endif 
+
   lerGiroscopioDMP();
 
-  #if (GANGORRA == 1)
+#if (GANGORRA == 1)
   // GANGORRA
-  if (pitch > 12 && pitch < 21) {
+  if (pitch > 10 && pitch < 21) {
     ligarLed(AMBOS, AZUL);
     servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
     servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
     descerGarraRampa();
-    while (pitch > 15) {
+    while (pitch > 12) {
       lerGiroscopioDMP();
       analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(48));
       analogWrite(MOTOR_ESQ_T_PIN, 0);
@@ -183,11 +195,11 @@ void rampaOuGangorra() {
     subirGarra();
     servoSubirGarra.detach();
     servoRotacionarGarra.detach();
-    moverTrasPor(100);
+    moverTrasPor(200);
     pararMotores();
   }
-  #endif
-  #if (RAMPA == 1)
+#endif
+#if (RAMPA == 1)
   if (pitch > 21) {
     // RAMPA
 
@@ -292,6 +304,40 @@ void rampaOuGangorra() {
       delay(1200);
     }
   }
-  #endif
+#endif
   desligarLed(AMBOS);
 }
+
+
+void rampaSalaResgate() {
+  ligarLed(AMBOS, ROXO);
+
+  servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+  servoRotacionarGarra.attach(SERVO_ROTACIONAR_GARRA_PIN);
+  descerGarraRampa();
+
+  while (true) {
+    lerUltraEsq();
+    lerUltraDir();
+
+    lerQTRATodos();
+
+    if (distanciaUltraDir < 10 && (distanciaUltraEsq > 10 && distanciaUltraEsq < 120) && (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && se0 <= CORTE_QTR_B && sd0 <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B)) {
+      break;
+    }
+
+    moverFrenteRapido();
+
+    if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
+      seguirLinhaEsquerda(3);
+    }
+
+    if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
+      seguirLinhaDireita(3);
+    }
+  }
+
+  salaDeResgate();
+}
+
+// fita refletiva aumentar tempo de verificacao para gap

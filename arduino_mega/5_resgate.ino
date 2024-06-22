@@ -91,14 +91,14 @@ void entrarSalaResgate() {
       ligarLed(ESQ, AZUL, 1000);
       // virarDireitaGiro90();
       virarDireitaGiro45();
-      moverFrentePor(50);
+      moverFrentePor(100);
       virarDireitaGiro45();
     } else {
       // PAREDE ESTA NA DIREITA
       entradaDirecao = true;
       ligarLed(DIR, AZUL, 1000);
       virarEsquerdaGiro45();
-      moverFrentePor(50);
+      moverFrentePor(100);
       virarEsquerdaGiro45();
     }
 
@@ -316,7 +316,7 @@ void encontrouParede() {
       }
     }
 
-    if (millis() - tempoInicial > 2000) {
+    if (millis() - tempoInicial > 1500) {
       break;
     }
   }

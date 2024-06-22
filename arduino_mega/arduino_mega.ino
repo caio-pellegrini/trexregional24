@@ -10,33 +10,36 @@
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
-#define DEBUG_LASER_GARRA 1
-#define DEBUG_ULTRA 0
+#define DEBUG_LASER_GARRA 0
+#define DEBUG_ULTRA 1
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 202    // acima é preto - papel 208
+#define CORTE_QTR_P 203    // acima é preto - papel 208 - 202
 #define CORTE_QTR_B 150    // abaixo é branco - papel 147 - madeira 165 // abaixe mais
 #define CORTE_FRENTE 120   // abaixo é branco e acima é preto - papel 11
 #define CORTE_FRENTE_B 30  // corte frente branco
 
-#define CORTE_VERDE_ESQ 50  // abaixo disso é verde // 65 no verde escuro
-#define CORTE_VERDE_DIR 60
-#define CORTE_VERMELHO_CRUZ 80 // 100
+#define CORTE_VERDE_ESQ 80  // abaixo disso é verde // 65 no verde escuro
+#define CORTE_VERDE_DIR 70
+#define CORTE_VERDE_ESQ2 22
+#define CORTE_VERDE_DIR2 22
+#define CORTE_VERMELHO_CRUZ 80  // 100
 
 // USE VALORES DE 0 A 100
 #define VEL_MOTOR_FRENTE 50
 #define VEL_MOTOR_TRAS 40
-#define VEL_MOTOR_CURVA 52
-
-#define VEL_MOTOR_SEG_FRENTE 37
+#define VEL_MOTOR_CURVA 57 // 52
+#define VEL_MOTOR_SEG_FRENTE 38
 #define VEL_MOTOR_SEG_MAX 78
-#define VEL_MOTOR_SEG_MIN 73 // 75
+#define VEL_MOTOR_SEG_MIN 70  // 75
 
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 135
-#define TEMPO_MOVER_ANTES_CRUZ 325  // 375
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 145
+#define TEMPO_MOVER_ANTES_CRUZ 360  // 375
 
 #define DIST_LASER_GARRA_VIT 45
 #define DIST_OBSTACULO 70
+
+#define CORTE_ULTRA_SALA_RESGATE 7
 
 
 void setup() {
@@ -148,8 +151,6 @@ void setup() {
 #endif
 
   desligarLed(AMBOS);
-
-  // entrarSalaResgate();
 }
 
 int contUltra = 0;
@@ -167,27 +168,50 @@ void loop() {
   // unsigned long tempoAtual = millis();
 
   #if (RAMPA == 1) || (GANGORRA == 1)
+    lerGiroscopioDMP();
+    if (pitch > 12) {
+      rampaOuGangorra();
+    }
+  #endif
+
+  // #if defined(FITA_PRATEADA) && (FITA_PRATEADA == 0)
+  // if (contUltra == 4) {
+  //   lerUltraEsq();
+  //   lerUltraDir();
+  //   if (distanciaUltraEsq < 8 && distanciaUltraDir < 8) {
+  //     ligarLed(AMBOS, ROXO);
+  //     moverFrentePor(500);
+  //     pararMotores();
+  //     verificarGap();
+  //   }
+  //   contUltra = 0;
+  // } else {
+  //   contUltra++;
+  // }
+  // #endif
+
+  #if (RAMPA_SALA_RESGATE == 1)
   lerGiroscopioDMP();
-  if (pitch > 12) {
-    rampaOuGangorra();
+  if (pitch > 9) {
+    moverFrentePor(200);
+    pararMotores();
+    lerUltraEsq();
+    lerUltraDir();
+
+    if (distanciaUltraEsq < CORTE_ULTRA_SALA_RESGATE && distanciaUltraDir < CORTE_ULTRA_SALA_RESGATE) {
+      ligarLed(AMBOS, ROXO);
+      moverFrentePor(200);
+      pararMotores();
+      // verificarGap();
+      lerGiroscopioDMP();
+      if (pitch > 9) {
+        rampaSalaResgate();
+      }
+      desligarLed(AMBOS);
+    }
   }
   #endif
 
-  #if defined(FITA_PRATEADA) && (FITA_PRATEADA == 0)
-  if (contUltra == 4) {
-    lerUltraEsq();
-    lerUltraDir();
-    if (distanciaUltraEsq < 8 && distanciaUltraDir < 8) {
-      ligarLed(AMBOS, ROXO);
-      moverFrentePor(500);
-      pararMotores();
-      verificarGap();
-    }
-    contUltra = 0;
-  } else {
-    contUltra++;
-  }
-  #endif
 
   lerQTRATodos();
   lerReflFrente();
@@ -256,7 +280,7 @@ void loop() {
     seguirLinhaDireita(3);
   }
 
-  #if defined(OBSTACULO) && (OBSTACULO == 1)
+#if defined(OBSTACULO) && (OBSTACULO == 1)
   // leitura não bloqueante
   if (lerLaserFrenteNaoBloquante()) {
     if (distanciaLaserFrente != 0 && distanciaLaserFrente <= DIST_OBSTACULO) {
@@ -264,7 +288,7 @@ void loop() {
       desviarObstaculo(false);
     }
   }
-  #endif
+#endif
 
   lerQTRATodos();
   lerReflFrente();
