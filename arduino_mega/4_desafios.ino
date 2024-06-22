@@ -76,7 +76,7 @@ void desviarObstaculo(bool isEsquerdo) {
   } else {
     virarEsquerdaGiro90();
   }
-  moverFrentePor(2500);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2500
+  moverFrentePor(2250);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2500
   if (isEsquerdo) {
     virarDireitaGiro90();
   } else {
@@ -106,7 +106,7 @@ void verificarGap() {
   ligarLed(AMBOS, AMARELO);
   unsigned long tempoInicial = millis();
 
-  moverFrentePor(100);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
+  // moverFrentePor(50);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
   pararMotores();
   delay(200);
   lerTcsAmbos();
@@ -334,6 +334,13 @@ void rampaSalaResgate() {
 
     if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
       seguirLinhaDireita(3);
+    }
+
+    // CRUZAMENTO
+    if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+    ligarLed(AMBOS, BRANCO);
+    moverFrenteRapidoPor(400);
+    desligarLed(AMBOS);
     }
   }
 

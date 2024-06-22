@@ -2,6 +2,12 @@
 
 #define DEBUG 0
 
+// rpp, rf, tcs no branco, tcs preto, tcs verde
+// tcs branco fita vermelha
+
+// ve - b 112 - v 72 - p 26
+// vd - b 94 - v 62 - p 24
+
 #define DEBUG_CALIBRACAO 1
 #define DEBUG_EM_CURSO 0  // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
@@ -14,21 +20,21 @@
 #define DEBUG_ULTRA 1
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 203    // acima é preto - papel 208 - 202
-#define CORTE_QTR_B 150    // abaixo é branco - papel 147 - madeira 165 // abaixe mais
+#define CORTE_QTR_P 201    // acima é preto - papel 208 - 202
+#define CORTE_QTR_B 140    // abaixo é branco - papel 147 - madeira 165 // abaixe mais
 #define CORTE_FRENTE 120   // abaixo é branco e acima é preto - papel 11
-#define CORTE_FRENTE_B 30  // corte frente branco
+#define CORTE_FRENTE_B 25  // corte frente branco
 
 #define CORTE_VERDE_ESQ 80  // abaixo disso é verde // 65 no verde escuro
-#define CORTE_VERDE_DIR 70
-#define CORTE_VERDE_ESQ2 22
-#define CORTE_VERDE_DIR2 22
+#define CORTE_VERDE_DIR 76
+#define CORTE_VERDE_ESQ2 24
+#define CORTE_VERDE_DIR2 24
 #define CORTE_VERMELHO_CRUZ 80  // 100
 
 // USE VALORES DE 0 A 100
 #define VEL_MOTOR_FRENTE 50
 #define VEL_MOTOR_TRAS 40
-#define VEL_MOTOR_CURVA 57 // 52
+#define VEL_MOTOR_CURVA 59 // 52
 #define VEL_MOTOR_SEG_FRENTE 38
 #define VEL_MOTOR_SEG_MAX 78
 #define VEL_MOTOR_SEG_MIN 70  // 75
@@ -174,21 +180,21 @@ void loop() {
     }
   #endif
 
-  // #if defined(FITA_PRATEADA) && (FITA_PRATEADA == 0)
-  // if (contUltra == 4) {
-  //   lerUltraEsq();
-  //   lerUltraDir();
-  //   if (distanciaUltraEsq < 8 && distanciaUltraDir < 8) {
-  //     ligarLed(AMBOS, ROXO);
-  //     moverFrentePor(500);
-  //     pararMotores();
-  //     verificarGap();
-  //   }
-  //   contUltra = 0;
-  // } else {
-  //   contUltra++;
-  // }
-  // #endif
+  #if defined(FITA_PRATEADA) && (FITA_PRATEADA == 0)
+  if (contUltra == 4) {
+    lerUltraEsq();
+    lerUltraDir();
+    if (distanciaUltraEsq < 8 && distanciaUltraDir < 8) {
+      ligarLed(AMBOS, ROXO);
+      moverFrentePor(500);
+      pararMotores();
+      verificarGap();
+    }
+    contUltra = 0;
+  } else {
+    contUltra++;
+  }
+  #endif
 
   #if (RAMPA_SALA_RESGATE == 1)
   lerGiroscopioDMP();
@@ -243,27 +249,27 @@ void loop() {
     ligarLed(AMBOS, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(true, true, true);
+    analisarVerde(true, true, true); // true true true
     desligarLed(AMBOS);
   }
 
-  // MEIO CRUZAMENTO ESQUERDO
-  if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-    ligarLed(ESQ, BRANCO);
-    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-    pararMotores();
-    analisarVerde(false, true, false);  // false, true, false
-    desligarLed(AMBOS);
-  }
+  // // MEIO CRUZAMENTO ESQUERDO
+  // if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+  //   ligarLed(ESQ, BRANCO);
+  //   moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+  //   pararMotores();
+  //   analisarVerde(false, false, false);  // false, true, false
+  //   desligarLed(AMBOS);
+  // }
 
   // MEIO CRUZAMENTO DIREITO
-  if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-    ligarLed(DIR, BRANCO);
-    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-    pararMotores();
-    analisarVerde(false, false, true);  // false, false, true
-    desligarLed(AMBOS);
-  }
+  // if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+  //   ligarLed(DIR, BRANCO);
+  //   moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+  //   pararMotores();
+  //   analisarVerde(false, false, true);  // false, false, true
+  //   desligarLed(AMBOS);
+  // }
 
 
   // SEGUIDOR DE LINHA

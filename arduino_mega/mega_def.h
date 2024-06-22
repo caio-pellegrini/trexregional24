@@ -143,7 +143,7 @@
       mpuInterrupt = true;
     }
     
-    #define FITA_PRATEADA 1
+    #define FITA_PRATEADA 0
     #define RAMPA_SALA_RESGATE 1
     #define RAMPA 0
     #define GANGORRA 1

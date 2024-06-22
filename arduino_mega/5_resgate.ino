@@ -61,6 +61,14 @@ void salaDeResgate() {
   varredura(true);
   laserGarra.stopContinuous();
   laserGarra.startContinuous();
+
+  varredura(true);
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
+
+  varredura(true);
+  laserGarra.stopContinuous();
+  laserGarra.startContinuous();
 }
 
 void entrarSalaResgate() {
@@ -95,14 +103,24 @@ void entrarSalaResgate() {
       virarDireitaGiro45();
     } else {
       // PAREDE ESTA NA DIREITA
-      entradaDirecao = true;
+      entradaDirecao = false;
       ligarLed(DIR, AZUL, 1000);
+
+      virarEsquerdaGiro(20, false);
+      moverFrentePor(200);
+      virarEsquerdaGiro(20, false);
+      moverFrentePor(170);
+      virarEsquerdaGiro(17, false);
+      // virarEsquerdaGiro45();
+      moverFrentePor(170);
       virarEsquerdaGiro45();
-      moverFrentePor(100);
-      virarEsquerdaGiro45();
+      moverTrasPor(870);
+
+      moverFrentePor(500);
+      virarDireitaGiro90();
     }
 
-    moverTrasPor(700);
+    moverTrasPor(1500);
     pararMotores();
   }
 }
@@ -202,7 +220,7 @@ void encontrouArea(bool entregarQualquerBase) {
   // fecharGarra();
   // subirGarra();
 
-  moverFrentePor(1100);
+  moverFrentePor(1050);
 
   if (entradaDirecao) {
     virarEsquerdaGiro45();
@@ -328,7 +346,7 @@ void encontrouParede() {
   } else {
     virarEsquerdaGiro90();
   }
-  moverTrasPor(1100);
+  moverTrasPor(500); // 1100
   pararMotores();
 }
 

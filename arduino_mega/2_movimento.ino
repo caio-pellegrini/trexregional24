@@ -99,6 +99,11 @@ void moverFrentePor(unsigned long ms) {
   delay(ms);
 }
 
+void moverFrenteRapidoPor(unsigned long ms) {
+  moverFrenteRapido();
+  delay(ms);
+}
+
 void moverTrasPor(unsigned long ms) {
   moverTras();
   delay(ms);
@@ -164,17 +169,17 @@ void virarDireitaGiro(uint8_t graus, bool umMotor) {
   }
   // melhorar funcao de cima colocando a condicao no lugar do true
 }
-void virarEsquerdaGiro45() { virarEsquerdaGiro(52, false); }
+void virarEsquerdaGiro45() { virarEsquerdaGiro(53, false); }
 
-void virarDireitaGiro45() { virarDireitaGiro(52, false); }
+void virarDireitaGiro45() { virarDireitaGiro(53, false); }
 
-void virarEsquerdaGiro90() { virarEsquerdaGiro(106, false); }
+void virarEsquerdaGiro90() { virarEsquerdaGiro(108, false); }
 
-void virarDireitaGiro90() { virarDireitaGiro(106, false); }
+void virarDireitaGiro90() { virarDireitaGiro(108, false); }
 
-void virarEsquerdaGiro180() { virarEsquerdaGiro(213, false); }
+void virarEsquerdaGiro180() { virarEsquerdaGiro(214, false); }
 
-void virarDireitaGiro180() { virarDireitaGiro(213, false); }
+void virarDireitaGiro180() { virarDireitaGiro(214, false); }
 
 void virarEsquerdaGiro90UmMotor() { virarEsquerdaGiro(105, true); }
 
