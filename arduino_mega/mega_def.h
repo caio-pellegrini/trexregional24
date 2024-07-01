@@ -29,17 +29,26 @@
     #define SERVO_CANCELA_DIR_POS_INICIAL 99
 
     // PLACA DE SENSORES DE REFLETÂNCIA
-    #define SE3_PIN    A8
+    #define SE3_PIN    A9
     #define SE2_PIN    A9
-    #define SE1_PIN    A15
-    #define SE0_PIN    A14
+    #define SE1_PIN    A10
+    #define SE0_PIN    A11
     #define SD0_PIN    A13
-    #define SD1_PIN    A12
-    #define SD2_PIN    A10
-    #define SD3_PIN    A11
+    #define SD1_PIN    A14
+    #define SD2_PIN    A15
+    #define SD3_PIN    A15
+
+    // #define SE3_PIN    A8
+    // #define SE2_PIN    A9
+    // #define SE1_PIN    A15
+    // #define SE0_PIN    A14
+    // #define SD0_PIN    A13
+    // #define SD1_PIN    A12
+    // #define SD2_PIN    A10
+    // #define SD3_PIN    A11
 
     // SENSOR DE REFLETÂNCIA FRENTE
-    #define SF_PIN     A7
+    #define SF_PIN     A12
 
     // BOTOES
     #define BTN_AREA_ESQ_PIN    24
@@ -148,5 +157,6 @@
     #define RAMPA 0
     #define GANGORRA 1
     #define OBSTACULO 1
+    #define GAP 0
 
 #endif

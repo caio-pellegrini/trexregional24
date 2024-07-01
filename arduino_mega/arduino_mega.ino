@@ -12,16 +12,16 @@
 #define DEBUG_EM_CURSO 0  // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
 #define DEBUG_REFL_FRENTE 1
-#define DEBUG_TCS_AMBOS 1
+#define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 1
+#define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_LASER_GARRA 0
-#define DEBUG_ULTRA 1
+#define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 195    // acima é preto - papel 208 - 202
-#define CORTE_QTR_B 135    // abaixo é branco - papel 145 - madeira 165 // abaixe mais
+#define CORTE_QTR_P 150    // acima é preto - papel 208 - 202
+#define CORTE_QTR_B 150    // abaixo é branco - papel 145 - madeira 165 // abaixe mais
 #define CORTE_FRENTE 120   // abaixo é branco e acima é preto - papel 11
 #define CORTE_FRENTE_B 25  // corte frente branco
 
@@ -223,11 +223,13 @@ void loop() {
   lerQTRATodos();
   lerReflFrente();
 
+  #if (GAP == 1)
   // se for papel - se3 <= (CORTE_QTR_B - 20)
   if (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && se0 <= CORTE_QTR_B && sd0 <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B) {
     // se nao estiver func, colocar todos os sensores
     verificarGap();
   }
+  #endif
 
   // 90 GRAUS DIREITO
   if (sf <= CORTE_FRENTE_B && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
@@ -279,11 +281,11 @@ void loop() {
   // se for fita estilo silver tape (com pouco reflexo)
   seguidorMoverFrente();
 
-  if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
+  if (sd0 >= CORTE_QTR_P || sd1 >= CORTE_QTR_P) {
     seguirLinhaEsquerda(3);
   }
 
-  if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
+  if (se0 >= CORTE_QTR_P || se1 >= CORTE_QTR_P) {
     seguirLinhaDireita(3);
   }
 

@@ -14,8 +14,8 @@
             sd2 = analogRead(SD2_PIN) >> 2;
             sd3 = analogRead(SD3_PIN) >> 2;
 
-            Serial.print(" | se3: ");
-            Serial.print(se3);
+            // Serial.print(" | se3: ");
+            // Serial.print(se3);
             Serial.print(" se2: ");
             Serial.print(se2);
             Serial.print(" se1: ");
@@ -28,8 +28,8 @@
             Serial.print(sd1);
             Serial.print(" sd2: ");
             Serial.print(sd2);
-            Serial.print(" sd3: ");
-            Serial.print(sd3);
+            // Serial.print(" sd3: ");
+            // Serial.print(sd3);
         #endif
 
         #if DEBUG_REFL_FRENTE
