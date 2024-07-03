@@ -1,53 +1,12 @@
+#include "MPU6050_6Axis_MotionApps612.h"
+#include <Adafruit_TCS34725.h>
+#include <Servo.h>
+#include <Ultrasonic.h>
+#include <VL53L0X_mod.h>
+#include <Wire.h>
+
+#include "mega_pins.h"
 #include "mega_def.h"
-
-#define DEBUG 0
-
-// rpp, rf, tcs no branco, tcs preto, tcs verde
-// tcs branco fita vermelha
-
-// ve - b 112 - v 72 - p 26
-// vd - b 94 - v 62 - p 24
-
-#define DEBUG_CALIBRACAO 1
-#define DEBUG_EM_CURSO 0  // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 1
-#define DEBUG_REFL_FRENTE 1
-#define DEBUG_TCS_AMBOS 0
-#define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 0
-#define DEBUG_LASER_GARRA 0
-#define DEBUG_ULTRA 0
-#define DEBUG_BOTOES 0
-
-#define CORTE_QTR_P 150    // acima é preto - papel 208 - 202
-#define CORTE_QTR_B 150    // abaixo é branco - papel 145 - madeira 165 // abaixe mais
-#define CORTE_FRENTE 120   // abaixo é branco e acima é preto - papel 11
-#define CORTE_FRENTE_B 25  // corte frente branco
-
-#define CORTE_VERDE_ESQ 62  // abaixo disso é verde // 65 no verde escuro
-#define CORTE_VERDE_DIR 60
-#define CORTE_VERDE_ESQ2 9
-#define CORTE_VERDE_DIR2 9
-#define CORTE_VERMELHO_CRUZ 80  // 100
-
-// USE VALORES DE 0 A 100
-#define VEL_MOTOR_FRENTE 50
-#define VEL_MOTOR_TRAS 40
-#define VEL_MOTOR_CURVA 59 // 52
-#define VEL_MOTOR_SEG_FRENTE 38
-#define VEL_MOTOR_SEG_MAX 75
-#define VEL_MOTOR_SEG_MIN 68  // 75
-
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 145
-#define TEMPO_MOVER_ANTES_CRUZ 360  // 375
-
-#define DIST_LASER_GARRA_VIT 45
-#define DIST_OBSTACULO 70
-
-#define CORTE_ULTRA_SALA_RESGATE 7
-#define INCLINACAO 7
-
 
 void setup() {
   // DEFINIÇÕES DE PINOS DOS LEDS
@@ -65,14 +24,14 @@ void setup() {
   Serial.println();
   Wire.begin();
 
-  pinMode(LASER_FRENTE_XSHUT, OUTPUT);
-  pinMode(LASER_GARRA_XSHUT, OUTPUT);
+  pinMode(LASER_FRENTE_XSHUT_PIN, OUTPUT);
+  pinMode(LASER_GARRA_XSHUT_PIN, OUTPUT);
 
-  digitalWrite(LASER_FRENTE_XSHUT, LOW);
-  digitalWrite(LASER_GARRA_XSHUT, LOW);
+  digitalWrite(LASER_FRENTE_XSHUT_PIN, LOW);
+  digitalWrite(LASER_GARRA_XSHUT_PIN, LOW);
   delay(50);  // testar mudar para 10
 
-  digitalWrite(LASER_FRENTE_XSHUT, HIGH);
+  digitalWrite(LASER_FRENTE_XSHUT_PIN, HIGH);
   delay(50);
   // Configura o sensor VL53L0X
   laserFrente.setTimeout(500);  // padrão 500
@@ -83,7 +42,7 @@ void setup() {
 
   // i2c_scanner();
 
-  digitalWrite(LASER_GARRA_XSHUT, HIGH);
+  digitalWrite(LASER_GARRA_XSHUT_PIN, HIGH);
   delay(50);
   laserGarra.setTimeout(500);
   Serial.println(laserGarra.init() ? "Laser Garra conectado :)"
@@ -113,8 +72,9 @@ void setup() {
   pinMode(SE3_PIN, INPUT);
   pinMode(SE2_PIN, INPUT);
   pinMode(SE1_PIN, INPUT);
-  pinMode(SE0_PIN, INPUT);
-  pinMode(SD0_PIN, INPUT);
+  pinMode(SM_PIN, INPUT);
+  // pinMode(SE0_PIN, INPUT);
+  // pinMode(SD0_PIN, INPUT);
   pinMode(SD1_PIN, INPUT);
   pinMode(SD2_PIN, INPUT);
   pinMode(SD3_PIN, INPUT);
@@ -225,7 +185,7 @@ void loop() {
 
   #if (GAP == 1)
   // se for papel - se3 <= (CORTE_QTR_B - 20)
-  if (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && se0 <= CORTE_QTR_B && sd0 <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B) {
+  if (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= 40 && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B) {
     // se nao estiver func, colocar todos os sensores
     verificarGap();
   }
@@ -248,7 +208,7 @@ void loop() {
   }
 
   // CRUZAMENTO
-  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
     ligarLed(AMBOS, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
@@ -257,36 +217,39 @@ void loop() {
   }
 
   // // MEIO CRUZAMENTO ESQUERDO
-  // if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-  //   ligarLed(ESQ, BRANCO);
-  //   moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-  //   pararMotores();
-  //   analisarVerde(false, false, false);  // false, true, false
-  //   desligarLed(AMBOS);
-  // }
+  #if (MCE == 1)
+  if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+    ligarLed(ESQ, BRANCO);
+    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+    pararMotores();
+    analisarVerde(false, false, false);  // false, true, false
+    desligarLed(AMBOS);
+  }
+  #endif
 
   // MEIO CRUZAMENTO DIREITO
-  // if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-  //   ligarLed(DIR, BRANCO);
-  //   moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-  //   pararMotores();
-  //   analisarVerde(false, false, true);  // false, false, true
-  //   desligarLed(AMBOS);
-  // }
+  #if (MCD == 1)
+  if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+    ligarLed(DIR, BRANCO);
+    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+    pararMotores();
+    analisarVerde(false, false, true);  // false, false, true
+    desligarLed(AMBOS);
+  }
+  #endif
 
 
   // SEGUIDOR DE LINHA
   lerQTRASegueLinha();
 
-  // se for fita estilo silver tape (com pouco reflexo)
   seguidorMoverFrente();
 
-  if (sd0 >= CORTE_QTR_P || sd1 >= CORTE_QTR_P) {
-    seguirLinhaEsquerda(3);
+  if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P || sd3 >= CORTE_QTR_P) {
+    seguirLinhaDireita(10);
   }
 
-  if (se0 >= CORTE_QTR_P || se1 >= CORTE_QTR_P) {
-    seguirLinhaDireita(3);
+  if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P || se3 >= CORTE_QTR_P) {
+    seguirLinhaEsquerda(10);
   }
 
 #if defined(OBSTACULO) && (OBSTACULO == 1)

@@ -5,35 +5,26 @@
         Serial.println();
 
         #if DEBUG_QTRA
-            se3 = analogRead(SE3_PIN) >> 2; // transforma o valor de 10-bits (0-1023) para 8-bits (0-255)
-            se2 = analogRead(SE2_PIN) >> 2;
-            se1 = analogRead(SE1_PIN) >> 2;
-            se0 = analogRead(SE0_PIN) >> 2;
-            sd0 = analogRead(SD0_PIN) >> 2;
-            sd1 = analogRead(SD1_PIN) >> 2;
-            sd2 = analogRead(SD2_PIN) >> 2;
-            sd3 = analogRead(SD3_PIN) >> 2;
+            lerQTRATodos();
 
-            // Serial.print(" | se3: ");
-            // Serial.print(se3);
+            Serial.print(" | se3: ");
+            Serial.print(se3);
             Serial.print(" se2: ");
             Serial.print(se2);
             Serial.print(" se1: ");
             Serial.print(se1);
-            Serial.print(" se0: ");
-            Serial.print(se0);
-            Serial.print(" sd0: ");
-            Serial.print(sd0);
-            Serial.print(" sd1: ");
+            Serial.print(" | sm: ");
+            Serial.print(sm);
+            Serial.print(" | sd1: ");
             Serial.print(sd1);
             Serial.print(" sd2: ");
             Serial.print(sd2);
-            // Serial.print(" sd3: ");
-            // Serial.print(sd3);
+            Serial.print(" sd3: ");
+            Serial.print(sd3);
         #endif
 
         #if DEBUG_REFL_FRENTE
-            sf = analogRead(SF_PIN) >> 2;
+            lerReflFrente();
 
             Serial.print(" | sf: ");
             Serial.print(sf);

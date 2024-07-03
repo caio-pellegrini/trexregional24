@@ -1,162 +1,146 @@
-#ifndef MEGA_PINS_H
-    #define MEGA_PINS_H
+#define DEBUG 0
 
-    // IMPORTAÇÃO DE BIBLIOTECAS
-    #include <Wire.h>
-    #include <Adafruit_TCS34725.h>
-    #include <VL53L0X_mod.h>
-    #include <Ultrasonic.h>
-    #include "MPU6050_6Axis_MotionApps612.h"
-    #include <Servo.h>
+#define DEBUG_CALIBRACAO 1
+#define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
+#define DEBUG_QTRA 1
+#define DEBUG_REFL_FRENTE 1
+#define DEBUG_TCS_AMBOS 0
+#define DEBUG_TCS_FRENTE 0
+#define DEBUG_GIROSCOPIO 0
+#define DEBUG_LASER_FRENTE 0
+#define DEBUG_LASER_GARRA 0
+#define DEBUG_ULTRA 0
+#define DEBUG_BOTOES 0
 
-    // MOTORES GRANDES
-    #define MOTOR_ESQ_F_PIN   11 // verde escuro
-    #define MOTOR_ESQ_T_PIN   10 // verde claro
-    #define MOTOR_DIR_F_PIN   8  // azul claro
-    #define MOTOR_DIR_T_PIN   9  // azul escuro
+#define CORTE_QTR_P 220 // acima é preto - papel 208 - 202
+#define CORTE_QTR_B 150 // abaixo é branco - papel 145 - madeira 165 // abaixe mais
+#define CORTE_FRENTE 135  // abaixo é branco e acima é preto - papel 11
+#define CORTE_FRENTE_B 25 // corte frente branco
 
-    // SERVOMOTORES
-    #define SERVO_PA_GARRA_PIN 44
-    #define SERVO_SUBIR_GARRA_PIN 46
-    #define SERVO_ROTACIONAR_GARRA_PIN 45
-    #define SERVO_CANCELA_ESQ_PIN 13
-    #define SERVO_CANCELA_DIR_PIN 12
+#define CORTE_VERDE_ESQ 62 // abaixo disso é verde // 65 no verde escuro
+#define CORTE_VERDE_DIR 60
+#define CORTE_VERDE_ESQ2 9
+#define CORTE_VERDE_DIR2 9
+#define CORTE_VERMELHO_CRUZ 80 // 100
 
-    #define SERVO_PA_GARRA_POS_INICIAL 110
-    #define SERVO_SUBIR_GARRA_POS_INICIAL 125
-    #define SERVO_ROTACIONAR_GARRA_POS_INICIAL 55
-    #define SERVO_CANCELA_ESQ_POS_INICIAL 3
-    #define SERVO_CANCELA_DIR_POS_INICIAL 99
+// USE VALORES DE 0 A 100
+#define VEL_MOTOR_FRENTE 50
+#define VEL_MOTOR_TRAS 40
+#define VEL_MOTOR_CURVA 59 // 52
+#define VEL_MOTOR_SEG_FRENTE 38
+#define VEL_MOTOR_SEG_MAX 75
+#define VEL_MOTOR_SEG_MIN 70 // 75
 
-    // PLACA DE SENSORES DE REFLETÂNCIA
-    #define SE3_PIN    A9
-    #define SE2_PIN    A9
-    #define SE1_PIN    A10
-    #define SE0_PIN    A11
-    #define SD0_PIN    A13
-    #define SD1_PIN    A14
-    #define SD2_PIN    A15
-    #define SD3_PIN    A15
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 145
+#define TEMPO_MOVER_ANTES_CRUZ 360 // 375
 
-    // #define SE3_PIN    A8
-    // #define SE2_PIN    A9
-    // #define SE1_PIN    A15
-    // #define SE0_PIN    A14
-    // #define SD0_PIN    A13
-    // #define SD1_PIN    A12
-    // #define SD2_PIN    A10
-    // #define SD3_PIN    A11
+#define DIST_LASER_GARRA_VIT 45
+#define DIST_OBSTACULO 70
 
-    // SENSOR DE REFLETÂNCIA FRENTE
-    #define SF_PIN     A12
+#define CORTE_ULTRA_SALA_RESGATE 7
+#define INCLINACAO 7
 
-    // BOTOES
-    #define BTN_AREA_ESQ_PIN    24
-    #define BTN_AREA_DIR_PIN    28
-    #define BTN_PAREDE_ESQ_PIN  22
-    #define BTN_PAREDE_DIR_PIN  26
-    #define BTN_VITIMA_PIN      33
-    bool btnAreaEsq = false, btnAreaDir = false, btnParedeEsq = false, btnParedeDir = false, btnVitima = false;
+// --------------
 
-    #define MPU6050_INTERRUPT_PIN 2
+#define SERVO_PA_GARRA_POS_INICIAL 110
+#define SERVO_SUBIR_GARRA_POS_INICIAL 125
+#define SERVO_ROTACIONAR_GARRA_POS_INICIAL 55
+#define SERVO_CANCELA_ESQ_POS_INICIAL 3
+#define SERVO_CANCELA_DIR_POS_INICIAL 99
 
-    // PINOS PARA LEDS RGB ("SETA" DO ROBÔ)
-    #define LED_ESQ_RED_PIN   53
-    #define LED_ESQ_GREEN_PIN 51
-    #define LED_ESQ_BLUE_PIN  49
-    #define LED_DIR_RED_PIN   52
-    #define LED_DIR_GREEN_PIN 50
-    #define LED_DIR_BLUE_PIN  48
-
-    // CONSTANTES PARA CORES
-    #define DESLIGADO  0, 0, 0
-    #define VERMELHO   255, 0, 0
-    #define VERDE      0, 255, 0
-    #define AZUL       0, 0, 255
-    #define ROXO       255, 0, 255
-    #define BRANCO     255, 255, 255
-    #define AMARELO    255, 255, 0
-    #define ROXO       255, 0, 255
-
-    // CONSTANTES PARA LEDS
-    #define AMBOS      true, true
-    #define ESQ        true, false
-    #define DIR        false, true
-
-    // DEFINIÇÕES PARA MULTIPLEXADOR I2C
-    #define TCA_ENDERECO       0x70
-    #define CANAL_TCS_FRENTE   7
-    #define CANAL_TCS_ESQ      6
-
-    #define LASER_FRENTE_ENDERECO 0x30
-    #define LASER_FRENTE_XSHUT 14
-    #define LASER_GARRA_ENDERECO 0x31
-    #define LASER_GARRA_XSHUT  19
-
-    uint8_t rgbTcsEsq[3];  // lista de valores RGB do sensor TCS esquerdo
-    uint8_t rgbTcsDir[3];  // lista de valores RGB do sensor TCS direito
-    uint16_t rgbTcsFrente[3]; // lista de valores RGB do sensor TCS da frente
-
-    // OUTROS
-    #define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
-    #define TCS_SATURACAO_MAX 1500  // 4000 PARA 614ms
+bool btnAreaEsq = false, btnAreaDir = false;
+bool btnParedeEsq = false, btnParedeDir = false;
+bool btnVitima = false;
 
 
-    // VARIÁVEIS E CLASSES
+// CONSTANTES PARA CORES
+#define DESLIGADO 0, 0, 0
+#define VERMELHO 255, 0, 0
+#define VERDE 0, 255, 0
+#define AZUL 0, 0, 255
+#define ROXO 255, 0, 255
+#define BRANCO 255, 255, 255
+#define AMARELO 255, 255, 0
+#define ROXO 255, 0, 255
 
-    uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
-    uint8_t sf;
+// CONSTANTES PARA LEDS
+#define AMBOS true, true
+#define ESQ true, false
+#define DIR false, true
 
-    Adafruit_TCS34725 tcsFrente = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
-    Adafruit_TCS34725 tcsEsq = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
+// DEFINIÇÕES PARA MULTIPLEXADOR I2C
+#define TCA_ENDERECO 0x70
+#define CANAL_TCS_FRENTE 7
+#define CANAL_TCS_ESQ 6
 
-    VL53L0X_mod laserFrente;
-    uint16_t distanciaLaserFrente;
+#define LASER_FRENTE_ENDERECO 0x30
+#define LASER_GARRA_ENDERECO 0x31
 
-    VL53L0X_mod laserGarra;
-    uint16_t distanciaLaserGarra;
 
-    Servo servoPaGarra;
-    Servo servoSubirGarra;
-    Servo servoRotacionarGarra;
-    Servo servoCancelaEsq;
-    Servo servoCancelaDir;
+uint8_t rgbTcsEsq[3];     // lista de valores RGB do sensor TCS esquerdo
+uint8_t rgbTcsDir[3];     // lista de valores RGB do sensor TCS direito
+uint16_t rgbTcsFrente[3]; // lista de valores RGB do sensor TCS da frente
 
-    Ultrasonic ultrasonicEsq(7, 6);
-    Ultrasonic ultrasonicDir(5, 4);
-    int distanciaUltraEsq, distanciaUltraDir;
+// OUTROS
+#define CONVERT_8B_DEC(vel) ((vel * 255) / 100)
+#define TCS_SATURACAO_MAX 1500 // 4000 PARA 614ms
 
-    uint8_t contadorGap = 0;
+// VARIÁVEIS E CLASSES
 
-    // Variáveis e definições para o MPU-6050 com DMP
-    MPU6050 mpu;
-    uint8_t mpuIntStatus;
-    uint16_t fifoCount;
-    uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
-    uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
-    bool dmpReady = false;  // set true if DMP init was successful
-    uint8_t fifoBuffer[64]; // FIFO storage buffer
-    // orientation/motion vars
-    Quaternion q;        // [w, x, y, z]         quaternion container
-    VectorFloat gravity; // [x, y, z]            gravity vector
-    float ypr[3];        // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
-    float yaw, pitch, roll;
-    float initialYaw;
-    volatile bool mpuInterrupt = false;
-    // mpu antigo
-    int16_t ax, ay, az;
-    int16_t gx, gy, gz;
+uint8_t se3, se2, se1, se0, sd0, sd1, sd2, sd3;
+uint8_t sm, sf;
 
-    void dmpDataReady()
-    {
-      mpuInterrupt = true;
-    }
-    
-    #define FITA_PRATEADA 0
-    #define RAMPA_SALA_RESGATE 1
-    #define RAMPA 0
-    #define GANGORRA 1
-    #define OBSTACULO 1
-    #define GAP 0
+Adafruit_TCS34725 tcsFrente =
+    Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcsEsq =
+    Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_199MS, TCS34725_GAIN_1X);
 
-#endif
+VL53L0X_mod laserFrente;
+uint16_t distanciaLaserFrente;
+
+VL53L0X_mod laserGarra;
+uint16_t distanciaLaserGarra;
+
+Servo servoPaGarra;
+Servo servoSubirGarra;
+Servo servoRotacionarGarra;
+Servo servoCancelaEsq;
+Servo servoCancelaDir;
+
+Ultrasonic ultrasonicEsq(ULTRA_ESQ_TRIG_PIN, ULTRA_ESQ_ECHO_PIN);
+Ultrasonic ultrasonicDir(ULTRA_DIR_TRIG_PIN, ULTRA_DIR_ECHO_PIN);
+int distanciaUltraEsq, distanciaUltraDir;
+
+uint8_t contadorGap = 0;
+
+// Variáveis e definições para o MPU-6050 com DMP
+MPU6050 mpu;
+uint8_t mpuIntStatus;
+uint16_t fifoCount;
+uint16_t packetSize; // expected DMP packet size (default is 42 bytes)
+uint8_t devStatus; // return status after each device operation (0 = success, !0
+                   // = error)
+bool dmpReady = false;  // set true if DMP init was successful
+uint8_t fifoBuffer[64]; // FIFO storage buffer
+// orientation/motion vars
+Quaternion q;        // [w, x, y, z]         quaternion container
+VectorFloat gravity; // [x, y, z]            gravity vector
+float ypr[3]; // [yaw, pitch, roll] container and gravity vector
+float yaw, pitch, roll;
+float initialYaw;
+volatile bool mpuInterrupt = false;
+// mpu antigo
+int16_t ax, ay, az;
+int16_t gx, gy, gz;
+
+void dmpDataReady() { mpuInterrupt = true; }
+
+
+#define FITA_PRATEADA 0
+#define RAMPA_SALA_RESGATE 1
+#define RAMPA 0
+#define GANGORRA 1
+#define OBSTACULO 1
+#define GAP 1
+#define MCD 1
+#define MCE 1

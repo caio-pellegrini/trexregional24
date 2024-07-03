@@ -6,27 +6,27 @@ VL53L0X laserFrente;
 VL53L0X laserGarra;
 
 // Define os pinos XSHUT para cada sensor
-#define LASER_FRENTE_XSHUT 14
-#define LASER_GARRA_XSHUT 19
+#define LASER_FRENTE_XSHUT_PIN 14
+#define LASER_GARRA_XSHUT_PIN 19
 
 void setup() {
     Serial.begin(9600);
     Wire.begin();
 
-    pinMode(LASER_FRENTE_XSHUT, OUTPUT);
-    pinMode(LASER_GARRA_XSHUT, OUTPUT);
+    pinMode(LASER_FRENTE_XSHUT_PIN, OUTPUT);
+    pinMode(LASER_GARRA_XSHUT_PIN, OUTPUT);
 
-    digitalWrite(LASER_FRENTE_XSHUT, LOW);
-    digitalWrite(LASER_GARRA_XSHUT, LOW);
+    digitalWrite(LASER_FRENTE_XSHUT_PIN, LOW);
+    digitalWrite(LASER_GARRA_XSHUT_PIN, LOW);
     delay(50);
 
-    digitalWrite(LASER_FRENTE_XSHUT, HIGH);
+    digitalWrite(LASER_FRENTE_XSHUT_PIN, HIGH);
     delay(50);
     laserFrente.setTimeout(500);
     laserFrente.init();
     laserFrente.setAddress(0x30);
 
-    digitalWrite(LASER_GARRA_XSHUT, HIGH);
+    digitalWrite(LASER_GARRA_XSHUT_PIN, HIGH);
     delay(50);
     laserGarra.setTimeout(500);
     laserGarra.init();

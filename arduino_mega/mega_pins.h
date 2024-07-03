@@ -1,0 +1,60 @@
+// MOTORES GRANDES (PWM PINS)
+#define MOTOR_ESQ_F_PIN 11 // verde escuro
+#define MOTOR_ESQ_T_PIN 10 // verde claro
+#define MOTOR_DIR_F_PIN 8  // azul claro
+#define MOTOR_DIR_T_PIN 9  // azul escuro
+
+// SERVOMOTORES (PWM PINS)
+#define SERVO_PA_GARRA_PIN 44
+#define SERVO_SUBIR_GARRA_PIN 46
+#define SERVO_ROTACIONAR_GARRA_PIN 45
+#define SERVO_CANCELA_ESQ_PIN 13
+#define SERVO_CANCELA_DIR_PIN 12
+
+// PLACA DE SENSORES DE REFLETÂNCIA (ANALOG PINS)
+#define SE3_PIN A9
+#define SE2_PIN A10
+#define SE1_PIN A11
+#define SM_PIN A8
+#define SD1_PIN A12
+#define SD2_PIN A14
+#define SD3_PIN A15
+
+// SENSOR DE REFLETÂNCIA FRENTE
+#define SF_PIN A13
+
+// #define SE3_PIN    A8
+// #define SE2_PIN    A9
+// #define SE1_PIN    A15
+// #define SE0_PIN    A14
+// #define SD0_PIN    A13
+// #define SD1_PIN    A12
+// #define SD2_PIN    A10
+// #define SD3_PIN    A11
+
+
+// BOTOES (DIGITAL PINS)
+#define BTN_AREA_ESQ_PIN 24
+#define BTN_AREA_DIR_PIN 28
+#define BTN_PAREDE_ESQ_PIN 22
+#define BTN_PAREDE_DIR_PIN 26
+#define BTN_VITIMA_PIN 33
+
+#define MPU6050_INTERRUPT_PIN 2
+
+
+// PINOS PARA LEDS RGB ("SETA" DO ROBÔ)
+#define LED_ESQ_RED_PIN 53
+#define LED_ESQ_GREEN_PIN 51
+#define LED_ESQ_BLUE_PIN 49
+#define LED_DIR_RED_PIN 52
+#define LED_DIR_GREEN_PIN 50
+#define LED_DIR_BLUE_PIN 48
+
+#define LASER_FRENTE_XSHUT_PIN 14
+#define LASER_GARRA_XSHUT_PIN 19
+
+#define ULTRA_ESQ_TRIG_PIN 7
+#define ULTRA_ESQ_ECHO_PIN 6
+#define ULTRA_DIR_TRIG_PIN 5
+#define ULTRA_DIR_ECHO_PIN 4

@@ -1,10 +1,8 @@
 void lerQTRATodos() {
-  se3 = analogRead(SE3_PIN) >>
-        2; // >> 2 transforma o valor de 10-bits (0-1023) para 8-bits (0-255)
+  se3 = analogRead(SE3_PIN) >> 2; // >> 2 transforma o valor de 10-bits (0-1023) para 8-bits (0-255)
   se2 = analogRead(SE2_PIN) >> 2;
   se1 = analogRead(SE1_PIN) >> 2;
-  se0 = analogRead(SE0_PIN) >> 2;
-  sd0 = analogRead(SD0_PIN) >> 2;
+  sm = analogRead(SM_PIN) >> 2;
   sd1 = analogRead(SD1_PIN) >> 2;
   sd2 = analogRead(SD2_PIN) >> 2;
   sd3 = analogRead(SD3_PIN) >> 2;
