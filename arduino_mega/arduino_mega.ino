@@ -141,7 +141,7 @@ void loop() {
     }
   #endif
 
-  #if defined(FITA_PRATEADA) && (FITA_PRATEADA == 0)
+  #if defined(ULTRA_ENTRADA_SALA) && (ULTRA_ENTRADA_SALA == 1)
   if (contUltra == 4) {
     lerUltraEsq();
     lerUltraDir();
@@ -185,7 +185,7 @@ void loop() {
 
   #if (GAP == 1)
   // se for papel - se3 <= (CORTE_QTR_B - 20)
-  if (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= 40 && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B) {
+  if (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= 30 && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B) {
     // se nao estiver func, colocar todos os sensores
     verificarGap();
   }

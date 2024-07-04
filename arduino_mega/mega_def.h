@@ -136,7 +136,7 @@ int16_t gx, gy, gz;
 void dmpDataReady() { mpuInterrupt = true; }
 
 
-#define FITA_PRATEADA 0
+#define ULTRA_ENTRADA_SALA 1
 #define RAMPA_SALA_RESGATE 1
 #define RAMPA 0
 #define GANGORRA 1

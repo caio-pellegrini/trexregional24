@@ -125,7 +125,7 @@ void verificarGap() {
     moverFrentePor(1);
     lerQTRATodos();
 
-    if (se3 > CORTE_QTR_P || se2 > CORTE_QTR_P || se1 > CORTE_QTR_P || se0 > CORTE_QTR_P || sd0 > CORTE_QTR_P || sd1 > CORTE_QTR_P || sd2 > CORTE_QTR_P || sd3 > CORTE_QTR_P) {
+    if (se3 > CORTE_QTR_P || se2 > CORTE_QTR_P || se1 > CORTE_QTR_P || sm > 90 || sd1 > CORTE_QTR_P || sd2 > CORTE_QTR_P || sd3 > CORTE_QTR_P) {
       desligarLed(AMBOS);
       pararMotores();
       delay(200);
