@@ -13,7 +13,7 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
   }
 
   if (rgbTcsDir[1] != 0) {
-    if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[0] > CORTE_VERDE_DIR2) {
+    if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[1] > CORTE_VERDE_DIR2) {
       ligarLed(DIR, VERDE);
       verdeDir = true;
     }

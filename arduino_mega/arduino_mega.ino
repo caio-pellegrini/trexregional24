@@ -185,30 +185,30 @@ void loop() {
 
   #if (GAP == 1)
   // se for papel - se3 <= (CORTE_QTR_B - 20)
-  if (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= 30 && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B) {
+  if (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= CORTE_SM && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B) {
     // se nao estiver func, colocar todos os sensores
     verificarGap();
   }
   #endif
 
   // 90 GRAUS DIREITO
-  if (sf <= CORTE_FRENTE_B && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-    seguirLinhaDireita(100);
+  if (sf <= CORTE_FRENTE_B && sm >= CORTE_SM && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+    seguirLinhaDireita(50);
     // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
     // virarDireitaGiro90();
     // pararMotores();
   }
 
   // 90 GRAUS ESQUERDO
-  if (sf <= CORTE_FRENTE_B && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-    seguirLinhaEsquerda(100);
+  if (sf <= CORTE_FRENTE_B && sm >= CORTE_SM && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+    seguirLinhaEsquerda(50);
     // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
     // virarEsquerdaGiro90();
     // pararMotores();
   }
 
   // CRUZAMENTO
-  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sm >= CORTE_SM && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
     ligarLed(AMBOS, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
@@ -218,18 +218,18 @@ void loop() {
 
   // // MEIO CRUZAMENTO ESQUERDO
   #if (MCE == 1)
-  if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+  if (sf >= CORTE_FRENTE && sm >= CORTE_SM &&(se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
     ligarLed(ESQ, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(false, false, false);  // false, true, false
+    analisarVerde(false, true, false);  // false, true, false
     desligarLed(AMBOS);
   }
   #endif
 
   // MEIO CRUZAMENTO DIREITO
   #if (MCD == 1)
-  if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+  if (sf >= CORTE_FRENTE && sm >= CORTE_SM && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
     ligarLed(DIR, BRANCO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
@@ -265,15 +265,14 @@ void loop() {
   lerQTRATodos();
   lerReflFrente();
   // 90 GRAUS DIREITO
-  if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+  if (sf <= CORTE_FRENTE && sm >= CORTE_SM && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
     seguirLinhaDireita(10);
   }
 
   // 90 GRAUS ESQUERDO
-  if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+  if (sf <= CORTE_FRENTE && sm >= CORTE_SM && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
     seguirLinhaEsquerda(10);
   }
-  // passar lá pra baixo
 
   // Serial.print("Tempo: ");
   // Serial.print(millis() - tempoAtual);

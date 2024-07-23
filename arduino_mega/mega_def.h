@@ -4,7 +4,7 @@
 #define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
 #define DEBUG_QTRA 1
 #define DEBUG_REFL_FRENTE 1
-#define DEBUG_TCS_AMBOS 0
+#define DEBUG_TCS_AMBOS 1
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
@@ -12,10 +12,11 @@
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 220 // acima é preto - papel 208 - 202
-#define CORTE_QTR_B 150 // abaixo é branco - papel 145 - madeira 165 // abaixe mais
-#define CORTE_FRENTE 135  // abaixo é branco e acima é preto - papel 11
+#define CORTE_QTR_P 220 // acima é preto
+#define CORTE_QTR_B 150 // abaixo é branco
+#define CORTE_FRENTE 220  // abaixo é branco e acima é preto
 #define CORTE_FRENTE_B 25 // corte frente branco
+#define CORTE_SM 30
 
 #define CORTE_VERDE_ESQ 62 // abaixo disso é verde // 65 no verde escuro
 #define CORTE_VERDE_DIR 60
@@ -31,7 +32,7 @@
 #define VEL_MOTOR_SEG_MAX 75
 #define VEL_MOTOR_SEG_MIN 70 // 75
 
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 145
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 0 // 145
 #define TEMPO_MOVER_ANTES_CRUZ 360 // 375
 
 #define DIST_LASER_GARRA_VIT 45
