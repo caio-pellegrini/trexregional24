@@ -14,61 +14,35 @@ uint8_t contadorVarreduras = 0;
 
 void salaDeResgate() {
   entrarSalaResgate();
-  varredura(false);
-
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   varredura(false);
 
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
+  varredura(false);
 
   varredura(false);
 
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
-
   varredura(false);
-
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   // 2º VARREDURA - ENTREGA QUALQUER BASE
 
   varredura(true);
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   varredura(true);
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   varredura(true);
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   varredura(true);
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   // 3º VARREDURA - DUAS EXTRAS
 
   varredura(true);
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   varredura(true);
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   varredura(true);
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
 
   varredura(true);
-  laserGarra.stopContinuous();
-  laserGarra.startContinuous();
+  
 }
 
 void entrarSalaResgate() {
@@ -97,27 +71,18 @@ void entrarSalaResgate() {
       // PAREDE ESTA NA ESQUERDA
       entradaDirecao = false;
       ligarLed(ESQ, AZUL, 1000);
-      // virarDireitaGiro90();
+
       virarDireitaGiro45();
       moverFrentePor(100);
       virarDireitaGiro45();
     } else {
       // PAREDE ESTA NA DIREITA
-      entradaDirecao = false;
+      entradaDirecao = true;
       ligarLed(DIR, AZUL, 1000);
 
-      virarEsquerdaGiro(20, false);
-      moverFrentePor(200);
-      virarEsquerdaGiro(20, false);
-      moverFrentePor(170);
-      virarEsquerdaGiro(17, false);
-      // virarEsquerdaGiro45();
-      moverFrentePor(170);
       virarEsquerdaGiro45();
-      moverTrasPor(870);
-
-      moverFrentePor(500);
-      virarDireitaGiro90();
+      moverFrentePor(100);
+      virarEsquerdaGiro45();
     }
 
     moverTrasPor(1500);
@@ -130,22 +95,11 @@ void varredura(bool entregarQualquerBase) {
   // enquanto não encontrar, verifica e recolhe vítimas
   abrirGarra();
   descerGarra();
+  laserGarra.startContinuous();
+  delay(10);
   moverFrenteLento();
 
   while (true) {
-    // distanciaLaserGarra = 0;
-    // // reconhecer vitima
-    // if (lerLaserGarraNaoBloquante()) {
-    //   if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
-    //     pararMotores();
-    //     pegarVitima();
-    //     moverTrasPor(200);
-    //     pararMotores();
-    //     abrirGarra();
-    //     descerGarra();
-    //     moverFrenteLento();
-    //   }
-    // }
     lerLaserGarra();
     // Serial.println(distanciaLaserGarra);
     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
@@ -176,6 +130,7 @@ void varredura(bool entregarQualquerBase) {
 
     // reconhecer saída
   }
+  laserGarra.stopContinuous();
 }
 
 void pegarVitima() {
@@ -319,7 +274,6 @@ void encontrouParede() {
   moverTrasPor(300);
   pararMotores();
 
-  // fecharGarraVerificaBotao();
   pegarVitima();
   subirGarra();
 
@@ -373,8 +327,6 @@ void fecharGarraVerificaBotao() {
   uint8_t posicaoAtual = servoPaGarra.read();
   int8_t passo = posicaoAtual > posicaoFinal ? -1 : 1;
 
-  // bool btnAntes[4] = { btnAreaEsq, btnAreaDir, btnParedeEsq, btnParedeDir };
-
   while (posicaoAtual != posicaoFinal) {
     posicaoAtual += passo;
     servoPaGarra.write(posicaoAtual);
@@ -388,10 +340,6 @@ void fecharGarraVerificaBotao() {
       delay(100);
     }
   }
-  // btnAreaEsq = btnAntes[0];
-  // btnAreaDir = btnAntes[1];
-  // btnParedeEsq = btnAntes[2];
-  // btnParedeDir = btnAntes[3];
 }
 
 void varreduraSaida() {
