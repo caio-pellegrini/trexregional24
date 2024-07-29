@@ -1,3 +1,73 @@
+void verificarCruzamento() {
+  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sm >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+    ligarLed(AMBOS, AMARELO);
+    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+    pararMotores();
+    analisarVerde(1, 1, 1); // 1, 1, 1
+    desligarLed(AMBOS);
+  }
+}
+
+void verificarMeioCruzamentoEsq() {
+  if (sf >= CORTE_FRENTE && sm >= CORTE_QTR_P &&(se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+    ligarLed(ESQ, AMARELO);
+    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+    pararMotores();
+    analisarVerde(0, 1, 0);  // 0, 1, 0
+    desligarLed(AMBOS);
+  }
+}
+
+void verificarMeioCruzamentoDir() {
+  if (sf >= CORTE_FRENTE && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+    ligarLed(DIR, AMARELO);
+    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
+    pararMotores();
+    analisarVerde(0, 0, 1);  // 0, 0, 1
+    desligarLed(AMBOS);
+  }
+}
+
+void verificarGap() {
+  ligarLed(AMBOS, BRANCO);
+  unsigned long tempoInicial = millis();
+
+  // moverFrentePor(50);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
+  
+  pararMotores();
+  delay(200);
+  lerTcsAmbos();
+  lerTcsAmbos();
+
+  if (rgbTcsEsq[0] > rgbTcsEsq[1] && rgbTcsEsq[0] > rgbTcsEsq[2] && rgbTcsDir[0] > rgbTcsDir[1] && rgbTcsDir[0] > rgbTcsDir[2]) {
+    ligarLed(AMBOS, VERMELHO);
+    delayInfinito();
+    return;
+  }
+
+  moverFrentePor(80);  //  AJUSTE PARA PULAR LINHA PRETA EM CRUZAMENTOS
+
+  while (true) {
+    moverFrenteLentoPor(1);
+    lerReflPrincipal();
+
+    if (se3 > CORTE_QTR_P || se2 > CORTE_QTR_P || se1 > CORTE_QTR_P || sm > CORTE_QTR_P || sd1 > CORTE_QTR_P || sd2 > CORTE_QTR_P || sd3 > CORTE_QTR_P) {
+      desligarLed(AMBOS);
+      pararMotores();
+      delay(200);
+      break;
+    }
+
+    // VALOR DE ENTRADA PARA SALA DE RESGATE
+    if (millis() - tempoInicial >= 2600) {
+      pararMotores();
+      ligarLed(AMBOS, ROXO, 500);
+      salaDeResgate();
+      break;
+    }
+  }
+}
+
 void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
   lerTcsAmbos();
   lerTcsAmbos();
@@ -102,46 +172,6 @@ void desviarObstaculo(bool isEsquerdo) {
   desligarLed(AMBOS);
 }
 
-void verificarGap() {
-  ligarLed(AMBOS, BRANCO);
-  unsigned long tempoInicial = millis();
-
-  // moverFrentePor(50);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
-  
-  pararMotores();
-  delay(200);
-  lerTcsAmbos();
-  lerTcsAmbos();
-
-  if (rgbTcsEsq[0] > rgbTcsEsq[1] && rgbTcsEsq[0] > rgbTcsEsq[2] && rgbTcsDir[0] > rgbTcsDir[1] && rgbTcsDir[0] > rgbTcsDir[2]) {
-    ligarLed(AMBOS, VERMELHO);
-    delayInfinito();
-    return;
-  }
-
-  moverFrentePor(70);  //  AJUSTE PARA PULAR LINHA PRETA EM CRUZAMENTOS
-
-  while (true) {
-    moverFrenteLentoPor(1);
-    lerReflPrincipal();
-
-    if (se3 > CORTE_QTR_P || se2 > CORTE_QTR_P || se1 > CORTE_QTR_P || sm > CORTE_QTR_P || sd1 > CORTE_QTR_P || sd2 > CORTE_QTR_P || sd3 > CORTE_QTR_P) {
-      desligarLed(AMBOS);
-      pararMotores();
-      delay(200);
-      break;
-    }
-
-    // VALOR DE ENTRADA PARA SALA DE RESGATE
-    if (millis() - tempoInicial >= 2600) {
-      pararMotores();
-      ligarLed(AMBOS, ROXO, 500);
-      salaDeResgate();
-      break;
-    }
-  }
-}
-
 void rampaOuGangorra() {
   ligarLed(AMBOS, AZUL);
   moverFrentePor(300);
@@ -193,43 +223,8 @@ void rampaOuGangorra() {
     moverTrasPor(200);
     pararMotores();
 
-    unsigned long tempo = millis();
-    while (millis() - tempo < 10000) {
-      lerReflSegueLinha();
-
-      seguidorMoverFrente();
-
-      if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
-        seguirLinhaEsquerda(3);
-      }
-
-      if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
-        seguirLinhaDireita(3);
-      }
-
-      lerReflPrincipal();
-      lerReflFrente();
-
-      // CRUZAMENTO
-      if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
-        ligarLed(AMBOS, BRANCO);
-        moverFrentePor(200);
-        desligarLed(AMBOS);
-      }
-
-      // 90 GRAUS DIREITO
-      if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-        seguirLinhaDireita(10);
-      }
-
-      // 90 GRAUS ESQUERDO
-      if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-        seguirLinhaEsquerda(10);
-      }
-    }
+    // adicione aqui se precisar fazer com que identifique algo depois da gangorra
   }
-
-
 #endif
 #if (RAMPA == 1)
   if (pitch > 21) {
@@ -278,32 +273,11 @@ void rampaOuGangorra() {
       lerReflPrincipal();
       lerReflFrente();
 
-      // CRUZAMENTO
-      if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
-        ligarLed(AMBOS, BRANCO);
-        moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-        pararMotores();
-        analisarVerde(true, true, true);
-        desligarLed(AMBOS);
-      }
+      verificarCruzamento();
 
-      // MEIO CRUZAMENTO ESQUERDO
-      if (sf >= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-        ligarLed(ESQ, BRANCO);
-        moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-        pararMotores();
-        analisarVerde(false, true, false);
-        desligarLed(AMBOS);
-      }
+      verificarMeioCruzamentoEsq();
 
-      // MEIO CRUZAMENTO DIREITO
-      if (sf >= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-        ligarLed(DIR, BRANCO);
-        moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-        pararMotores();
-        analisarVerde(false, false, true);
-        desligarLed(AMBOS);
-      }
+      verificarMeioCruzamentoDir();
 
       // 90 GRAUS DIREITO
       if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
@@ -316,7 +290,6 @@ void rampaOuGangorra() {
       }
 
       seguidorMoverFrente();
-
       lerReflSegueLinha();
 
       if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {

@@ -178,11 +178,10 @@ void loop() {
   lerReflFrente();
 
   #if (GAP == 1)
-  // se for papel - se3 <= (CORTE_QTR_B - 20)
-  if (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B) {
-    // se nao estiver func, colocar todos os sensores
-    verificarGap();
-  }
+    if (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B) {
+      // se nao estiver func, colocar todos os sensores
+      verificarGap();
+    }
   #endif
 
   // // 90 GRAUS DIREITO
@@ -202,34 +201,16 @@ void loop() {
   // }
 
   // CRUZAMENTO
-  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sm >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
-    ligarLed(AMBOS, AMARELO);
-    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-    pararMotores();
-    analisarVerde(1, 1, 1); // 1, 1, 1
-    desligarLed(AMBOS);
-  }
+  verificarCruzamento();
 
-  // // MEIO CRUZAMENTO ESQUERDO
+  // MEIO CRUZAMENTO ESQUERDO
   #if (MCE == 1)
-  if (sf >= CORTE_FRENTE && sm >= CORTE_QTR_P &&(se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-    ligarLed(ESQ, AMARELO);
-    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-    pararMotores();
-    analisarVerde(0, 1, 0);  // 0, 1, 0
-    desligarLed(AMBOS);
-  }
+    verificarMeioCruzamentoEsq();
   #endif
 
   // MEIO CRUZAMENTO DIREITO
   #if (MCD == 1)
-  if (sf >= CORTE_FRENTE && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-    ligarLed(DIR, AMARELO);
-    moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
-    pararMotores();
-    analisarVerde(0, 0, 1);  // 0, 0, 1
-    desligarLed(AMBOS);
-  }
+    verificarMeioCruzamentoDir();
   #endif
 
 

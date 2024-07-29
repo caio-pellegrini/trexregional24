@@ -10,7 +10,7 @@
 #define DEBUG_BOTOES 0
 
 #define CORTE_QTR_P 225 // acima é preto
-#define CORTE_QTR_B 120 // abaixo é branco
+#define CORTE_QTR_B 110 // abaixo é branco
 #define CORTE_FRENTE 80  // abaixo é branco e acima é preto
 #define CORTE_FRENTE_B 20 // corte frente branco
 
