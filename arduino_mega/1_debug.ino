@@ -4,8 +4,9 @@
     {
         Serial.println();
 
-        #if DEBUG_QTRA
-            lerQTRATodos();
+        #if DEBUG_REFL
+            lerReflPrincipal();
+            lerReflFrente();
 
             Serial.print(" | se3: ");
             Serial.print(se3);
@@ -21,10 +22,6 @@
             Serial.print(sd2);
             Serial.print(" sd3: ");
             Serial.print(sd3);
-        #endif
-
-        #if DEBUG_REFL_FRENTE
-            lerReflFrente();
 
             Serial.print(" | sf: ");
             Serial.print(sf);

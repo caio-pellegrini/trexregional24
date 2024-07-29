@@ -12,16 +12,16 @@
 #define SERVO_CANCELA_DIR_PIN 12
 
 // PLACA DE SENSORES DE REFLETÂNCIA (ANALOG PINS)
-#define SE3_PIN A9
-#define SE2_PIN A10
-#define SE1_PIN A11
-#define SM_PIN A8
-#define SD1_PIN A12
+#define SE3_PIN A8
+#define SE2_PIN A9
+#define SE1_PIN A10
+#define SM_PIN A12
+#define SD1_PIN A13
 #define SD2_PIN A14
 #define SD3_PIN A15
 
 // SENSOR DE REFLETÂNCIA FRENTE
-#define SF_PIN A13
+#define SF_PIN A11
 
 // #define SE3_PIN    A8
 // #define SE2_PIN    A9

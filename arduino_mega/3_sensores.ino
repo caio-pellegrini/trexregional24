@@ -1,4 +1,4 @@
-void lerQTRATodos() {
+void lerReflPrincipal() {
   se3 = analogRead(SE3_PIN) >> 2; // >> 2 transforma o valor de 10-bits (0-1023) para 8-bits (0-255)
   se2 = analogRead(SE2_PIN) >> 2;
   se1 = analogRead(SE1_PIN) >> 2;
@@ -8,11 +8,13 @@ void lerQTRATodos() {
   sd3 = analogRead(SD3_PIN) >> 2;
 }
 
-void lerQTRASegueLinha() {
+void lerReflSegueLinha() {
+  se3 = analogRead(SE3_PIN) >> 2;
   se2 = analogRead(SE2_PIN) >> 2;
   se1 = analogRead(SE1_PIN) >> 2;
   sd1 = analogRead(SD1_PIN) >> 2;
   sd2 = analogRead(SD2_PIN) >> 2;
+  sd3 = analogRead(SD3_PIN) >> 2;
 }
 
 void lerReflFrente() { sf = analogRead(SF_PIN) >> 2; }
@@ -119,16 +121,16 @@ void ligarGiroscopio() {
   devStatus = mpu.dmpInitialize();
 
   // supply your own gyro offsets here, scaled for min sensitivity
-  mpu.setXAccelOffset(1123);
-  mpu.setYAccelOffset(3163);
-  mpu.setZAccelOffset(1538);
-  mpu.setXGyroOffset(69);
-  mpu.setYGyroOffset(14);
-  mpu.setZGyroOffset(-34);
+  mpu.setXAccelOffset(1181);
+  mpu.setYAccelOffset(3149);
+  mpu.setZAccelOffset(1542);
+  mpu.setXGyroOffset(74);
+  mpu.setYGyroOffset(21);
+  mpu.setZGyroOffset(-46);
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
-    // // Calibration Time: generate offsets and calibrate our MPU6050
-    // (uncomment to calibrate) mpu.CalibrateAccel(6); mpu.CalibrateGyro(6);
+    // Calibration Time: generate offsets and calibrate our MPU6050 (uncomment to calibrate) 
+    // mpu.CalibrateAccel(6); mpu.CalibrateGyro(6);
     // Serial.println();
     // mpu.PrintActiveOffsets();
 

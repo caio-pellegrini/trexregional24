@@ -1,22 +1,18 @@
 #define DEBUG 0
 
-#define DEBUG_CALIBRACAO 1
-#define DEBUG_EM_CURSO 0 // 1 para o robo ANDAR com o SERIAL LIGADO (não recomendado)
-#define DEBUG_QTRA 1
-#define DEBUG_REFL_FRENTE 1
-#define DEBUG_TCS_AMBOS 1
+#define DEBUG_REFL 1
+#define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 0
+#define DEBUG_GIROSCOPIO 1
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 220 // acima é preto
-#define CORTE_QTR_B 150 // abaixo é branco
-#define CORTE_FRENTE 220  // abaixo é branco e acima é preto
-#define CORTE_FRENTE_B 25 // corte frente branco
-#define CORTE_SM 30
+#define CORTE_QTR_P 225 // acima é preto
+#define CORTE_QTR_B 120 // abaixo é branco
+#define CORTE_FRENTE 80  // abaixo é branco e acima é preto
+#define CORTE_FRENTE_B 20 // corte frente branco
 
 #define CORTE_VERDE_ESQ 62 // abaixo disso é verde // 65 no verde escuro
 #define CORTE_VERDE_DIR 60
@@ -135,6 +131,8 @@ int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
 void dmpDataReady() { mpuInterrupt = true; }
+
+int contUltra = 0;
 
 
 #define ULTRA_ENTRADA_SALA 1

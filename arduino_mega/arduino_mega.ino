@@ -120,17 +120,11 @@ void setup() {
   desligarLed(AMBOS);
 }
 
-int contUltra = 0;
-
 void loop() {
-#if DEBUG
-#if DEBUG_CALIBRACAO
-  calibrar();
-#endif
-#if defined(DEBUG_EM_CURSO) && (DEBUG_EM_CURSO == 0)
-  return;
-#endif
-#endif
+  #if defined(DEBUG) && (DEBUG == 1)
+    calibrar();
+    return; // Comente essa linha para o robo ANDAR com o SERIAL LIGADO (não recomendado)
+  #endif
 
   // unsigned long tempoAtual = millis();
 
@@ -180,76 +174,76 @@ void loop() {
   #endif
 
 
-  lerQTRATodos();
+  lerReflPrincipal();
   lerReflFrente();
 
   #if (GAP == 1)
   // se for papel - se3 <= (CORTE_QTR_B - 20)
-  if (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= CORTE_SM && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B) {
+  if (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B) {
     // se nao estiver func, colocar todos os sensores
     verificarGap();
   }
   #endif
 
-  // 90 GRAUS DIREITO
-  if (sf <= CORTE_FRENTE_B && sm >= CORTE_SM && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-    seguirLinhaDireita(50);
-    // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
-    // virarDireitaGiro90();
-    // pararMotores();
-  }
+  // // 90 GRAUS DIREITO
+  // if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+  //   seguirLinhaDireita(50);
+  //   // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
+  //   // virarDireitaGiro90();
+  //   // pararMotores();
+  // }
 
-  // 90 GRAUS ESQUERDO
-  if (sf <= CORTE_FRENTE_B && sm >= CORTE_SM && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-    seguirLinhaEsquerda(50);
-    // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
-    // virarEsquerdaGiro90();
-    // pararMotores();
-  }
+  // // 90 GRAUS ESQUERDO
+  // if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+  //   seguirLinhaEsquerda(50);
+  //   // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
+  //   // virarEsquerdaGiro90();
+  //   // pararMotores();
+  // }
 
   // CRUZAMENTO
-  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sm >= CORTE_SM && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
-    ligarLed(AMBOS, BRANCO);
+  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sm >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+    ligarLed(AMBOS, AMARELO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(true, true, true); // true true true
+    analisarVerde(1, 1, 1); // 1, 1, 1
     desligarLed(AMBOS);
   }
 
   // // MEIO CRUZAMENTO ESQUERDO
   #if (MCE == 1)
-  if (sf >= CORTE_FRENTE && sm >= CORTE_SM &&(se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-    ligarLed(ESQ, BRANCO);
+  if (sf >= CORTE_FRENTE && sm >= CORTE_QTR_P &&(se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+    ligarLed(ESQ, AMARELO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(false, true, false);  // false, true, false
+    analisarVerde(0, 1, 0);  // 0, 1, 0
     desligarLed(AMBOS);
   }
   #endif
 
   // MEIO CRUZAMENTO DIREITO
   #if (MCD == 1)
-  if (sf >= CORTE_FRENTE && sm >= CORTE_SM && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-    ligarLed(DIR, BRANCO);
+  if (sf >= CORTE_FRENTE && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+    ligarLed(DIR, AMARELO);
     moverTrasPor(TEMPO_MOVER_ANTES_ANALISAR_VERDE);
     pararMotores();
-    analisarVerde(false, false, true);  // false, false, true
+    analisarVerde(0, 0, 1);  // 0, 0, 1
     desligarLed(AMBOS);
   }
   #endif
 
 
   // SEGUIDOR DE LINHA
-  lerQTRASegueLinha();
+  lerReflSegueLinha();
 
   seguidorMoverFrente();
 
   if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P || sd3 >= CORTE_QTR_P) {
-    seguirLinhaDireita(10);
+    seguirLinhaDireita(7);
   }
 
   if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P || se3 >= CORTE_QTR_P) {
-    seguirLinhaEsquerda(10);
+    seguirLinhaEsquerda(7);
   }
 
 #if defined(OBSTACULO) && (OBSTACULO == 1)
@@ -262,16 +256,18 @@ void loop() {
   }
 #endif
 
-  lerQTRATodos();
+  lerReflPrincipal();
   lerReflFrente();
   // 90 GRAUS DIREITO
-  if (sf <= CORTE_FRENTE && sm >= CORTE_SM && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-    seguirLinhaDireita(10);
+  if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+    // seguirLinhaDireita(50);
+    virarDireitaPor(50);
   }
 
   // 90 GRAUS ESQUERDO
-  if (sf <= CORTE_FRENTE && sm >= CORTE_SM && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-    seguirLinhaEsquerda(10);
+  if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B)) {
+    // seguirLinhaEsquerda(50);
+    virarEsquerdaPor(50);
   }
 
   // Serial.print("Tempo: ");

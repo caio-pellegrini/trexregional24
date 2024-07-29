@@ -85,7 +85,7 @@ void desviarObstaculo(bool isEsquerdo) {
   unsigned long tempoInicial = millis();
   while (millis() - tempoInicial < 1350) {  // AJUSTAR TAMBÉM
     moverFrentePor(1);
-    lerQTRATodos();
+    lerReflPrincipal();
     if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
       pararMotores();
       delay(500);
@@ -103,7 +103,7 @@ void desviarObstaculo(bool isEsquerdo) {
 }
 
 void verificarGap() {
-  ligarLed(AMBOS, AMARELO);
+  ligarLed(AMBOS, BRANCO);
   unsigned long tempoInicial = millis();
 
   // moverFrentePor(50);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
@@ -119,13 +119,13 @@ void verificarGap() {
     return;
   }
 
-  moverFrentePor(70);  //  AJUSTE LINHA PRETA
+  moverFrentePor(70);  //  AJUSTE PARA PULAR LINHA PRETA EM CRUZAMENTOS
 
   while (true) {
-    moverFrentePor(1);
-    lerQTRATodos();
+    moverFrenteLentoPor(1);
+    lerReflPrincipal();
 
-    if (se3 > CORTE_QTR_P || se2 > CORTE_QTR_P || se1 > CORTE_QTR_P || sm > 90 || sd1 > CORTE_QTR_P || sd2 > CORTE_QTR_P || sd3 > CORTE_QTR_P) {
+    if (se3 > CORTE_QTR_P || se2 > CORTE_QTR_P || se1 > CORTE_QTR_P || sm > CORTE_QTR_P || sd1 > CORTE_QTR_P || sd2 > CORTE_QTR_P || sd3 > CORTE_QTR_P) {
       desligarLed(AMBOS);
       pararMotores();
       delay(200);
@@ -133,7 +133,7 @@ void verificarGap() {
     }
 
     // VALOR DE ENTRADA PARA SALA DE RESGATE
-    if (millis() - tempoInicial >= 2000) {
+    if (millis() - tempoInicial >= 2600) {
       pararMotores();
       ligarLed(AMBOS, ROXO, 500);
       salaDeResgate();
@@ -174,7 +174,7 @@ void rampaOuGangorra() {
       analogWrite(MOTOR_DIR_T_PIN, 0);
       delay(1);
 
-      lerQTRASegueLinha();
+      lerReflSegueLinha();
 
       if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
         seguirLinhaEsquerda(1);
@@ -195,7 +195,7 @@ void rampaOuGangorra() {
 
     unsigned long tempo = millis();
     while (millis() - tempo < 10000) {
-      lerQTRASegueLinha();
+      lerReflSegueLinha();
 
       seguidorMoverFrente();
 
@@ -207,7 +207,7 @@ void rampaOuGangorra() {
         seguirLinhaDireita(3);
       }
 
-      lerQTRATodos();
+      lerReflPrincipal();
       lerReflFrente();
 
       // CRUZAMENTO
@@ -253,7 +253,7 @@ void rampaOuGangorra() {
       analogWrite(MOTOR_DIR_T_PIN, 0);
       delay(1);
 
-      lerQTRASegueLinha();
+      lerReflSegueLinha();
 
       if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
         seguirLinhaEsquerda(1);
@@ -275,7 +275,7 @@ void rampaOuGangorra() {
     lerGiroscopioDMP();
 
     while (pitch > -5) {
-      lerQTRATodos();
+      lerReflPrincipal();
       lerReflFrente();
 
       // CRUZAMENTO
@@ -317,7 +317,7 @@ void rampaOuGangorra() {
 
       seguidorMoverFrente();
 
-      lerQTRASegueLinha();
+      lerReflSegueLinha();
 
       if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
         seguirLinhaEsquerda(3);
@@ -352,7 +352,7 @@ void rampaSalaResgate() {
     lerUltraEsq();
     lerUltraDir();
 
-    lerQTRATodos();
+    lerReflPrincipal();
 
     if (distanciaUltraDir < 10 && (distanciaUltraEsq > 10 && distanciaUltraEsq < 120) && (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && se0 <= CORTE_QTR_B && sd0 <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B)) {
       break;
