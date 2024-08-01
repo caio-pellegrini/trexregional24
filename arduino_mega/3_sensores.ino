@@ -121,12 +121,12 @@ void ligarGiroscopio() {
   devStatus = mpu.dmpInitialize();
 
   // supply your own gyro offsets here, scaled for min sensitivity
-  mpu.setXAccelOffset(1181);
-  mpu.setYAccelOffset(3149);
-  mpu.setZAccelOffset(1542);
-  mpu.setXGyroOffset(74);
-  mpu.setYGyroOffset(21);
-  mpu.setZGyroOffset(-46);
+  mpu.setXAccelOffset(1213);
+  mpu.setYAccelOffset(3173);
+  mpu.setZAccelOffset(1558);
+  mpu.setXGyroOffset(70);
+  mpu.setYGyroOffset(27);
+  mpu.setZGyroOffset(-53);
   // make sure it worked (returns 0 if so)
   if (devStatus == 0) {
     // Calibration Time: generate offsets and calibrate our MPU6050 (uncomment to calibrate) 

@@ -12,6 +12,8 @@ bool vitimaGarraViva = false;
 bool corAreaVermelha;
 uint8_t contadorVarreduras = 0;
 
+// MUDAR COR PARA QUANDO ENCONTRAR VÍTIMA
+
 void salaDeResgate() {
   entrarSalaResgate();
 

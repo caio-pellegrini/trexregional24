@@ -222,10 +222,10 @@ void rotacionarGarraEsq() { movimentarServo(&servoRotacionarGarra, 20, 10); }
 
 void rotacionarGarraMeio() { movimentarServo(&servoRotacionarGarra, 55, 10); }
 
-void abrirCancelaEsq() { movimentarServo(&servoCancelaEsq, 95, 4); }
+void abrirCancelaEsq() { movimentarServo(&servoCancelaEsq, 170, 4); }
 
-void fecharCancelaEsq() { movimentarServo(&servoCancelaEsq, 3, 4); }
+void fecharCancelaEsq() { movimentarServo(&servoCancelaEsq, 75, 4); }
 
-void abrirCancelaDir() { movimentarServo(&servoCancelaDir, 0, 4); }
+void abrirCancelaDir() { movimentarServo(&servoCancelaDir, 75, 4); }
 
-void fecharCancelaDir() { movimentarServo(&servoCancelaDir, 99, 4); }
+void fecharCancelaDir() { movimentarServo(&servoCancelaDir, 170, 4); }

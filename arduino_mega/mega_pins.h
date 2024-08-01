@@ -15,22 +15,13 @@
 #define SE3_PIN A8
 #define SE2_PIN A9
 #define SE1_PIN A10
-#define SM_PIN A12
+#define SM_PIN  A12
 #define SD1_PIN A13
 #define SD2_PIN A14
 #define SD3_PIN A15
 
 // SENSOR DE REFLETÂNCIA FRENTE
-#define SF_PIN A11
-
-// #define SE3_PIN    A8
-// #define SE2_PIN    A9
-// #define SE1_PIN    A15
-// #define SE0_PIN    A14
-// #define SD0_PIN    A13
-// #define SD1_PIN    A12
-// #define SD2_PIN    A10
-// #define SD3_PIN    A11
+#define SF_PIN  A11
 
 
 // BOTOES (DIGITAL PINS)
@@ -41,7 +32,6 @@
 #define BTN_VITIMA_PIN 33
 
 #define MPU6050_INTERRUPT_PIN 2
-
 
 // PINOS PARA LEDS RGB ("SETA" DO ROBÔ)
 #define LED_ESQ_RED_PIN 53

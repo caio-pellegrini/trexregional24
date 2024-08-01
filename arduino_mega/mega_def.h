@@ -42,8 +42,8 @@
 #define SERVO_PA_GARRA_POS_INICIAL 110
 #define SERVO_SUBIR_GARRA_POS_INICIAL 125
 #define SERVO_ROTACIONAR_GARRA_POS_INICIAL 55
-#define SERVO_CANCELA_ESQ_POS_INICIAL 3
-#define SERVO_CANCELA_DIR_POS_INICIAL 99
+#define SERVO_CANCELA_ESQ_POS_INICIAL 75
+#define SERVO_CANCELA_DIR_POS_INICIAL 170
 
 bool btnAreaEsq = false, btnAreaDir = false;
 bool btnParedeEsq = false, btnParedeDir = false;
