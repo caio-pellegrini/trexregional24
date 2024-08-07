@@ -3,12 +3,12 @@
 Servo servo;  // create servo object to control a servo
 // twelve servo objects can be created on most boards
 
-#define SERVO_PIN 13
-#define DELAY_TIME 5
+#define SERVO_PIN 45
+#define DELAY_TIME 25
 
 int pos = 0;    // variable to store the servo position
-int start_position = 75;    // variable to store start positon
-int end_position = 170;    // variable to store end positon
+int start_position =  65;    // variable to store start positon
+int end_position = 145;    // variable to store end positon
 
 void setup() {
   Serial.begin(9600);

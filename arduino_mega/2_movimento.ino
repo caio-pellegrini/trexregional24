@@ -216,16 +216,16 @@ void descerGarraRampa() { movimentarServo(&servoSubirGarra, 15, 3); }
 
 void descerGarra() { movimentarServo(&servoSubirGarra, 0, 6); }
 
-void rotacionarGarraDir() { movimentarServo(&servoRotacionarGarra, 90, 10); }
+void rotacionarGarraDir() { movimentarServo(&servoRotacionarGarra, 145, 10); }
 
-void rotacionarGarraEsq() { movimentarServo(&servoRotacionarGarra, 20, 10); }
+void rotacionarGarraMeio() { movimentarServo(&servoRotacionarGarra, SERVO_ROTACIONAR_GARRA_POS_INICIAL, 10); }
 
-void rotacionarGarraMeio() { movimentarServo(&servoRotacionarGarra, 55, 10); }
+void rotacionarGarraEsq() { movimentarServo(&servoRotacionarGarra, 65, 10); }
 
 void abrirCancelaEsq() { movimentarServo(&servoCancelaEsq, 170, 4); }
 
-void fecharCancelaEsq() { movimentarServo(&servoCancelaEsq, 75, 4); }
+void fecharCancelaEsq() { movimentarServo(&servoCancelaEsq, SERVO_CANCELA_ESQ_POS_INICIAL, 4); }
 
 void abrirCancelaDir() { movimentarServo(&servoCancelaDir, 75, 4); }
 
-void fecharCancelaDir() { movimentarServo(&servoCancelaDir, 170, 4); }
+void fecharCancelaDir() { movimentarServo(&servoCancelaDir, SERVO_CANCELA_DIR_POS_INICIAL, 4); }

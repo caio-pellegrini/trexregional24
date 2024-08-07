@@ -35,15 +35,21 @@ void salaDeResgate() {
 
   varredura(true);
 
-  // 3º VARREDURA - DUAS EXTRAS
+  // // 3º VARREDURA - DUAS EXTRAS
 
-  varredura(true);
+  // varredura(true);
 
-  varredura(true);
+  // varredura(true);
 
-  varredura(true);
+  // varredura(true);
 
-  varredura(true);
+  // varredura(true);
+
+  varreduraSaida();
+  varreduraSaida();
+  varreduraSaida();
+  varreduraSaida();
+  
   
 }
 
@@ -87,7 +93,7 @@ void entrarSalaResgate() {
       virarEsquerdaGiro45();
     }
 
-    moverTrasPor(1500);
+    moverTrasPor(1000);
     pararMotores();
   }
 }
@@ -102,6 +108,7 @@ void varredura(bool entregarQualquerBase) {
   moverFrenteLento();
 
   while (true) {
+    moverFrenteLento();
     lerLaserGarra();
     // Serial.println(distanciaLaserGarra);
     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
@@ -363,6 +370,7 @@ void varreduraSaida() {
     // ultrassonico
     lerUltraEsq();
     lerUltraDir();
+
     if (distanciaUltraEsq > 100) {
       pararMotores();
       lerUltraEsq();
