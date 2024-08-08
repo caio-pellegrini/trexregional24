@@ -35,12 +35,9 @@ void setup() {
   delay(50);
   // Configura o sensor VL53L0X
   laserFrente.setTimeout(500);  // padrão 500
-  Serial.println(laserFrente.init() ? "Laser Frente conectado :)"
-                                    : "Laser Frente falhou :(");
+  Serial.println(laserFrente.init() ? "Laser Frente conectado :)" : "Laser Frente falhou :(");
   laserFrente.setAddress(LASER_FRENTE_ENDERECO);
   laserFrente.startContinuous();  // Inicia leituras contínuas
-
-  // i2c_scanner();
 
   digitalWrite(LASER_GARRA_XSHUT_PIN, HIGH);
   delay(50);
@@ -51,15 +48,12 @@ void setup() {
   laserGarra.startContinuous();
   // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
 
-  // i2c_scanner();
-
   tcaSelecionar(CANAL_TCS_ESQ);
   Serial.println(tcsEsq.begin() ? "TCS Esq conectado :)" : "TCS Esq falhou :(");
   tcaDesligar();
 
   tcaSelecionar(CANAL_TCS_FRENTE);
-  Serial.println(tcsFrente.begin() ? "TCS Frente conectado :)"
-                                   : "TCS Frente falhou :(");
+  Serial.println(tcsFrente.begin() ? "TCS Frente conectado :)" : "TCS Frente falhou :(");
   tcaDesligar();
 
   // MOTORES
@@ -73,13 +67,9 @@ void setup() {
   pinMode(SE2_PIN, INPUT);
   pinMode(SE1_PIN, INPUT);
   pinMode(SM_PIN, INPUT);
-  // pinMode(SE0_PIN, INPUT);
-  // pinMode(SD0_PIN, INPUT);
   pinMode(SD1_PIN, INPUT);
   pinMode(SD2_PIN, INPUT);
   pinMode(SD3_PIN, INPUT);
-
-  // PORTA SENSOR DA FRENTE
   pinMode(SF_PIN, INPUT);
 
   // PORTAS DOS BOTOES
@@ -104,8 +94,7 @@ void setup() {
 
   ligarGiroscopio();
 
-  // Desenxa depois de ligar o giroscópio para dar tempo dele ir pra posição
-  // inicial
+  // Desenxa depois de ligar o giroscópio para dar tempo ir pra pos inicial
   servoPaGarra.detach();
   servoSubirGarra.detach();
   servoRotacionarGarra.detach();
@@ -123,7 +112,7 @@ void setup() {
 void loop() {
   #if defined(DEBUG) && (DEBUG == 1)
     calibrar();
-    return; // Comente essa linha para o robo ANDAR com o SERIAL LIGADO (não recomendado)
+    // return; // Comente essa linha para o robo ANDAR com o SERIAL LIGADO (não recomendado)
   #endif
 
   // unsigned long tempoAtual = millis();
