@@ -17,23 +17,23 @@ uint8_t contadorVarreduras = 0;
 void salaDeResgate() {
   entrarSalaResgate();
 
-  varredura(false);
+  varredura(false, false);
 
-  varredura(false);
+  varredura(false, false);
 
-  varredura(false);
+  varredura(false, false);
 
-  varredura(false);
+  varredura(false, true);
 
   // 2º VARREDURA - ENTREGA QUALQUER BASE
 
-  varredura(true);
+  varredura(true, false);
 
-  varredura(true);
+  varredura(true, false);
 
-  varredura(true);
+  varredura(true, false);
 
-  varredura(true);
+  varredura(true, true);
 
   // // 3º VARREDURA - DUAS EXTRAS
 
@@ -49,8 +49,6 @@ void salaDeResgate() {
   varreduraSaida();
   varreduraSaida();
   varreduraSaida();
-  
-  
 }
 
 void entrarSalaResgate() {
@@ -98,7 +96,7 @@ void entrarSalaResgate() {
   }
 }
 
-void varredura(bool entregarQualquerBase) {
+void varredura(bool entregarQualquerBase, bool voltarEntrada) {
   // esta função só termina quando encontrar área, parede ou saída
   // enquanto não encontrar, verifica e recolhe vítimas
   abrirGarra();
@@ -106,6 +104,8 @@ void varredura(bool entregarQualquerBase) {
   laserGarra.startContinuous();
   delay(10);
   moverFrenteLento();
+
+  unsigned long tempu = millis();
 
   while (true) {
     moverFrenteLento();
@@ -138,7 +138,21 @@ void varredura(bool entregarQualquerBase) {
     }
 
     // reconhecer saída
+    if (millis() - tempu > 2000) {
+      if (entradaDirecao == 0) {
+        lerUltraDir();
+        if (distanciaUltraDir > 60) {
+          verificarSaida(voltarEntrada);
+        }
+      } else {
+        lerUltraEsq();
+        if (distanciaUltraEsq > 60) {
+          verificarSaida(voltarEntrada);
+        }
+      }
+    }
   }
+
   laserGarra.stopContinuous();
 }
 
@@ -309,7 +323,7 @@ void encontrouParede() {
   } else {
     virarEsquerdaGiro90();
   }
-  moverTrasPor(500); // 1100
+  moverTrasPor(500);  // 1100
   pararMotores();
 }
 
@@ -414,5 +428,28 @@ void varreduraSaida() {
     }
 
     // reconhecer saída
+  }
+}
+
+void verificarSaida(bool voltarEntrada) {
+  pararMotores();
+  if (voltarEntrada) {
+    ligarLed(AMBOS, VERDE, 500);
+    fecharGarra();
+    subirGarra();
+    moverTrasPor(1500);
+
+    if (entradaDirecao == 0) {
+      virarEsquerdaGiro45();
+      moverFrentePor(100);
+      virarEsquerdaGiro45();
+    } else {
+      virarDireitaGiro45();
+      moverFrentePor(100);
+      virarDireitaGiro45();
+    }
+
+  } else {
+    ligarLed(AMBOS, VERMELHO, 500);
   }
 }

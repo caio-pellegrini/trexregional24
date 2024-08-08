@@ -112,7 +112,7 @@ void setup() {
 void loop() {
   #if defined(DEBUG) && (DEBUG == 1)
     calibrar();
-    // return; // Comente essa linha para o robo ANDAR com o SERIAL LIGADO (não recomendado)
+    return; // Comente essa linha para o robo ANDAR com o SERIAL LIGADO (não recomendado)
   #endif
 
   // unsigned long tempoAtual = millis();

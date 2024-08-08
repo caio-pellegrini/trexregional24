@@ -1,4 +1,4 @@
-#define DEBUG 1
+#define DEBUG 0
 
 #define DEBUG_REFL 0
 #define DEBUG_TCS_AMBOS 0
@@ -7,7 +7,7 @@
 #define DEBUG_LASER_FRENTE 1
 #define DEBUG_LASER_GARRA 1
 #define DEBUG_ULTRA 0
-#define DEBUG_BOTOES 0
+#define DEBUG_BOTOES 1
 
 #define CORTE_QTR_P 225 // acima é preto
 #define CORTE_QTR_B 110 // abaixo é branco
