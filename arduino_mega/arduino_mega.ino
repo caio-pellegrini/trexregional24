@@ -78,6 +78,8 @@ void setup() {
   pinMode(BTN_PAREDE_ESQ_PIN, INPUT_PULLUP);
   pinMode(BTN_PAREDE_DIR_PIN, INPUT_PULLUP);
   pinMode(BTN_VITIMA_PIN, INPUT_PULLUP);
+  pinMode(BTN_FC_ESQ_PIN, INPUT_PULLUP);
+  pinMode(BTN_FC_DIR_PIN, INPUT_PULLUP);
 
   // SERVOS
   servoPaGarra.attach(SERVO_PA_GARRA_PIN);
@@ -175,17 +177,17 @@ void loop() {
 
   // // 90 GRAUS DIREITO
   // if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-  //   seguirLinhaDireita(50);
+  //   seguirLinhaDir(50);
   //   // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
-  //   // virarDireitaGiro90();
+  //   // virarDirGiro90();
   //   // pararMotores();
   // }
 
   // // 90 GRAUS ESQUERDO
   // if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-  //   seguirLinhaEsquerda(50);
+  //   seguirLinhaEsq(50);
   //   // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
-  //   // virarEsquerdaGiro90();
+  //   // virarEsqGiro90();
   //   // pararMotores();
   // }
 
@@ -209,11 +211,11 @@ void loop() {
   seguidorMoverFrente();
 
   if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P || sd3 >= CORTE_QTR_P) {
-    seguirLinhaDireita(7);
+    seguirLinhaDir(7);
   }
 
   if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P || se3 >= CORTE_QTR_P) {
-    seguirLinhaEsquerda(7);
+    seguirLinhaEsq(7);
   }
 
 #if defined(OBSTACULO) && (OBSTACULO == 1)
@@ -230,14 +232,14 @@ void loop() {
   lerReflFrente();
   // 90 GRAUS DIREITO
   if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-    // seguirLinhaDireita(50);
-    virarDireitaPor(50);
+    // seguirLinhaDir(50);
+    virarDirPor(50);
   }
 
   // 90 GRAUS ESQUERDO
   if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B)) {
-    // seguirLinhaEsquerda(50);
-    virarEsquerdaPor(50);
+    // seguirLinhaEsq(50);
+    virarEsqPor(50);
   }
 
   // Serial.print("Tempo: ");

@@ -4,8 +4,8 @@
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 0
-#define DEBUG_LASER_FRENTE 1
-#define DEBUG_LASER_GARRA 1
+#define DEBUG_LASER_FRENTE 0
+#define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 1
 
@@ -48,6 +48,7 @@
 bool btnAreaEsq = false, btnAreaDir = false;
 bool btnParedeEsq = false, btnParedeDir = false;
 bool btnVitima = false;
+bool btnFcEsq = false, btnFcDir = false;
 
 
 // CONSTANTES PARA CORES

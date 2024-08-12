@@ -224,6 +224,11 @@ void lerBtnParede() {
 
 void lerBtnVitima() { btnVitima = !digitalRead(BTN_VITIMA_PIN); }
 
+void lerBtnFc() {
+  btnFcEsq = !digitalRead(BTN_FC_ESQ_PIN);
+  btnFcDir = !digitalRead(BTN_FC_DIR_PIN);
+}
+
 // Tempo de leitura Ultrassonico = 5ms
 void lerUltraEsq() { distanciaUltraEsq = ultrasonicEsq.read(CM); }
 

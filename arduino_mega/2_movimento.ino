@@ -1,6 +1,6 @@
 // LINHA 1-136 - MOTORES GRANDES
 
-void seguirLinhaEsquerda(unsigned long ms) {
+void seguirLinhaEsq(unsigned long ms) {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
   analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_MIN));
   analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_MAX));
@@ -8,7 +8,7 @@ void seguirLinhaEsquerda(unsigned long ms) {
   delay(ms);
 }
 
-void seguirLinhaDireita(unsigned long ms) {
+void seguirLinhaDir(unsigned long ms) {
   analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_SEG_MAX));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, 0);
@@ -67,28 +67,28 @@ void pararMotores() {
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
-void virarEsquerda() {
+void virarEsq() {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
   analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
   analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
-void virarDireita() {
+void virarDir() {
   analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, 0);
   analogWrite(MOTOR_DIR_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
 }
 
-void virarDireitaUmMotor() {
+void virarDirUmMotor() {
   analogWrite(MOTOR_ESQ_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, 0);
   analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 
-void virarEsquerdaUmMotor() {
+void virarEsqUmMotor() {
   analogWrite(MOTOR_ESQ_F_PIN, 0);
   analogWrite(MOTOR_ESQ_T_PIN, 0);
   analogWrite(MOTOR_DIR_F_PIN, CONVERT_8B_DEC(VEL_MOTOR_CURVA));
@@ -120,17 +120,17 @@ void moverTrasRapidoPor(unsigned long ms) {
   delay(ms);
 }
 
-void virarEsquerdaPor(unsigned long ms) {
-  virarEsquerda();
+void virarEsqPor(unsigned long ms) {
+  virarEsq();
   delay(ms);
 }
 
-void virarDireitaPor(unsigned long ms) {
-  virarDireita();
+void virarDirPor(unsigned long ms) {
+  virarDir();
   delay(ms);
 }
 
-void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
+void virarEsqGiro(uint8_t graus, bool umMotor) {
   lerGiroscopioDMP();
   initialYaw = yaw; // Armazenar yaw inicial em graus
   float targetYaw = initialYaw - graus; // Alvo é 90 graus à direita do atual
@@ -139,9 +139,9 @@ void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
 
   // Código para mover o robô à esquerda
   if (umMotor) {
-    virarEsquerdaUmMotor();
+    virarEsqUmMotor();
   } else {
-    virarEsquerda();
+    virarEsq();
   }
 
   while (true) {
@@ -152,7 +152,7 @@ void virarEsquerdaGiro(uint8_t graus, bool umMotor) {
   }
 }
 
-void virarDireitaGiro(uint8_t graus, bool umMotor) {
+void virarDirGiro(uint8_t graus, bool umMotor) {
   lerGiroscopioDMP();
   initialYaw = yaw; // Armazenar yaw inicial em graus
   float targetYaw = initialYaw + graus; // Alvo é 90 graus à esquerda do atual
@@ -162,9 +162,9 @@ void virarDireitaGiro(uint8_t graus, bool umMotor) {
 
   // Código para mover o robô à direita
   if (umMotor) {
-    virarDireitaUmMotor();
+    virarDirUmMotor();
   } else {
-    virarDireita();
+    virarDir();
   }
 
   while (true) {
@@ -175,21 +175,21 @@ void virarDireitaGiro(uint8_t graus, bool umMotor) {
   }
   // melhorar funcao de cima colocando a condicao no lugar do true
 }
-void virarEsquerdaGiro45() { virarEsquerdaGiro(53, false); }
+void virarEsqGiro45() { virarEsqGiro(53, false); }
 
-void virarDireitaGiro45() { virarDireitaGiro(53, false); }
+void virarDirGiro45() { virarDirGiro(53, false); }
 
-void virarEsquerdaGiro90() { virarEsquerdaGiro(108, false); }
+void virarEsqGiro90() { virarEsqGiro(108, false); }
 
-void virarDireitaGiro90() { virarDireitaGiro(108, false); }
+void virarDirGiro90() { virarDirGiro(108, false); }
 
-void virarEsquerdaGiro180() { virarEsquerdaGiro(214, false); }
+void virarEsqGiro180() { virarEsqGiro(214, false); }
 
-void virarDireitaGiro180() { virarDireitaGiro(214, false); }
+void virarDirGiro180() { virarDirGiro(214, false); }
 
-void virarEsquerdaGiro90UmMotor() { virarEsquerdaGiro(105, true); }
+void virarEsqGiro90UmMotor() { virarEsqGiro(105, true); }
 
-void virarDireitaGiro90UmMotor() { virarDireitaGiro(105, true); }
+void virarDirGiro90UmMotor() { virarDirGiro(105, true); }
 
 // SERVOMOTORES
 

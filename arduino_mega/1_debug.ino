@@ -150,6 +150,7 @@
             lerBtnArea();
             lerBtnParede();
             lerBtnVitima();
+            lerBtnFc();
 
             Serial.print(" | btnAreaE: ");
             Serial.print(btnAreaEsq);
@@ -161,6 +162,10 @@
             Serial.print(btnParedeDir);
             Serial.print(" btnVitima: ");
             Serial.print(btnVitima);
+            Serial.print("| btnFcEsq: ");
+            Serial.print(btnFcEsq);
+            Serial.print(" btnFcDir: ");
+            Serial.print(btnFcDir);
         #endif
     }
 

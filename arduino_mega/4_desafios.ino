@@ -96,22 +96,22 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
 
   // Beco sem saida
   if (isBeco && verdeEsq && verdeDir) {
-    virarEsquerdaGiro90();
+    virarEsqGiro90();
     moverFrentePor(50);
     pararMotores();
-    virarEsquerdaGiro90();
+    virarEsqGiro90();
     moverFrentePor(300);
   }
 
   // Curva à esquerda
   if (isVerdeEsquerdo && verdeEsq && !verdeDir) {
-    virarEsquerdaGiro90();
+    virarEsqGiro90();
     // moverFrentePor(100); // coloquei para funcionar no circulo, mas se estiver atrapalhando pode tirar
   }
 
   // Curva à direita
   if (isVerdeDireito && !verdeEsq && verdeDir) {
-    virarDireitaGiro90();
+    virarDirGiro90();
     // moverFrentePor(100); // coloquei para funcionar no circulo, mas se estiver atrapalhando pode tirar
   }
 
@@ -136,27 +136,27 @@ void desviarObstaculo(bool isEsquerdo) {
 
   moverTrasPor(300);
   if (isEsquerdo) {
-    virarEsquerdaGiro90();
+    virarEsqGiro90();
   } else {
-    virarDireitaGiro90();
+    virarDirGiro90();
   }
   moverFrentePor(1150);
   if (isEsquerdo) {
-    virarDireitaGiro90();
+    virarDirGiro90();
   } else {
-    virarEsquerdaGiro90();
+    virarEsqGiro90();
   }
   moverFrentePor(2460);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2500
   if (isEsquerdo) {
-    virarDireitaGiro90();
+    virarDirGiro90();
   } else {
-    virarEsquerdaGiro90();
+    virarEsqGiro90();
   }
   unsigned long tempoInicial = millis();
   while (millis() - tempoInicial < 1350) {  // AJUSTAR TAMBÉM
     moverFrentePor(1);
     lerReflPrincipal();
-    if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+    if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sm >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
       pararMotores();
       delay(500);
       moverFrentePor(250);
@@ -164,9 +164,9 @@ void desviarObstaculo(bool isEsquerdo) {
     }
   }
   if (isEsquerdo) {
-    virarEsquerdaGiro90();
+    virarEsqGiro90();
   } else {
-    virarDireitaGiro90();
+    virarDirGiro90();
   }
   moverTrasPor(250);  // AJUSTAR RÉ
   desligarLed(AMBOS);
@@ -207,11 +207,11 @@ void rampaOuGangorra() {
       lerReflSegueLinha();
 
       if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
-        seguirLinhaEsquerda(1);
+        seguirLinhaEsq(1);
       }
 
       if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
-        seguirLinhaDireita(1);
+        seguirLinhaDir(1);
       }
     }
     moverFrenteLento();
@@ -251,11 +251,11 @@ void rampaOuGangorra() {
       lerReflSegueLinha();
 
       if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
-        seguirLinhaEsquerda(1);
+        seguirLinhaEsq(1);
       }
 
       if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
-        seguirLinhaDireita(1);
+        seguirLinhaDir(1);
       }
       lerGiroscopioDMP();
     }
@@ -281,23 +281,23 @@ void rampaOuGangorra() {
 
       // 90 GRAUS DIREITO
       if (sf <= CORTE_FRENTE && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-        seguirLinhaDireita(12);
+        seguirLinhaDir(12);
       }
 
       // 90 GRAUS ESQUERDO
       if (sf <= CORTE_FRENTE && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-        seguirLinhaEsquerda(12);
+        seguirLinhaEsq(12);
       }
 
       seguidorMoverFrente();
       lerReflSegueLinha();
 
       if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
-        seguirLinhaEsquerda(3);
+        seguirLinhaEsq(3);
       }
 
       if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
-        seguirLinhaDireita(3);
+        seguirLinhaDir(3);
       }
 
 
@@ -334,11 +334,11 @@ void rampaSalaResgate() {
     moverFrenteRapido();
 
     if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
-      seguirLinhaEsquerda(3);
+      seguirLinhaEsq(3);
     }
 
     if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
-      seguirLinhaDireita(3);
+      seguirLinhaDir(3);
     }
 
     // CRUZAMENTO
