@@ -216,11 +216,11 @@ void descerGarraRampa() { movimentarServo(&servoSubirGarra, 15, 3); }
 
 void descerGarra() { movimentarServo(&servoSubirGarra, 0, 6); }
 
-void rotacionarGarraDir() { movimentarServo(&servoRotacionarGarra, 155, 10); }
+void rotacionarGarraDir() { movimentarServo(&servoRotacionarGarra, 145, 10); }
 
 void rotacionarGarraMeio() { movimentarServo(&servoRotacionarGarra, SERVO_ROTACIONAR_GARRA_POS_INICIAL, 10); }
 
-void rotacionarGarraEsq() { movimentarServo(&servoRotacionarGarra, 65, 10); }
+void rotacionarGarraEsq() { movimentarServo(&servoRotacionarGarra, 75, 10); }
 
 void abrirCancelaEsq() { movimentarServo(&servoCancelaEsq, 170, 4); }
 

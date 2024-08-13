@@ -13,59 +13,51 @@ bool corAreaVermelha;
 uint8_t contadorVarreduras = 0;
 bool podeSair = false;
 uint8_t numero = 0;
+bool deveSair = false;
+bool entregarQualquerBase = false;
 
 // MUDAR COR PARA QUANDO ENCONTRAR VÍTIMA
 
 void salaDeResgate() {
   entrarSalaResgate();
 
-  // if (!podeSair) {
-  //   varredura(false, 1);
-  // }
+  if (!deveSair) varredura(1);
 
-  // if (!podeSair) {
-  //   varredura(false, 2);
-  // }
+  if (!deveSair) varredura(2);
 
-  // if (!podeSair) {
-  //   varredura(false, 3);
-  // }
+  if (!deveSair) varredura(3);
 
-  // if (!podeSair) {
-  //   varredura(false, 4);
-  // }
+  if (!deveSair) varredura(4);
 
-  varreduraMeio(false);
+  if (!deveSair) varreduraMeio(false);
 
-  // 2º VARREDURA - ENTREGA QUALQUER BASE
+  // 2º VARREDURA - 
 
-  // if (!podeSair) {
-  // varredura(true, 1);
-  // }
-  // if (!podeSair) {
-  // varredura(true, 2);
-  // }
-  // if (!podeSair) {
-  // varredura(true, 3);
-  // }
-  // if (!podeSair) {
-  // varredura(true, 4);
-  // }
+  if (!deveSair) varredura(1);
+
+  if (!deveSair) varredura(2);
+
+  if (!deveSair) varredura(3);
+
+  if (!deveSair) varredura(4);
+
   
-  // // 3º VARREDURA - DUAS EXTRAS
+  // 3º VARREDURA - ENTREGA QUALQUER BASE E PODE SAIR SE ENCONTRAR
 
-  // varredura(true);
+  entregarQualquerBase = true;
+  podeSair = true;
 
-  // varredura(true);
+  if (!deveSair) varredura(1);
 
-  // varredura(true);
+  if (!deveSair) varredura(2);
 
-  // varredura(true);
+  if (!deveSair) varredura(3);
 
-  // varreduraSaida();
-  // varreduraSaida();
-  // varreduraSaida();
-  // varreduraSaida();
+  if (!deveSair) varredura(4);
+
+  ligarLed(AMBOS, ROXO, 500);
+  delay(500);
+  ligarLed(AMBOS, ROXO, 500);
 }
 
 void entrarSalaResgate() {
@@ -115,7 +107,7 @@ void entrarSalaResgate() {
   }
 }
 
-void varredura(bool entregarQualquerBase, uint8_t num) {
+void varredura(uint8_t num) {
   // esta função só termina quando encontrar área, parede ou saída
   // enquanto não encontrar, verifica e recolhe vítimas
   numero = num;
@@ -153,7 +145,7 @@ void varredura(bool entregarQualquerBase, uint8_t num) {
     // botao da area bateu
     lerBtnArea();
     if (btnAreaEsq || btnAreaDir) {
-      encontrouArea(entregarQualquerBase);
+      encontrouArea();
       break;
     }
 
@@ -163,17 +155,15 @@ void varredura(bool entregarQualquerBase, uint8_t num) {
         lerUltraDir();
         if (distanciaUltraDir > 60) {
           verificarSaida(DIR);
-          if (numero == 4) {
-            break;
-          }
+          if (deveSair) break;
+          if (numero == 4) break;
         }
       } else {
         lerUltraEsq();
         if (distanciaUltraEsq > 60) {
           verificarSaida(ESQ);
-          if (numero == 4) {
-            break;
-          }
+          if (deveSair) break;
+          if (numero == 4) break;
         }
       }
     }
@@ -215,7 +205,7 @@ void verificarPegarVitima() {
   rotacionarGarraMeio();
 }
 
-void encontrouArea(bool entregarQualquerBase) {
+void encontrouArea() {
   moverTrasPor(150);
   pararMotores();
 
@@ -357,6 +347,8 @@ void encontrouParede(bool alinharNoFinal) {
     }
   }
   pararMotores();
+
+  laserGarra.stopContinuous();
 }
 
 void subirGarraVerificaVitima() {
@@ -453,7 +445,7 @@ void varreduraSaida() {
     // botao da area bateu
     lerBtnArea();
     if (btnAreaEsq || btnAreaDir) {
-      encontrouArea(true);
+      encontrouArea();
       break;
     }
 
@@ -471,48 +463,24 @@ void verificarSaida(bool esq, bool dir) {
 
     if (entradaDirecao == 0) {
       virarEsqGiro45();
-      moverFrentePor(100);
+      moverFrentePor(80);
       virarEsqGiro45();
     } else {
       virarDirGiro45();
-      moverFrentePor(100);
+      moverFrentePor(80);
       virarDirGiro45();
     }
     desligarLed(esq, dir);
+    alinharComFc();
     pararMotores();
   } else {
     ligarLed(esq, dir, VERMELHO);
-    if (contadorVitimas >= 3) {
-      ligarLed(esq, dir, VERMELHO, 250);
-      delay(250);
-      ligarLed(esq, dir, VERMELHO, 250);
-      delay(250);
-      ligarLed(esq, dir, VERMELHO, 250);
-      delay(250);
-      ligarLed(esq, dir, VERMELHO, 250);
-      delay(250);
-
-      fecharGarraVerificaBotao();
-      subirGarra();
-      moverFrentePor(500);
-
-      if (entradaDirecao == 0) {
-        virarDirGiro90();
-      } else {
-        virarEsqGiro90();
+    if (contadorVitimas >= 3 || podeSair) {
+      for (uint8_t i = 0; i < 3; i++) {
+        ligarLed(esq, dir, VERMELHO, 250);
+        delay(250);
       }
-
-      moverFrentePor(1);
-      while (true)
-      {
-        moverFrentePor(1);
-        lerReflPrincipal();
-
-        if (se3 > CORTE_QTR_P || se2 > CORTE_QTR_P || se1 > CORTE_QTR_P || sm > CORTE_QTR_P || sd1 > CORTE_QTR_P || sd2 > CORTE_QTR_P || sd3 > CORTE_QTR_P) {
-          podeSair = true;
-          break;
-        }
-      }
+      sairSalaResgate();
     }
   }
 }
@@ -551,7 +519,7 @@ void varreduraMeio(bool entregarQualquerBase) {
     // botao da area bateu
     // lerBtnArea();
     // if (btnAreaEsq || btnAreaDir) {
-    //   encontrouArea(entregarQualquerBase);
+    //   encontrouArea();
     //   break;
     // }
 
@@ -598,7 +566,7 @@ void varreduraMeio(bool entregarQualquerBase) {
     // // botao da area bateu
     // lerBtnArea();
     // if (btnAreaEsq || btnAreaDir) {
-    //   encontrouArea(entregarQualquerBase);
+    //   encontrouArea();
     //   break;
     // }
   }
@@ -642,10 +610,12 @@ void varreduraMeio(bool entregarQualquerBase) {
     // botao da area bateu
     lerBtnArea();
     if (btnAreaEsq || btnAreaDir) {
-      encontrouArea(entregarQualquerBase);
+      encontrouArea();
       break;
     }
   }
+  moverTrasPor(400);
+  pararMotores();
 
 }
 
@@ -675,7 +645,7 @@ void varreduraMeio(bool entregarQualquerBase) {
 //     // botao da area bateu
 //     lerBtnArea();
 //     if (btnAreaEsq || btnAreaDir) {
-//       encontrouArea(entregarQualquerBase);
+//       encontrouArea();
 //       break;
 //     }
 // }
@@ -698,5 +668,25 @@ void alinharComFc() {
       }
     }
   } while (!btnFcEsq && !btnFcDir);
-  moverTrasPor(60);
+  moverTrasPor(65);
+}
+
+void sairSalaResgate() {
+  
+  fecharGarraVerificaBotao();
+  subirGarra();
+  moverFrentePor(900);
+
+  if (entradaDirecao) {
+    virarEsqGiro90();
+  } else {
+    virarDirGiro90();
+  }
+
+  do {
+    moverFrentePor(1);
+    lerReflPrincipal();
+  } while (se3 < CORTE_QTR_P && se2 < CORTE_QTR_P && se1 < CORTE_QTR_P && sm < CORTE_QTR_P && sd1 < CORTE_QTR_P && sd2 < CORTE_QTR_P && sd3 < CORTE_QTR_P);
+  moverFrentePor(250);
+  deveSair = true;
 }
