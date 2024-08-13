@@ -12,44 +12,45 @@ bool vitimaGarraViva = false;
 bool corAreaVermelha;
 uint8_t contadorVarreduras = 0;
 bool podeSair = false;
+uint8_t numero = 0;
 
 // MUDAR COR PARA QUANDO ENCONTRAR VÍTIMA
 
 void salaDeResgate() {
   entrarSalaResgate();
 
-  if (!podeSair) {
-    varredura(false, 1);
-  }
+  // if (!podeSair) {
+  //   varredura(false, 1);
+  // }
 
-  if (!podeSair) {
-    varredura(false, 2);
-  }
+  // if (!podeSair) {
+  //   varredura(false, 2);
+  // }
 
-  if (!podeSair) {
-    varredura(false, 3);
-  }
+  // if (!podeSair) {
+  //   varredura(false, 3);
+  // }
 
-  if (!podeSair) {
-    varredura(false, 4);
-  }
+  // if (!podeSair) {
+  //   varredura(false, 4);
+  // }
 
-  varreduraMeio(true);
+  varreduraMeio(false);
 
   // 2º VARREDURA - ENTREGA QUALQUER BASE
 
-  if (!podeSair) {
-  varredura(true, 1);
-  }
-  if (!podeSair) {
-  varredura(true, 2);
-  }
-  if (!podeSair) {
-  varredura(true, 3);
-  }
-  if (!podeSair) {
-  varredura(true, 4);
-  }
+  // if (!podeSair) {
+  // varredura(true, 1);
+  // }
+  // if (!podeSair) {
+  // varredura(true, 2);
+  // }
+  // if (!podeSair) {
+  // varredura(true, 3);
+  // }
+  // if (!podeSair) {
+  // varredura(true, 4);
+  // }
   
   // // 3º VARREDURA - DUAS EXTRAS
 
@@ -61,13 +62,15 @@ void salaDeResgate() {
 
   // varredura(true);
 
-  varreduraSaida();
-  varreduraSaida();
-  varreduraSaida();
-  varreduraSaida();
+  // varreduraSaida();
+  // varreduraSaida();
+  // varreduraSaida();
+  // varreduraSaida();
 }
 
 void entrarSalaResgate() {
+  ligarLed(AMBOS, ROXO, 500);
+
   // anexar servos
   servoPaGarra.attach(SERVO_PA_GARRA_PIN);
   servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
@@ -76,15 +79,14 @@ void entrarSalaResgate() {
   servoCancelaDir.attach(SERVO_CANCELA_DIR_PIN);
 
   laserGarra.startContinuous();
-
-  desligarLed(AMBOS);  // desliga led roxo
+  delay(10);
 
   lerUltraEsq();
   lerUltraDir();
 
   if (distanciaUltraEsq > 20 && distanciaUltraDir > 20) {
     entradaNoMeio = true;
-    ligarLed(AMBOS, AZUL, 1000);
+    ligarLed(AMBOS, AZUL);
     // fazer mais facil primeiro
 
   } else {
@@ -92,32 +94,31 @@ void entrarSalaResgate() {
     if (distanciaUltraEsq < distanciaUltraDir) {
       // PAREDE ESTA NA ESQUERDA
       entradaDirecao = false;
-      ligarLed(ESQ, AZUL, 1000);
+      ligarLed(ESQ, AZUL);
 
       virarDirGiro45();
-      moverFrentePor(100);
+      moverFrentePor(80);
       virarDirGiro45();
     } else {
       // PAREDE ESTA NA DIREITA
       entradaDirecao = true;
-      ligarLed(DIR, AZUL, 1000);
+      ligarLed(DIR, AZUL);
 
       virarEsqGiro45();
-      moverFrentePor(100);
+      moverFrentePor(80);
       virarEsqGiro45();
     }
 
-    while (!btnFcEsq && !btnFcDir) {
-      moverTrasPor(1);
-      lerBtnFc();
-    }
+    alinharComFc();
     pararMotores();
+    desligarLed(AMBOS);
   }
 }
 
-void varredura(bool entregarQualquerBase, uint8_t numero) {
+void varredura(bool entregarQualquerBase, uint8_t num) {
   // esta função só termina quando encontrar área, parede ou saída
   // enquanto não encontrar, verifica e recolhe vítimas
+  numero = num;
   abrirGarra();
   descerGarra();
   laserGarra.startContinuous();
@@ -133,7 +134,7 @@ void varredura(bool entregarQualquerBase, uint8_t numero) {
     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
       ligarLed(AMBOS, BRANCO);
       pararMotores();
-      pegarVitima();
+      verificarPegarVitima();
       moverTrasPor(200);
       pararMotores();
       abrirGarra();
@@ -145,7 +146,7 @@ void varredura(bool entregarQualquerBase, uint8_t numero) {
     // botao da parede bateu
     lerBtnParede();
     if (btnParedeEsq || btnParedeDir) {
-      encontrouParede();
+      encontrouParede(true);
       break;
     }
 
@@ -161,7 +162,7 @@ void varredura(bool entregarQualquerBase, uint8_t numero) {
       if (entradaDirecao == 0) {
         lerUltraDir();
         if (distanciaUltraDir > 60) {
-          verificarSaida(numero);
+          verificarSaida(DIR);
           if (numero == 4) {
             break;
           }
@@ -169,7 +170,7 @@ void varredura(bool entregarQualquerBase, uint8_t numero) {
       } else {
         lerUltraEsq();
         if (distanciaUltraEsq > 60) {
-          verificarSaida(numero);
+          verificarSaida(ESQ);
           if (numero == 4) {
             break;
           }
@@ -181,7 +182,7 @@ void varredura(bool entregarQualquerBase, uint8_t numero) {
   laserGarra.stopContinuous();
 }
 
-void pegarVitima() {
+void verificarPegarVitima() {
 
   fecharGarraVerificaBotao();
 
@@ -218,10 +219,8 @@ void encontrouArea(bool entregarQualquerBase) {
   moverTrasPor(150);
   pararMotores();
 
-  pegarVitima();
+  verificarPegarVitima();
   subirGarra();
-  // fecharGarra();
-  // subirGarra();
 
   moverFrentePor(1050);
 
@@ -252,14 +251,13 @@ void encontrouArea(bool entregarQualquerBase) {
 
   if (entradaDirecao) {
     virarDirGiro180();
-
   } else {
     virarEsqGiro180();
   }
 
   desligarLed(AMBOS);
 
-  moverTrasPor(1500);
+  alinharComFc();
   pararMotores();
 
   // entregar
@@ -270,10 +268,10 @@ void encontrouArea(bool entregarQualquerBase) {
         contTotalVivas = contCacambaVivas;
         contCacambaVivas = 0;
         delay(500);
-        moverFrentePor(300);
-        moverTrasRapidoPor(400);
-        moverFrentePor(300);
-        moverTrasRapidoPor(400);
+        moverFrentePor(250);
+        alinharComFc();
+        moverFrentePor(250);
+        alinharComFc();
         pararMotores();
         delay(500);
         fecharCancelaDir();
@@ -283,10 +281,10 @@ void encontrouArea(bool entregarQualquerBase) {
         contTotalMortas = contCacambaMortas;
         contCacambaMortas = 0;
         delay(500);
-        moverFrentePor(300);
-        moverTrasRapidoPor(400);
-        moverFrentePor(300);
-        moverTrasRapidoPor(400);
+        moverFrentePor(250);
+        alinharComFc();
+        moverFrentePor(250);
+        alinharComFc();
         pararMotores();
         delay(500);
         fecharCancelaEsq();
@@ -318,11 +316,13 @@ void encontrouArea(bool entregarQualquerBase) {
   pararMotores();
 }
 
-void encontrouParede() {
+void encontrouParede(bool alinharNoFinal) {
+  ligarLed(AMBOS, CIANO);
   moverTrasPor(300);
   pararMotores();
+  desligarLed(AMBOS);
 
-  pegarVitima();
+  verificarPegarVitima();
   subirGarra();
 
   unsigned long tempoInicial = millis();
@@ -348,7 +348,14 @@ void encontrouParede() {
   } else {
     virarEsqGiro90();
   }
-  moverTrasPor(500);  // 1100
+
+  if (alinharNoFinal) {
+    if (numero == 4) {
+      alinharComFc();
+    } else {
+      moverTrasPor(650);
+    }
+  }
   pararMotores();
 }
 
@@ -400,7 +407,6 @@ void varreduraSaida() {
   // esta função só termina quando encontrar área, parede ou saída
   // enquanto não encontrar, verifica e recolhe vítimas
 
-
   abrirGarra();
   descerGarra();
   moverFrenteLento();
@@ -425,12 +431,11 @@ void varreduraSaida() {
       }
     }
 
-
     lerLaserGarra();
     // Serial.println(distanciaLaserGarra);
     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
       pararMotores();
-      pegarVitima();
+      verificarPegarVitima();
       moverTrasPor(200);
       pararMotores();
       abrirGarra();
@@ -441,7 +446,7 @@ void varreduraSaida() {
     // botao da parede bateu
     lerBtnParede();
     if (btnParedeEsq || btnParedeDir) {
-      encontrouParede();
+      encontrouParede(true);
       break;
     }
 
@@ -456,10 +461,10 @@ void varreduraSaida() {
   }
 }
 
-void verificarSaida(uint8_t numero) {
+void verificarSaida(bool esq, bool dir) {
   pararMotores();
   if (numero == 4) {
-    ligarLed(AMBOS, VERDE);
+    ligarLed(esq, dir, VERDE);
     fecharGarra();
     subirGarra();
     moverTrasPor(1500);
@@ -473,18 +478,18 @@ void verificarSaida(uint8_t numero) {
       moverFrentePor(100);
       virarDirGiro45();
     }
-    desligarLed(AMBOS);
+    desligarLed(esq, dir);
     pararMotores();
   } else {
-    ligarLed(AMBOS, VERMELHO);
+    ligarLed(esq, dir, VERMELHO);
     if (contadorVitimas >= 3) {
-      ligarLed(AMBOS, VERMELHO, 250);
+      ligarLed(esq, dir, VERMELHO, 250);
       delay(250);
-      ligarLed(AMBOS, VERMELHO, 250);
+      ligarLed(esq, dir, VERMELHO, 250);
       delay(250);
-      ligarLed(AMBOS, VERMELHO, 250);
+      ligarLed(esq, dir, VERMELHO, 250);
       delay(250);
-      ligarLed(AMBOS, VERMELHO, 250);
+      ligarLed(esq, dir, VERMELHO, 250);
       delay(250);
 
       fecharGarraVerificaBotao();
@@ -520,15 +525,14 @@ void varreduraMeio(bool entregarQualquerBase) {
 
   unsigned long tempo = millis();
 
-  while (tempo - millis() >= 1500) // AJUSTAR ESSE VALOR
-  {
+  do {
     moverFrenteLento();
     lerLaserGarra();
-    // Serial.println(distanciaLaserGarra);
+
     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
       ligarLed(AMBOS, BRANCO);
       pararMotores();
-      pegarVitima();
+      verificarPegarVitima();
       moverTrasPor(200);
       pararMotores();
       abrirGarra();
@@ -538,26 +542,36 @@ void varreduraMeio(bool entregarQualquerBase) {
     }
 
     // botao da parede bateu
-    lerBtnParede();
-    if (btnParedeEsq || btnParedeDir) {
-      encontrouParede();
-      break;
-    }
+    // lerBtnParede();
+    // if (btnParedeEsq || btnParedeDir) {
+    //   encontrouParede();
+    //   break;
+    // }
 
     // botao da area bateu
-    lerBtnArea();
-    if (btnAreaEsq || btnAreaDir) {
-      encontrouArea(entregarQualquerBase);
-      break;
-    }
-  }
+    // lerBtnArea();
+    // if (btnAreaEsq || btnAreaDir) {
+    //   encontrouArea(entregarQualquerBase);
+    //   break;
+    // }
+
+  } while (millis() - tempo <= 2000); // AJUSTAR ESSE VALOR
 
   pararMotores();
-  pegarVitima();
-  fecharGarraVerificaBotao();
+  verificarPegarVitima();
+  subirGarra();
 
-  virarEsqGiro90(); // mudar aqui
+  moverFrenteLentoPor(1000);
+  pararMotores();
+  virarEsqGiro90(); // adicionar outra direcao aqui
 
+  alinharComFc();
+  
+  pararMotores();
+  abrirGarra();
+  descerGarra();
+
+  // varre o meio da sala
   while (true) {
     moverFrenteLento();
     lerLaserGarra();
@@ -565,7 +579,7 @@ void varreduraMeio(bool entregarQualquerBase) {
     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
       ligarLed(AMBOS, BRANCO);
       pararMotores();
-      pegarVitima();
+      verificarPegarVitima();
       moverTrasPor(200);
       pararMotores();
       abrirGarra();
@@ -577,22 +591,31 @@ void varreduraMeio(bool entregarQualquerBase) {
     // botao da parede bateu
     lerBtnParede();
     if (btnParedeEsq || btnParedeDir) {
-      encontrouParede();
+      encontrouParede(false);
       break;
     }
 
-    // botao da area bateu
-    lerBtnArea();
-    if (btnAreaEsq || btnAreaDir) {
-      encontrouArea(entregarQualquerBase);
-      break;
-    }
+    // // botao da area bateu
+    // lerBtnArea();
+    // if (btnAreaEsq || btnAreaDir) {
+    //   encontrouArea(entregarQualquerBase);
+    //   break;
+    // }
   }
 
+  pararMotores();
+  verificarPegarVitima();
+  subirGarra();
+
   virarEsqGiro90(); // mudar aqui
+
+  alinharComFc();
+
+  pararMotores();
+  abrirGarra();
+  descerGarra();
   
-  tempo = millis();
-  while (tempo - millis() >= 1500) // AJUSTAR ESSE VALOR
+  while (true) // voltar para parede inicial
   {
     moverFrenteLento();
     lerLaserGarra();
@@ -600,7 +623,7 @@ void varreduraMeio(bool entregarQualquerBase) {
     if (distanciaLaserGarra < DIST_LASER_GARRA_VIT) {
       ligarLed(AMBOS, BRANCO);
       pararMotores();
-      pegarVitima();
+      verificarPegarVitima();
       moverTrasPor(200);
       pararMotores();
       abrirGarra();
@@ -612,7 +635,7 @@ void varreduraMeio(bool entregarQualquerBase) {
     // botao da parede bateu
     lerBtnParede();
     if (btnParedeEsq || btnParedeDir) {
-      encontrouParede();
+      encontrouParede(false);
       break;
     }
 
@@ -656,3 +679,24 @@ void varreduraMeio(bool entregarQualquerBase) {
 //       break;
 //     }
 // }
+
+void alinharComFc() {
+  do {
+    lerBtnFc();
+    if (!btnFcEsq && !btnFcDir) {
+      moverTrasPor(1);
+    } else {
+      if (!btnFcEsq && btnFcDir) {
+        analogWrite(MOTOR_ESQ_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_TRAS));
+        analogWrite(MOTOR_DIR_T_PIN, 0);
+        delay(1);
+      }
+      if (btnFcEsq && !btnFcDir) {
+        analogWrite(MOTOR_ESQ_T_PIN, 0);
+        analogWrite(MOTOR_DIR_T_PIN, CONVERT_8B_DEC(VEL_MOTOR_TRAS));
+        delay(1);
+      }
+    }
+  } while (!btnFcEsq && !btnFcDir);
+  moverTrasPor(60);
+}

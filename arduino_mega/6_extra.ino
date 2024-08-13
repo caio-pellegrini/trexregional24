@@ -92,3 +92,30 @@ void delayInfinito() {
   // MUITO CUIDADO AO UTILIZAR ESTÁ FUNÇÃO!!
   delay(999999);
 }
+
+void setupAlgunsPins() {
+  // MOTORES
+  pinMode(MOTOR_ESQ_F_PIN, OUTPUT);
+  pinMode(MOTOR_ESQ_T_PIN, OUTPUT);
+  pinMode(MOTOR_DIR_F_PIN, OUTPUT);
+  pinMode(MOTOR_DIR_T_PIN, OUTPUT);
+
+  // PORTA SENSORES REFLETANCIA
+  pinMode(SE3_PIN, INPUT);
+  pinMode(SE2_PIN, INPUT);
+  pinMode(SE1_PIN, INPUT);
+  pinMode(SM_PIN, INPUT);
+  pinMode(SD1_PIN, INPUT);
+  pinMode(SD2_PIN, INPUT);
+  pinMode(SD3_PIN, INPUT);
+  pinMode(SF_PIN, INPUT);
+
+  // PORTAS DOS BOTOES
+  pinMode(BTN_AREA_ESQ_PIN, INPUT_PULLUP);
+  pinMode(BTN_AREA_DIR_PIN, INPUT_PULLUP);
+  pinMode(BTN_PAREDE_ESQ_PIN, INPUT_PULLUP);
+  pinMode(BTN_PAREDE_DIR_PIN, INPUT_PULLUP);
+  pinMode(BTN_VITIMA_PIN, INPUT_PULLUP);
+  pinMode(BTN_FC_ESQ_PIN, INPUT_PULLUP);
+  pinMode(BTN_FC_DIR_PIN, INPUT_PULLUP);
+}

@@ -3,11 +3,11 @@
 #define DEBUG_REFL 0
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 0
+#define DEBUG_GIROSCOPIO 1
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
-#define DEBUG_BOTOES 1
+#define DEBUG_BOTOES 0
 
 #define CORTE_QTR_P 225 // acima é preto
 #define CORTE_QTR_B 110 // abaixo é branco
@@ -41,7 +41,7 @@
 
 #define SERVO_PA_GARRA_POS_INICIAL 110
 #define SERVO_SUBIR_GARRA_POS_INICIAL 125
-#define SERVO_ROTACIONAR_GARRA_POS_INICIAL 105
+#define SERVO_ROTACIONAR_GARRA_POS_INICIAL 115
 #define SERVO_CANCELA_ESQ_POS_INICIAL 75
 #define SERVO_CANCELA_DIR_POS_INICIAL 170
 
@@ -53,13 +53,13 @@ bool btnFcEsq = false, btnFcDir = false;
 
 // CONSTANTES PARA CORES
 #define DESLIGADO 0, 0, 0
+#define BRANCO 255, 255, 255
 #define VERMELHO 255, 0, 0
 #define VERDE 0, 255, 0
 #define AZUL 0, 0, 255
 #define ROXO 255, 0, 255
-#define BRANCO 255, 255, 255
 #define AMARELO 255, 255, 0
-#define ROXO 255, 0, 255
+#define CIANO 0, 255, 255
 
 // CONSTANTES PARA LEDS
 #define AMBOS true, true

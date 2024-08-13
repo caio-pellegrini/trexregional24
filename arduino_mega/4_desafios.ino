@@ -59,9 +59,10 @@ void verificarGap() {
     }
 
     // VALOR DE ENTRADA PARA SALA DE RESGATE
-    if (millis() - tempoInicial >= 2600) {
+    if (millis() - tempoInicial >= 2500) {
       pararMotores();
-      ligarLed(AMBOS, ROXO, 500);
+      desligarLed(AMBOS);
+      delay(250);
       salaDeResgate();
       break;
     }

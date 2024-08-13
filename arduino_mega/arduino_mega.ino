@@ -42,8 +42,7 @@ void setup() {
   digitalWrite(LASER_GARRA_XSHUT_PIN, HIGH);
   delay(50);
   laserGarra.setTimeout(500);
-  Serial.println(laserGarra.init() ? "Laser Garra conectado :)"
-                                   : "Laser Garra falhou :(");
+  Serial.println(laserGarra.init() ? "Laser Garra conectado :)" : "Laser Garra falhou :(");
   laserGarra.setAddress(LASER_GARRA_ENDERECO);
   laserGarra.startContinuous();
   // laserGarra.setMeasurementTimingBudget(200000); // -> alta precisão
@@ -56,30 +55,7 @@ void setup() {
   Serial.println(tcsFrente.begin() ? "TCS Frente conectado :)" : "TCS Frente falhou :(");
   tcaDesligar();
 
-  // MOTORES
-  pinMode(MOTOR_ESQ_F_PIN, OUTPUT);
-  pinMode(MOTOR_ESQ_T_PIN, OUTPUT);
-  pinMode(MOTOR_DIR_F_PIN, OUTPUT);
-  pinMode(MOTOR_DIR_T_PIN, OUTPUT);
-
-  // PORTA SENSORES REFLETANCIA
-  pinMode(SE3_PIN, INPUT);
-  pinMode(SE2_PIN, INPUT);
-  pinMode(SE1_PIN, INPUT);
-  pinMode(SM_PIN, INPUT);
-  pinMode(SD1_PIN, INPUT);
-  pinMode(SD2_PIN, INPUT);
-  pinMode(SD3_PIN, INPUT);
-  pinMode(SF_PIN, INPUT);
-
-  // PORTAS DOS BOTOES
-  pinMode(BTN_AREA_ESQ_PIN, INPUT_PULLUP);
-  pinMode(BTN_AREA_DIR_PIN, INPUT_PULLUP);
-  pinMode(BTN_PAREDE_ESQ_PIN, INPUT_PULLUP);
-  pinMode(BTN_PAREDE_DIR_PIN, INPUT_PULLUP);
-  pinMode(BTN_VITIMA_PIN, INPUT_PULLUP);
-  pinMode(BTN_FC_ESQ_PIN, INPUT_PULLUP);
-  pinMode(BTN_FC_DIR_PIN, INPUT_PULLUP);
+  setupAlgunsPins();
 
   // SERVOS
   servoPaGarra.attach(SERVO_PA_GARRA_PIN);
