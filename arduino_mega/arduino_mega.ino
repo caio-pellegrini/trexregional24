@@ -72,6 +72,9 @@ void setup() {
 
   ligarGiroscopio();
 
+  // transformer();
+  
+
   // Desenxa depois de ligar o giroscópio para dar tempo ir pra pos inicial
   servoPaGarra.detach();
   servoSubirGarra.detach();
@@ -79,10 +82,10 @@ void setup() {
   servoCancelaEsq.detach();
   servoCancelaDir.detach();
 
-#if defined(DEBUG) && (DEBUG == 0)
+  #if defined(DEBUG) && (DEBUG == 0)
   Serial.print("Desligando Serial");
   Serial.end();
-#endif
+  #endif  
 
   desligarLed(AMBOS);
 }
@@ -97,9 +100,7 @@ void loop() {
 
   #if (RAMPA == 1) || (GANGORRA == 1)
     lerGiroscopioDMP();
-    if (pitch > INCLINACAO) {
-      rampaOuGangorra();
-    }
+    if (pitch > INCLINACAO) { rampaOuGangorra(); }
   #endif
 
   #if defined(ULTRA_ENTRADA_SALA) && (ULTRA_ENTRADA_SALA == 1)
@@ -151,22 +152,6 @@ void loop() {
     }
   #endif
 
-  // // 90 GRAUS DIREITO
-  // if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-  //   seguirLinhaDir(50);
-  //   // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
-  //   // virarDirGiro90();
-  //   // pararMotores();
-  // }
-
-  // // 90 GRAUS ESQUERDO
-  // if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
-  //   seguirLinhaEsq(50);
-  //   // moverFrentePor(TEMPO_MOVER_ANTES_CRUZ);
-  //   // virarEsqGiro90();
-  //   // pararMotores();
-  // }
-
   // CRUZAMENTO
   verificarCruzamento();
 
@@ -180,19 +165,11 @@ void loop() {
     verificarMeioCruzamentoDir();
   #endif
 
-
   // SEGUIDOR DE LINHA
   lerReflSegueLinha();
-
   seguidorMoverFrente();
-
-  if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P || sd3 >= CORTE_QTR_P) {
-    seguirLinhaDir(7);
-  }
-
-  if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P || se3 >= CORTE_QTR_P) {
-    seguirLinhaEsq(7);
-  }
+  if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P || sd3 >= CORTE_QTR_P) seguirLinhaDir(6);
+  if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P || se3 >= CORTE_QTR_P) seguirLinhaEsq(6);
 
 #if defined(OBSTACULO) && (OBSTACULO == 1)
   // leitura não bloqueante
@@ -204,19 +181,16 @@ void loop() {
   }
 #endif
 
-  lerReflPrincipal();
-  lerReflFrente();
-  // 90 GRAUS DIREITO
-  if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
-    // seguirLinhaDir(50);
-    virarDirPor(50);
-  }
+  #if defined(GRAUS90) && (GRAUS90 == 1)
+    lerReflPrincipal();
+    lerReflFrente();
 
-  // 90 GRAUS ESQUERDO
-  if (sf <= CORTE_FRENTE_B && sm >= CORTE_QTR_P && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B)) {
-    // seguirLinhaEsq(50);
-    virarEsqPor(50);
-  }
+    // 90 GRAUS ESQUERDO
+    verificar90GrausEsq();
+
+    // 90 GRAUS DIREITO
+    verificar90GrausDir();
+  #endif
 
   // Serial.print("Tempo: ");
   // Serial.print(millis() - tempoAtual);

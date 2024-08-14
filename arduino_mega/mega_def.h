@@ -1,6 +1,6 @@
 #define DEBUG 0
 
-#define DEBUG_REFL 0
+#define DEBUG_REFL 1
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
 #define DEBUG_GIROSCOPIO 1
@@ -9,10 +9,9 @@
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 225 // acima é preto
-#define CORTE_QTR_B 110 // abaixo é branco
-#define CORTE_FRENTE 80  // abaixo é branco e acima é preto
-#define CORTE_FRENTE_B 20 // corte frente branco
+#define CORTE_QTR_P 200 // acima é preto
+#define CORTE_QTR_B 147 // abaixo é branco
+#define CORTE_FRENTE 115  // abaixo é branco e acima é preto
 
 #define CORTE_VERDE_ESQ 62 // abaixo disso é verde // 65 no verde escuro
 #define CORTE_VERDE_DIR 60
@@ -28,14 +27,15 @@
 #define VEL_MOTOR_SEG_MAX 75
 #define VEL_MOTOR_SEG_MIN 70 // 75
 
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE 0 // 145
-#define TEMPO_MOVER_ANTES_CRUZ 360 // 375
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE moverFrentePor(100); // 150
+#define TEMPO_MOVER_ANTES_CRUZ 240 // 365
 
 #define DIST_LASER_GARRA_VIT 45
 #define DIST_OBSTACULO 70
 
 #define CORTE_ULTRA_SALA_RESGATE 7
 #define INCLINACAO 7
+#define INCLI_RAMPA 23
 
 // --------------
 
@@ -137,10 +137,11 @@ int contUltra = 0;
 
 
 #define ULTRA_ENTRADA_SALA 1
-#define RAMPA_SALA_RESGATE 1
-#define RAMPA 0
+#define RAMPA_SALA_RESGATE 0
+#define RAMPA 1
 #define GANGORRA 1
 #define OBSTACULO 1
 #define GAP 1
 #define MCD 1
 #define MCE 1
+#define GRAUS90 1

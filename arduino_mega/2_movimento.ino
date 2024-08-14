@@ -210,7 +210,7 @@ void abrirGarra() { movimentarServo(&servoPaGarra, 35, 3); }
 
 void subirGarra() { movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6); }
 
-void descerGarraRampa() { movimentarServo(&servoSubirGarra, 15, 3); }
+void descerGarraRampa() { movimentarServo(&servoSubirGarra, 30, 4); }
 // GANGORRA OU RAMPA - 30
 // RAMPA SALA RESGATE - 15
 
@@ -229,3 +229,38 @@ void fecharCancelaEsq() { movimentarServo(&servoCancelaEsq, SERVO_CANCELA_ESQ_PO
 void abrirCancelaDir() { movimentarServo(&servoCancelaDir, 75, 4); }
 
 void fecharCancelaDir() { movimentarServo(&servoCancelaDir, SERVO_CANCELA_DIR_POS_INICIAL, 4); }
+
+void transformer() {
+  // lembrar de anexar ou desanexar servo
+  delay(1000);
+  abrirGarra();
+  descerGarra();
+  delay(1000);
+  fecharGarra();
+  rotacionarGarraMeio();
+  subirGarra();
+  delay(500);  
+}
+
+void transformer2() {
+  delay(1000);
+  subirGarra();
+  abrirGarra();
+  movimentarServo(&servoSubirGarra, 0, 1);
+  delay(500);
+  movimentarServo(&servoSubirGarra, 60, 1);
+  delay(250);
+  movimentarServo(&servoSubirGarra, 0, 1);
+  delay(250);
+  movimentarServo(&servoSubirGarra, 60, 1);
+  delay(250);
+  movimentarServo(&servoSubirGarra, 0, 1);
+  delay(250);
+  movimentarServo(&servoSubirGarra, 60, 1);
+  delay(250);
+  movimentarServo(&servoSubirGarra, 0, 1);
+  delay(1000);
+  subirGarra();
+  fecharGarra();
+  delay(1000);
+}

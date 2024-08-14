@@ -11,9 +11,9 @@ void setup()
     pinMode(MOTOR_DIR_T_PIN, OUTPUT);
 
 
-    analogWrite(MOTOR_ESQ_F_PIN, 255);
+    analogWrite(MOTOR_ESQ_F_PIN, 0);
     analogWrite(MOTOR_ESQ_T_PIN, 0);
-    analogWrite(MOTOR_DIR_F_PIN, 255);
+    analogWrite(MOTOR_DIR_F_PIN, 0);
     analogWrite(MOTOR_DIR_T_PIN, 0);
 }
 

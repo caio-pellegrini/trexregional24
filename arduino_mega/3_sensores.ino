@@ -1,3 +1,8 @@
+void lerReflTodos() {
+  lerReflPrincipal();
+  lerReflFrente();
+}
+
 void lerReflPrincipal() {
   se3 = analogRead(SE3_PIN) >> 2; // >> 2 transforma o valor de 10-bits (0-1023) para 8-bits (0-255)
   se2 = analogRead(SE2_PIN) >> 2;

@@ -1,7 +1,7 @@
 #include <Servo.h>
 
-#define SERVO_PIN 13
-#define POSITION 90
+#define SERVO_PIN 45
+#define POSITION 115
 
 Servo servo;
 
