@@ -141,6 +141,13 @@ void loop() {
   }
   #endif
 
+  #if (LOMBADA == 1)
+  lerGiroscopioDMP(); // ver se é mesmo necessário
+  if (roll > 3) ligarLed(ESQ, ROXO);
+  else if(roll < -3) ligarLed(DIR, ROXO);
+  else desligarLed(AMBOS);
+  #endif
+
 
   lerReflPrincipal();
   lerReflFrente();

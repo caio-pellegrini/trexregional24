@@ -1,3 +1,4 @@
+#include <stdint.h>
 #define DEBUG 0
 
 #define DEBUG_REFL 1
@@ -11,7 +12,7 @@
 
 #define CORTE_QTR_P 200 // acima é preto
 #define CORTE_QTR_B 147 // abaixo é branco
-#define CORTE_FRENTE 115  // abaixo é branco e acima é preto
+#define CORTE_FRENTE 120  // abaixo é branco e acima é preto
 
 #define CORTE_VERDE_ESQ 62 // abaixo disso é verde // 65 no verde escuro
 #define CORTE_VERDE_DIR 60
@@ -27,8 +28,8 @@
 #define VEL_MOTOR_SEG_MAX 75
 #define VEL_MOTOR_SEG_MIN 70 // 75
 
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE moverFrentePor(100); // 150
-#define TEMPO_MOVER_ANTES_CRUZ 240 // 365
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE moverFrentePor(98); // 100
+#define TEMPO_MOVER_ANTES_CRUZ 282 // 300
 
 #define DIST_LASER_GARRA_VIT 45
 #define DIST_OBSTACULO 70
@@ -40,8 +41,8 @@
 // --------------
 
 #define SERVO_PA_GARRA_POS_INICIAL 110
-#define SERVO_SUBIR_GARRA_POS_INICIAL 125
-#define SERVO_ROTACIONAR_GARRA_POS_INICIAL 115
+#define SERVO_SUBIR_GARRA_POS_INICIAL 132
+#define SERVO_ROTACIONAR_GARRA_POS_INICIAL 90
 #define SERVO_CANCELA_ESQ_POS_INICIAL 75
 #define SERVO_CANCELA_DIR_POS_INICIAL 170
 
@@ -131,13 +132,15 @@ volatile bool mpuInterrupt = false;
 int16_t ax, ay, az;
 int16_t gx, gy, gz;
 
+float curvaYaw;
+uint8_t contadorCurva90 = 0;
+
 void dmpDataReady() { mpuInterrupt = true; }
 
 int contUltra = 0;
 
 
 #define ULTRA_ENTRADA_SALA 1
-#define RAMPA_SALA_RESGATE 0
 #define RAMPA 1
 #define GANGORRA 1
 #define OBSTACULO 1
@@ -145,3 +148,9 @@ int contUltra = 0;
 #define MCD 1
 #define MCE 1
 #define GRAUS90 1
+
+// em teste
+#define LOMBADA 1
+
+// talvez tenha, talvez nao
+#define RAMPA_SALA_RESGATE 0

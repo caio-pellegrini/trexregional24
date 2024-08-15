@@ -7,8 +7,8 @@ Servo servo;  // create servo object to control a servo
 #define DELAY_TIME 5
 
 int pos = 0;    // variable to store the servo position
-int start_position =  75;    // variable to store start positon
-int end_position = 145;    // variable to store end positon
+int start_position =  60;    // variable to store start positon
+int end_position = 110;    // variable to store end positon
 
 void setup() {
   Serial.begin(9600);

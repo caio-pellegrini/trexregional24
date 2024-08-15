@@ -138,19 +138,64 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
 
   // Curva à esquerda
   if (isVerdeEsquerdo && verdeEsq && !verdeDir) {
-    virarEsqGiro90();
-    // moverFrentePor(100); // coloquei para funcionar no circulo, mas se estiver atrapalhando pode tirar
+    // COMENTE ESSA LINHA SE HOUVER CIRCULO
+    // virarEsqGiro90(); 
+
+    //  DESCOMENTE ABAIXO APENAS SE HOUVER CIRCULO
+    pararMotores();
+    delay(50);
+    lerGiroscopioDMP();
+    lerGiroscopioDMP();
+    if ((abs(yaw - curvaYaw) > 30 && abs(yaw - curvaYaw) < 90) && contadorCurva90 != 0) {
+      ligarLed(ESQ, AZUL);
+      virarEsqGiro45();
+      desligarLed(AMBOS);
+    } else {
+      virarEsqGiro90(); //
+
+      moverTrasPor(50); // testar se não irá atrapalhar outras partes
+      pararMotores();
+      delay(50);
+      lerGiroscopioDMP();
+      lerGiroscopioDMP();
+      curvaYaw = yaw;
+      contadorCurva90++;
+    }
+
+    
   }
 
   // Curva à direita
   if (isVerdeDireito && !verdeEsq && verdeDir) {
-    virarDirGiro90();
-    // moverFrentePor(100); // coloquei para funcionar no circulo, mas se estiver atrapalhando pode tirar
+    // COMENTE ESSA LINHA SE HOUVER CIRCULO
+    // virarDirGiro90();
+
+    //  DESCOMENTE ABAIXO APENAS SE HOUVER CIRCULO
+    pararMotores();
+    delay(50);
+    lerGiroscopioDMP();
+    lerGiroscopioDMP();
+    if ((abs(yaw - curvaYaw) > 30 && abs(yaw - curvaYaw) < 90) && contadorCurva90 != 0) {
+      ligarLed(DIR, AZUL);
+      virarDirGiro45();
+      desligarLed(AMBOS);
+    } else {
+      virarDirGiro90(); // apenas essa
+      moverTrasPor(50); // testar se não irá atrapalhar outras partes
+      
+      pararMotores();
+      delay(50);
+      lerGiroscopioDMP();
+      lerGiroscopioDMP();
+      curvaYaw = yaw;
+      contadorCurva90++;
+    }
+    
   }
 
   // Seguir reto
   if (!verdeEsq && !verdeDir) {
-    moverFrentePor(200);
+    moverFrentePor(150); // 200
   }
 
   pararMotores();

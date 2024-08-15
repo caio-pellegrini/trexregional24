@@ -175,21 +175,21 @@ void virarDirGiro(uint8_t graus, bool umMotor) {
   }
   // melhorar funcao de cima colocando a condicao no lugar do true
 }
-void virarEsqGiro45() { virarEsqGiro(53, false); }
+void virarEsqGiro45() { virarEsqGiro(51, false); } // 52
 
-void virarDirGiro45() { virarDirGiro(53, false); }
+void virarDirGiro45() { virarDirGiro(51, false); }
 
-void virarEsqGiro90() { virarEsqGiro(108, false); }
+void virarEsqGiro90() { virarEsqGiro(104, false); }
 
-void virarDirGiro90() { virarDirGiro(108, false); }
+void virarDirGiro90() { virarDirGiro(104, false); }
 
-void virarEsqGiro180() { virarEsqGiro(214, false); }
+void virarEsqGiro180() { virarEsqGiro(210, false); } //214
 
-void virarDirGiro180() { virarDirGiro(214, false); }
+void virarDirGiro180() { virarDirGiro(210, false); }
 
-void virarEsqGiro90UmMotor() { virarEsqGiro(105, true); }
+// void virarEsqGiro90UmMotor() { virarEsqGiro(105, true); }
 
-void virarDirGiro90UmMotor() { virarDirGiro(105, true); }
+// void virarDirGiro90UmMotor() { virarDirGiro(105, true); }
 
 // SERVOMOTORES
 
@@ -216,11 +216,11 @@ void descerGarraRampa() { movimentarServo(&servoSubirGarra, 30, 4); }
 
 void descerGarra() { movimentarServo(&servoSubirGarra, 0, 6); }
 
-void rotacionarGarraDir() { movimentarServo(&servoRotacionarGarra, 145, 10); }
+void rotacionarGarraDir() { movimentarServo(&servoRotacionarGarra, 110, 10); }
 
 void rotacionarGarraMeio() { movimentarServo(&servoRotacionarGarra, SERVO_ROTACIONAR_GARRA_POS_INICIAL, 10); }
 
-void rotacionarGarraEsq() { movimentarServo(&servoRotacionarGarra, 75, 10); }
+void rotacionarGarraEsq() { movimentarServo(&servoRotacionarGarra, 60, 10); }
 
 void abrirCancelaEsq() { movimentarServo(&servoCancelaEsq, 170, 4); }
 
