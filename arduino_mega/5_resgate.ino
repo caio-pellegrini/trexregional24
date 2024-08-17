@@ -17,33 +17,34 @@ bool deveSair = false;
 bool entregarQualquerBase = false;
 uint8_t numeroVarreduraEnt = 5;
 // 4 se for entrada canto, outros valores ajustar
+bool lerEntradaAntes = true;
 
 // MUDAR COR PARA QUANDO ENCONTRAR VÍTIMA
 
 void salaDeResgate() {
   entrarSalaResgate();
 
-  varreduraMeioEntradaMeio();
+  // varreduraMeioEntradaMeio(); // apenas para entrada no meio
 
-  // if (!deveSair) varredura(1);
+  if (!deveSair) varredura(1);
 
-  // if (!deveSair) varredura(2);
+  if (!deveSair) varredura(2);
 
-  // if (!deveSair) varredura(3);
+  if (!deveSair) varredura(3);
 
-  // if (!deveSair) varredura(4);
+  if (!deveSair) varredura(4);
 
-  // // if (!deveSair) varreduraMeio(false);
+  if (!deveSair) varreduraMeio(false);
 
-  // // 2º VARREDURA - 
+  // 2º VARREDURA - 
 
-  // if (!deveSair) varredura(1);
+  if (!deveSair) varredura(1);
 
-  // if (!deveSair) varredura(2);
+  if (!deveSair) varredura(2);
 
-  // if (!deveSair) varredura(3);
+  if (!deveSair) varredura(3);
 
-  // if (!deveSair) varredura(4);
+  if (!deveSair) varredura(4);
 
   
   // 3º VARREDURA - ENTREGA QUALQUER BASE E PODE SAIR SE ENCONTRAR
@@ -77,15 +78,16 @@ void entrarSalaResgate() {
   laserGarra.startContinuous();
   delay(10);
 
-  lerUltraEsq();
-  lerUltraDir();
+  if (lerEntradaAntes == false) {
+    lerUltraEsq();
+    lerUltraDir();
+  }
 
   if (distanciaUltraEsq > 20 && distanciaUltraDir > 20) {
     entradaNoMeio = true;
-    entradaDirecaoEsq = true; // AJUSTE DE ACORDO COM A DIREÇÃO
+    // entradaDirecaoEsq = true; // AJUSTE DE ACORDO COM A DIREÇÃO
 
     ligarLed(AMBOS, AZUL);
-
 
     // moverTrasPor(100);
     // virarDirGiro90();
@@ -98,7 +100,7 @@ void entrarSalaResgate() {
     entradaNoMeio = false;
     if (distanciaUltraEsq < distanciaUltraDir) {
       // PAREDE ESTA NA ESQUERDA
-      entradaDirecaoEsq = true;
+      entradaDirecaoEsq = true; //true
       ligarLed(ESQ, AZUL);
 
       virarDirGiro45();
@@ -106,7 +108,7 @@ void entrarSalaResgate() {
       virarDirGiro45();
     } else {
       // PAREDE ESTA NA DIREITA
-      entradaDirecaoEsq = false;
+      entradaDirecaoEsq = false; // false
       ligarLed(DIR, AZUL);
 
       virarEsqGiro45();
@@ -114,8 +116,17 @@ void entrarSalaResgate() {
       virarEsqGiro45();
     }
 
-    alinharComFc();
+    alinharComFc(1000);
     pararMotores();
+
+    // MUDAR AQUI ENTRADA
+    moverFrentePor(500);
+    virarEsqGiro45();
+    moverFrentePor(80);
+    virarEsqGiro45();
+    moverTrasPor(100);
+    pararMotores();
+    
     desligarLed(AMBOS);
   }
 }
@@ -163,7 +174,7 @@ void varredura(uint8_t num) {
     }
 
     // reconhecer saída
-    if (millis() - tempu > 2000 || numero != 1) {
+    if (millis() - tempu > 2000 || numero != 0) { // trocar para 1 para reconhecer saida mesmo
       if (entradaDirecaoEsq == 0) {
         lerUltraDir();
         if (distanciaUltraDir > 60) {
@@ -254,7 +265,7 @@ void encontrouArea() {
 
   desligarLed(AMBOS);
 
-  alinharComFc();
+  alinharComFc(0);
   pararMotores();
 
   // entregar
@@ -264,26 +275,26 @@ void encontrouArea() {
         abrirCancelaDir();
         contTotalVivas = contCacambaVivas;
         contCacambaVivas = 0;
-        delay(500);
-        moverFrentePor(250);
-        alinharComFc();
-        moverFrentePor(250);
-        alinharComFc();
-        pararMotores();
-        delay(500);
+        delay(750);
+        // moverFrentePor(250);
+        // alinharComFc(0);
+        // moverFrentePor(250);
+        // alinharComFc(0);
+        // pararMotores();
+        // delay(500);
         fecharCancelaDir();
       }
       if (corAreaVermelha && contCacambaMortas > 0) {
         abrirCancelaEsq();
         contTotalMortas = contCacambaMortas;
         contCacambaMortas = 0;
-        delay(500);
-        moverFrentePor(250);
-        alinharComFc();
-        moverFrentePor(250);
-        alinharComFc();
-        pararMotores();
-        delay(500);
+        delay(750);
+        // moverFrentePor(250);
+        // alinharComFc(0);
+        // moverFrentePor(250);
+        // alinharComFc(0);
+        // pararMotores();
+        // delay(500);
         fecharCancelaEsq();
       }
     } else {
@@ -340,7 +351,7 @@ void encontrouParede(bool alinharNoFinal) {
   else virarEsqGiro90();
 
   if (alinharNoFinal) {
-    if (numero == numeroVarreduraEnt) alinharComFc();
+    if (numero == numeroVarreduraEnt) alinharComFc(0);
     else moverTrasPor(650);
   }
   pararMotores();
@@ -351,6 +362,11 @@ void encontrouParede(bool alinharNoFinal) {
 // VARREDURAS NO MEIO DA SALA -----
 
 void varreduraMeio(bool entregarQualquerBase) {
+  // INICIO VARREDURA MEIO
+  moverFrentePor(500);
+  virarDirGiro90();
+  pararMotores();
+
   abrirGarra();
   descerGarra();
   laserGarra.startContinuous();
@@ -375,31 +391,32 @@ void varreduraMeio(bool entregarQualquerBase) {
     }
 
     // botao da parede bateu
-    // lerBtnParede();
-    // if (btnParedeEsq || btnParedeDir) {
-    //   encontrouParede();
-    //   break;
-    // }
+    lerBtnParede();
+    if (btnParedeEsq || btnParedeDir) {
+      moverTrasPor(50);
+      pararMotores();
+      break;
+    }
 
     // botao da area bateu
-    // lerBtnArea();
-    // if (btnAreaEsq || btnAreaDir) {
-    //   encontrouArea();
-    //   break;
-    // }
-
+    lerBtnArea();
+    if (btnAreaEsq || btnAreaDir) {
+      moverTrasPor(50);
+      pararMotores();
+      break;
+    }
   } while (millis() - tempo <= 2000); // AJUSTAR ESSE VALOR
 
   pararMotores();
   verificarPegarVitima();
   subirGarra();
 
-  moverFrenteLentoPor(1000);
+  moverFrenteLentoPor(500); // 1000
   pararMotores();
 
   virarEsqGiro90(); // adicionar outra direcao aqui
 
-  alinharComFc();
+  alinharComFc(1000);
   
   pararMotores();
   abrirGarra();
@@ -443,7 +460,7 @@ void varreduraMeio(bool entregarQualquerBase) {
 
   virarEsqGiro90(); // mudar aqui
 
-  alinharComFc();
+  alinharComFc(1000);
 
   pararMotores();
   abrirGarra();
@@ -481,6 +498,10 @@ void varreduraMeio(bool entregarQualquerBase) {
     }
   }
   moverTrasPor(400);
+  pararMotores();
+
+  // FINAL VARREDURA
+  virarEsqGiro90();
   pararMotores();
 
   laserGarra.stopContinuous();
@@ -615,7 +636,7 @@ void verificarSaida(bool esq, bool dir) {
       virarEsqGiro45();
     }
     desligarLed(esq, dir);
-    alinharComFc();
+    alinharComFc(0);
     pararMotores();
   } else {
     ligarLed(esq, dir, VERMELHO);
@@ -641,7 +662,7 @@ void sairSalaResgate() {
   do {
     moverFrentePor(1);
     lerReflPrincipal();
-  } while (se3 < CORTE_QTR_P && se2 < CORTE_QTR_P && se1 < CORTE_QTR_P && sm < CORTE_QTR_P && sd1 < CORTE_QTR_P && sd2 < CORTE_QTR_P && sd3 < CORTE_QTR_P);
+  } while (se3 < LUZ_PRETO && se2 < LUZ_PRETO && se1 < LUZ_PRETO && sm < LUZ_PRETO && sd1 < LUZ_PRETO && sd2 < LUZ_PRETO && sd3 < LUZ_PRETO);
   moverFrentePor(250);
   pararMotores();
   deveSair = true;
@@ -688,7 +709,9 @@ void fecharGarraVerificaBotao() {
 
 // OUTRAS
 
-void alinharComFc() {
+void alinharComFc(unsigned long tempoMax) {
+  // tempoMax -> 0 se não houver tempo máximo de ré
+  unsigned long tempo = millis();
   do {
     lerBtnFc();
     if (!btnFcEsq && !btnFcDir) {
@@ -705,6 +728,10 @@ void alinharComFc() {
         delay(1);
       }
     }
-  } while (!btnFcEsq && !btnFcDir);
+
+    if (tempoMax != 0 && millis() - tempo >= tempoMax) break;
+
+  } while ((!btnFcEsq || !btnFcDir));
+
   moverTrasPor(65);
 }

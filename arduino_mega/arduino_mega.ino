@@ -72,8 +72,7 @@ void setup() {
 
   ligarGiroscopio();
 
-  // transformer();
-  
+  // transformer();  
 
   // Desenxa depois de ligar o giroscópio para dar tempo ir pra pos inicial
   servoPaGarra.detach();
@@ -153,7 +152,7 @@ void loop() {
   lerReflFrente();
 
   #if (GAP == 1)
-    if (se3 <= CORTE_QTR_B && se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && sm <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B && sd3 <= CORTE_QTR_B) {
+    if (se3 <= LUZ_BRANCO && se2 <= LUZ_BRANCO && se1 <= LUZ_BRANCO && sm <= LUZ_BRANCO && sd1 <= LUZ_BRANCO && sd2 <= LUZ_BRANCO && sd3 <= LUZ_BRANCO) {
       // se nao estiver func, colocar todos os sensores
       verificarGap();
     }
@@ -175,8 +174,8 @@ void loop() {
   // SEGUIDOR DE LINHA
   lerReflSegueLinha();
   seguidorMoverFrente();
-  if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P || sd3 >= CORTE_QTR_P) seguirLinhaDir(6);
-  if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P || se3 >= CORTE_QTR_P) seguirLinhaEsq(6);
+  if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO || sd3 >= LUZ_PRETO) seguirLinhaDir(6);
+  if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO || se3 >= LUZ_PRETO) seguirLinhaEsq(6);
 
 #if defined(OBSTACULO) && (OBSTACULO == 1)
   // leitura não bloqueante

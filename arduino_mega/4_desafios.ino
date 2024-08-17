@@ -1,5 +1,5 @@
 void verificarCruzamento() {
-  if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sm >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+  if (se3 >= LUZ_PRETO && se2 >= LUZ_PRETO && se1 >= LUZ_PRETO && sm >= LUZ_PRETO && sd1 >= LUZ_PRETO && sd2 >= LUZ_PRETO && sd3 >= LUZ_PRETO) {
     ligarLed(AMBOS, AMARELO);
     TEMPO_MOVER_ANTES_ANALISAR_VERDE
     pararMotores();
@@ -9,7 +9,7 @@ void verificarCruzamento() {
 }
 
 void verificarMeioCruzamentoEsq() {
-  if (sf >= CORTE_FRENTE && sm >= CORTE_QTR_P && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd1 <= CORTE_QTR_P && sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+  if (sf >= LUZ_FRENTE && sm >= LUZ_PRETO && (se3 >= LUZ_PRETO && se2 >= LUZ_PRETO && se1 >= LUZ_PRETO) && (sd1 <= LUZ_PRETO && sd2 <= LUZ_PRETO && sd3 <= LUZ_BRANCO)) { // sd3 <= LUZ_BRANCO
     ligarLed(ESQ, AMARELO);
     TEMPO_MOVER_ANTES_ANALISAR_VERDE
     pararMotores();
@@ -19,7 +19,7 @@ void verificarMeioCruzamentoEsq() {
 }
 
 void verificarMeioCruzamentoDir() {
-  if (sf >= CORTE_FRENTE && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P && se1 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+  if (sf >= LUZ_FRENTE && sm >= LUZ_PRETO && (se3 <= LUZ_PRETO && se2 <= LUZ_PRETO && se1 <= LUZ_BRANCO) && (sd1 >= LUZ_PRETO && sd2 >= LUZ_PRETO && sd3 >= LUZ_PRETO)) {
     ligarLed(DIR, AMARELO);
     TEMPO_MOVER_ANTES_ANALISAR_VERDE
     pararMotores();
@@ -29,11 +29,11 @@ void verificarMeioCruzamentoDir() {
 }
 
 void verificar90GrausDir() {
-  if (sf <= CORTE_FRENTE && sm >= CORTE_QTR_P && (se3 <= CORTE_QTR_P && se2 <= CORTE_QTR_P) && (sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P)) {
+  if (sf <= LUZ_FRENTE && sm >= LUZ_PRETO && (se3 <= LUZ_PRETO && se2 <= LUZ_PRETO) && (sd1 >= LUZ_PRETO && sd2 >= LUZ_PRETO && sd3 >= LUZ_PRETO)) {
     ligarLed(DIR, VERMELHO);
-    for (uint8_t i = 0; i < 5; i++) {
+    for (uint8_t i = 0; i < 10; i++) {  // 5
       virarDirPor(5);
-      moverFrentePor(2); 
+      moverFrentePor(2); // 2
     }
     pararMotores();
     desligarLed(DIR);
@@ -41,14 +41,22 @@ void verificar90GrausDir() {
 }
 
 void verificar90GrausEsq() {
-  if (sf <= CORTE_FRENTE && sm >= CORTE_QTR_P && (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P) && (sd2 <= CORTE_QTR_P && sd3 <= CORTE_QTR_P)) {
+  if (sf <= LUZ_FRENTE && sm >= LUZ_PRETO && (se3 >= LUZ_PRETO && se2 >= LUZ_PRETO && se1 >= LUZ_PRETO) && (sd2 <= LUZ_PRETO && sd3 <= LUZ_PRETO)) {
     ligarLed(ESQ, VERMELHO);
-    for (uint8_t i = 0; i < 5; i++) {
+    for (uint8_t i = 0; i < 10; i++) {
       virarEsqPor(5);
       moverFrentePor(2);
     }
     pararMotores();
     desligarLed(ESQ);
+  }
+}
+
+void graus90gradual(bool lado) { // 0 esq e 1 dir
+  for (uint8_t i = 0; i < 8; i++) {  // 5
+  if (lado == 0) virarEsqPor(5);
+  else virarDirPor(5);
+  moverFrentePor(2); 
   }
 }
 
@@ -58,7 +66,6 @@ void verificarSegueLinhaEsq() {
 
 void verificarGap() {
   ligarLed(AMBOS, BRANCO);
-  unsigned long tempoInicial = millis();
 
   // moverFrentePor(50);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
 
@@ -75,7 +82,9 @@ void verificarGap() {
 
   moverFrentePor(80);  //  AJUSTE PARA PULAR LINHA PRETA EM CRUZAMENTOS
 
-  uint8_t valor = (CORTE_QTR_P + CORTE_QTR_B) / 2;
+  uint8_t valor = (LUZ_PRETO + LUZ_BRANCO) / 2;
+
+  unsigned long tempoInicial = millis();
 
   while (true) {
 
@@ -90,8 +99,16 @@ void verificarGap() {
 
     moverFrenteLentoPor(1);
 
+    // LER ULTRA DA PAREDE SE SAIDA FOR MEIO LADO
+    if (millis() - tempoInicial >= 1100 && millis() - tempoInicial <= 1300) {
+      pararMotores();
+      delay(10);
+      lerUltraEsq();
+      lerUltraDir();
+    }
+
     // VALOR DE ENTRADA PARA SALA DE RESGATE
-    if (millis() - tempoInicial >= 2500) {
+    if (millis() - tempoInicial >= 2200) {
       pararMotores();
       desligarLed(AMBOS);
       delay(250);
@@ -234,7 +251,7 @@ void desviarObstaculo(bool isEsquerdo) {
   while (millis() - tempoInicial < 1350) {  // AJUSTAR TAMBÉM
     moverFrentePor(1);
     lerReflPrincipal();
-    if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && sm >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+    if (se3 >= LUZ_PRETO && se2 >= LUZ_PRETO && se1 >= LUZ_PRETO && sm >= LUZ_PRETO && sd1 >= LUZ_PRETO && sd2 >= LUZ_PRETO && sd3 >= LUZ_PRETO) {
       pararMotores();
       delay(500);
       moverFrentePor(250);
@@ -293,11 +310,11 @@ void rampaOuGangorra() {
 
       lerReflSegueLinha();
 
-      if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
+      if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO) {
         seguirLinhaEsq(1);
       }
 
-      if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
+      if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO) {
         seguirLinhaDir(1);
       }
     }
@@ -342,8 +359,8 @@ void rampaOuGangorra() {
       } else {
         lerReflSegueLinha();
 
-        if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) seguirLinhaEsq(1);
-        if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) seguirLinhaDir(1);
+        if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO) seguirLinhaEsq(1);
+        if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO) seguirLinhaDir(1);
       }
 
       lerGiroscopioDMP();
@@ -374,8 +391,8 @@ void rampaOuGangorra() {
       lerReflSegueLinha();
       seguidorMoverFrente();
       delay(1);
-      if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P || sd3 >= CORTE_QTR_P) seguirLinhaDir(7);
-      if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P || se3 >= CORTE_QTR_P) seguirLinhaEsq(7);
+      if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO || sd3 >= LUZ_PRETO) seguirLinhaDir(7);
+      if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO || se3 >= LUZ_PRETO) seguirLinhaEsq(7);
       
 
       lerReflTodos();
@@ -400,8 +417,8 @@ void rampaOuGangorra() {
         delay(3);
 
         lerReflSegueLinha();
-        if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P || sd3 >= CORTE_QTR_P) seguirLinhaDir(3);
-        if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P || se3 >= CORTE_QTR_P) seguirLinhaEsq(3);
+        if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO || sd3 >= LUZ_PRETO) seguirLinhaDir(3);
+        if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO || se3 >= LUZ_PRETO) seguirLinhaEsq(3);
       }
       pararMotores();
       delay(1000);
@@ -425,22 +442,22 @@ void rampaSalaResgate() {
 
     lerReflPrincipal();
 
-    if (distanciaUltraDir < 10 && (distanciaUltraEsq > 10 && distanciaUltraEsq < 120) && (se2 <= CORTE_QTR_B && se1 <= CORTE_QTR_B && se0 <= CORTE_QTR_B && sd0 <= CORTE_QTR_B && sd1 <= CORTE_QTR_B && sd2 <= CORTE_QTR_B)) {
+    if (distanciaUltraDir < 10 && (distanciaUltraEsq > 10 && distanciaUltraEsq < 120) && (se2 <= LUZ_BRANCO && se1 <= LUZ_BRANCO && se0 <= LUZ_BRANCO && sd0 <= LUZ_BRANCO && sd1 <= LUZ_BRANCO && sd2 <= LUZ_BRANCO)) {
       break;
     }
 
     moverFrenteRapido();
 
-    if (se1 >= CORTE_QTR_P || se2 >= CORTE_QTR_P) {
+    if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO) {
       seguirLinhaEsq(3);
     }
 
-    if (sd1 >= CORTE_QTR_P || sd2 >= CORTE_QTR_P) {
+    if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO) {
       seguirLinhaDir(3);
     }
 
     // CRUZAMENTO
-    if (se3 >= CORTE_QTR_P && se2 >= CORTE_QTR_P && se1 >= CORTE_QTR_P && se0 >= CORTE_QTR_P && sd0 >= CORTE_QTR_P && sd1 >= CORTE_QTR_P && sd2 >= CORTE_QTR_P && sd3 >= CORTE_QTR_P) {
+    if (se3 >= LUZ_PRETO && se2 >= LUZ_PRETO && se1 >= LUZ_PRETO && se0 >= LUZ_PRETO && sd0 >= LUZ_PRETO && sd1 >= LUZ_PRETO && sd2 >= LUZ_PRETO && sd3 >= LUZ_PRETO) {
       ligarLed(AMBOS, BRANCO);
       moverFrenteRapidoPor(400);
       desligarLed(AMBOS);

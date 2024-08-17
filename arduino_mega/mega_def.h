@@ -1,18 +1,17 @@
-#include <stdint.h>
 #define DEBUG 0
 
 #define DEBUG_REFL 1
 #define DEBUG_TCS_AMBOS 0
 #define DEBUG_TCS_FRENTE 0
-#define DEBUG_GIROSCOPIO 1
+#define DEBUG_GIROSCOPIO 0
 #define DEBUG_LASER_FRENTE 0
 #define DEBUG_LASER_GARRA 0
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define CORTE_QTR_P 200 // acima é preto
-#define CORTE_QTR_B 147 // abaixo é branco
-#define CORTE_FRENTE 120  // abaixo é branco e acima é preto
+#define LUZ_PRETO 208 // acima é preto    200
+#define LUZ_BRANCO 155 // abaixo é branco  147
+#define LUZ_FRENTE 110  // abaixo é branco e acima é preto   120
 
 #define CORTE_VERDE_ESQ 62 // abaixo disso é verde // 65 no verde escuro
 #define CORTE_VERDE_DIR 60
@@ -23,10 +22,10 @@
 // USE VALORES DE 0 A 100
 #define VEL_MOTOR_FRENTE 50
 #define VEL_MOTOR_TRAS 40
-#define VEL_MOTOR_CURVA 59 // 52
-#define VEL_MOTOR_SEG_FRENTE 38
+#define VEL_MOTOR_CURVA 59 // 59
+#define VEL_MOTOR_SEG_FRENTE 38 // 38
 #define VEL_MOTOR_SEG_MAX 75
-#define VEL_MOTOR_SEG_MIN 70 // 75
+#define VEL_MOTOR_SEG_MIN 70 // 70
 
 #define TEMPO_MOVER_ANTES_ANALISAR_VERDE moverFrentePor(98); // 100
 #define TEMPO_MOVER_ANTES_CRUZ 282 // 300
@@ -150,7 +149,7 @@ int contUltra = 0;
 #define GRAUS90 1
 
 // em teste
-#define LOMBADA 1
+#define LOMBADA 0
 
 // talvez tenha, talvez nao
 #define RAMPA_SALA_RESGATE 0
