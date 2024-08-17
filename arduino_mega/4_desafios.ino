@@ -219,50 +219,69 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
 }
 
 void desviarObstaculo(bool isEsquerdo) {
+  // Verificação dupla para obstáculo
   pararMotores();
   delay(50);
   lerLaserFrente();
   if (distanciaLaserFrente == 0 || distanciaLaserFrente >= DIST_OBSTACULO) {
     return;
   }
+
   ligarLed(AMBOS, VERMELHO);
 
   // ADIONAR CURVINHA COM DELAY APENAS PARA ALINHAR
 
   moverTrasPor(300);
-  if (isEsquerdo) {
-    virarEsqGiro90();
-  } else {
-    virarDirGiro90();
-  }
-  moverFrentePor(1150);
-  if (isEsquerdo) {
-    virarDirGiro90();
-  } else {
-    virarEsqGiro90();
-  }
-  moverFrentePor(2460);  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2500
-  if (isEsquerdo) {
-    virarDirGiro90();
-  } else {
-    virarEsqGiro90();
-  }
+
+  if (isEsquerdo) virarEsqGiro90();
+  else virarDirGiro90();
+
+  moverFrentePor(1130); // 1150
+
+  if (isEsquerdo) virarDirGiro90();
+  else virarEsqGiro90();
+
   unsigned long tempoInicial = millis();
-  while (millis() - tempoInicial < 1350) {  // AJUSTAR TAMBÉM
+  // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2460
+  int tamanho = 2300;
+  while (millis() - tempoInicial < tamanho) {
+    moverFrentePor(1);
+
+    lerReflPrincipal();
+    if (se3 >= LUZ_PRETO && se2 >= LUZ_PRETO && se1 >= LUZ_PRETO && sm >= LUZ_PRETO && sd1 >= LUZ_PRETO && sd2 >= LUZ_PRETO && sd3 >= LUZ_PRETO) {
+      pararMotores();
+      delay(200);
+      moverFrentePor(250);
+
+      if (isEsquerdo) virarEsqGiro90();
+      else virarDirGiro90();
+
+
+
+      return; // volta para o loop
+    }
+  }
+  
+
+  if (isEsquerdo) virarDirGiro90();
+  else virarEsqGiro90();
+  
+  tempoInicial = millis();
+  while (millis() - tempoInicial < 1180) {  // AJUSTAR TAMBÉM
     moverFrentePor(1);
     lerReflPrincipal();
     if (se3 >= LUZ_PRETO && se2 >= LUZ_PRETO && se1 >= LUZ_PRETO && sm >= LUZ_PRETO && sd1 >= LUZ_PRETO && sd2 >= LUZ_PRETO && sd3 >= LUZ_PRETO) {
       pararMotores();
       delay(500);
       moverFrentePor(250);
+      desligarLed(AMBOS);
+      
       break;
     }
   }
-  if (isEsquerdo) {
-    virarEsqGiro90();
-  } else {
-    virarDirGiro90();
-  }
+  if (isEsquerdo) virarEsqGiro90();
+  else virarDirGiro90();
+  
   moverTrasPor(250);  // AJUSTAR RÉ
   desligarLed(AMBOS);
 }

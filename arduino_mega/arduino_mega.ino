@@ -182,7 +182,7 @@ void loop() {
   if (lerLaserFrenteNaoBloquante()) {
     if (distanciaLaserFrente != 0 && distanciaLaserFrente <= DIST_OBSTACULO) {
       // !laserFrente.timeoutOccurred() &&
-      desviarObstaculo(true);
+      desviarObstaculo(false);
     }
   }
 #endif
