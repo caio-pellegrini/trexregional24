@@ -174,7 +174,7 @@ void loop() {
   // SEGUIDOR DE LINHA
   lerReflSegueLinha();
   seguidorMoverFrente();
-  if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO || sd3 >= LUZ_PRETO) seguirLinhaDir(6);
+  if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO || sd3 >= LUZ_PRETO) seguirLinhaDir(6); //6
   if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO || se3 >= LUZ_PRETO) seguirLinhaEsq(6);
 
 #if defined(OBSTACULO) && (OBSTACULO == 1)

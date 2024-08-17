@@ -33,7 +33,7 @@ void verificar90GrausDir() {
     ligarLed(DIR, VERMELHO);
     for (uint8_t i = 0; i < 10; i++) {  // 5
       virarDirPor(5);
-      moverFrentePor(2); // 2
+      moverFrentePor(1); // 2
     }
     pararMotores();
     desligarLed(DIR);
@@ -45,7 +45,7 @@ void verificar90GrausEsq() {
     ligarLed(ESQ, VERMELHO);
     for (uint8_t i = 0; i < 10; i++) {
       virarEsqPor(5);
-      moverFrentePor(2);
+      moverFrentePor(1);
     }
     pararMotores();
     desligarLed(ESQ);
@@ -67,7 +67,7 @@ void verificarSegueLinhaEsq() {
 void verificarGap() {
   ligarLed(AMBOS, BRANCO);
 
-  // moverFrentePor(50);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA
+  moverFrentePor(80);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA -- 100
 
   pararMotores();
   delay(150);
@@ -108,7 +108,7 @@ void verificarGap() {
     }
 
     // VALOR DE ENTRADA PARA SALA DE RESGATE
-    if (millis() - tempoInicial >= 2200) {
+    if (millis() - tempoInicial >= 2100) {
       pararMotores();
       desligarLed(AMBOS);
       delay(250);
@@ -156,28 +156,28 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
   // Curva à esquerda
   if (isVerdeEsquerdo && verdeEsq && !verdeDir) {
     // COMENTE ESSA LINHA SE HOUVER CIRCULO
-    // virarEsqGiro90(); 
+    virarEsqGiro90(); 
 
     //  DESCOMENTE ABAIXO APENAS SE HOUVER CIRCULO
-    pararMotores();
-    delay(50);
-    lerGiroscopioDMP();
-    lerGiroscopioDMP();
-    if ((abs(yaw - curvaYaw) > 30 && abs(yaw - curvaYaw) < 90) && contadorCurva90 != 0) {
-      ligarLed(ESQ, AZUL);
-      virarEsqGiro45();
-      desligarLed(AMBOS);
-    } else {
-      virarEsqGiro90(); //
+    // pararMotores();
+    // delay(50);
+    // lerGiroscopioDMP();
+    // lerGiroscopioDMP();
+    // if ((abs(yaw - curvaYaw) > 30 && abs(yaw - curvaYaw) < 90) && contadorCurva90 != 0) {
+    //   ligarLed(ESQ, AZUL);
+    //   virarEsqGiro45();
+    //   desligarLed(AMBOS);
+    // } else {
+    //   virarEsqGiro90(); //
 
-      moverTrasPor(50); // testar se não irá atrapalhar outras partes
-      pararMotores();
-      delay(50);
-      lerGiroscopioDMP();
-      lerGiroscopioDMP();
-      curvaYaw = yaw;
-      contadorCurva90++;
-    }
+    //   moverTrasPor(50); // testar se não irá atrapalhar outras partes
+    //   pararMotores();
+    //   delay(50);
+    //   lerGiroscopioDMP();
+    //   lerGiroscopioDMP();
+    //   curvaYaw = yaw;
+    //   contadorCurva90++;
+    // }
 
     
   }
@@ -185,34 +185,34 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
   // Curva à direita
   if (isVerdeDireito && !verdeEsq && verdeDir) {
     // COMENTE ESSA LINHA SE HOUVER CIRCULO
-    // virarDirGiro90();
+    virarDirGiro90();
 
     //  DESCOMENTE ABAIXO APENAS SE HOUVER CIRCULO
-    pararMotores();
-    delay(50);
-    lerGiroscopioDMP();
-    lerGiroscopioDMP();
-    if ((abs(yaw - curvaYaw) > 30 && abs(yaw - curvaYaw) < 90) && contadorCurva90 != 0) {
-      ligarLed(DIR, AZUL);
-      virarDirGiro45();
-      desligarLed(AMBOS);
-    } else {
-      virarDirGiro90(); // apenas essa
-      moverTrasPor(50); // testar se não irá atrapalhar outras partes
+    // pararMotores();
+    // delay(50);
+    // lerGiroscopioDMP();
+    // lerGiroscopioDMP();
+    // if ((abs(yaw - curvaYaw) > 30 && abs(yaw - curvaYaw) < 90) && contadorCurva90 != 0) {
+    //   ligarLed(DIR, AZUL);
+    //   virarDirGiro45();
+    //   desligarLed(AMBOS);
+    // } else {
+    //   virarDirGiro90(); // apenas essa
+    //   moverTrasPor(50); // testar se não irá atrapalhar outras partes
       
-      pararMotores();
-      delay(50);
-      lerGiroscopioDMP();
-      lerGiroscopioDMP();
-      curvaYaw = yaw;
-      contadorCurva90++;
-    }
+    //   pararMotores();
+    //   delay(50);
+    //   lerGiroscopioDMP();
+    //   lerGiroscopioDMP();
+    //   curvaYaw = yaw;
+    //   contadorCurva90++;
+    // }
     
   }
 
   // Seguir reto
   if (!verdeEsq && !verdeDir) {
-    moverFrentePor(150); // 200
+    moverFrentePor(175); // 200
   }
 
   pararMotores();

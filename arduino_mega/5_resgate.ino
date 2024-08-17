@@ -15,7 +15,7 @@ bool podeSair = false;
 uint8_t numero = 0;
 bool deveSair = false;
 bool entregarQualquerBase = false;
-uint8_t numeroVarreduraEnt = 5;
+uint8_t numeroVarreduraEnt = 4;
 // 4 se for entrada canto, outros valores ajustar
 bool lerEntradaAntes = true;
 
@@ -120,12 +120,6 @@ void entrarSalaResgate() {
     pararMotores();
 
     // MUDAR AQUI ENTRADA
-    moverFrentePor(500);
-    virarEsqGiro45();
-    moverFrentePor(80);
-    virarEsqGiro45();
-    moverTrasPor(100);
-    pararMotores();
     
     desligarLed(AMBOS);
   }
@@ -173,24 +167,24 @@ void varredura(uint8_t num) {
       break;
     }
 
-    // reconhecer saída
-    if (millis() - tempu > 2000 || numero != 0) { // trocar para 1 para reconhecer saida mesmo
-      if (entradaDirecaoEsq == 0) {
-        lerUltraDir();
-        if (distanciaUltraDir > 60) {
-          verificarSaida(DIR);
-          if (deveSair) break;
-          if (numero == numeroVarreduraEnt) break;
-        }
-      } else {
-        lerUltraEsq();
-        if (distanciaUltraEsq > 60) {
-          verificarSaida(ESQ);
-          if (deveSair) break;
-          if (numero == numeroVarreduraEnt) break;
-        }
-      }
-    }
+    // // reconhecer saída
+    // if (millis() - tempu > 2000 || numero != 1) { // trocar para 1 para reconhecer saida mesmo
+    //   if (entradaDirecaoEsq == 0) {
+    //     lerUltraDir();
+    //     if (distanciaUltraDir > 60) {
+    //       verificarSaida(DIR);
+    //       if (deveSair) break;
+    //       if (numero == numeroVarreduraEnt) break;
+    //     }
+    //   } else {
+    //     lerUltraEsq();
+    //     if (distanciaUltraEsq > 60) {
+    //       verificarSaida(ESQ);
+    //       if (deveSair) break;
+    //       if (numero == numeroVarreduraEnt) break;
+    //     }
+    //   }
+    // }
   }
 
   laserGarra.stopContinuous();
@@ -238,8 +232,8 @@ void encontrouArea() {
 
   moverFrentePor(1050);
 
-  if (entradaDirecaoEsq) virarEsqGiro45();
-  else virarDirGiro45();
+  if (entradaDirecaoEsq) virarDirGiro45();
+  else virarEsqGiro45();
 
   moverFrentePor(1200);
   pararMotores();
@@ -260,12 +254,12 @@ void encontrouArea() {
 
   moverTrasPor(500);
 
-  if (entradaDirecaoEsq) virarDirGiro180();
-  else virarEsqGiro180();
+  if (entradaDirecaoEsq) virarEsqGiro180();
+  else virarDirGiro180();
 
   desligarLed(AMBOS);
 
-  alinharComFc(0);
+  alinharComFc(1000);
   pararMotores();
 
   // entregar
@@ -273,6 +267,8 @@ void encontrouArea() {
     if (!entregarQualquerBase) {
       if (!corAreaVermelha && contCacambaVivas > 0) {
         abrirCancelaDir();
+        servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
+        descerGarra();
         contTotalVivas = contCacambaVivas;
         contCacambaVivas = 0;
         delay(750);
@@ -283,6 +279,7 @@ void encontrouArea() {
         // pararMotores();
         // delay(500);
         fecharCancelaDir();
+        subirGarra();
       }
       if (corAreaVermelha && contCacambaMortas > 0) {
         abrirCancelaEsq();
@@ -347,11 +344,11 @@ void encontrouParede(bool alinharNoFinal) {
 
   pararMotores();
   moverTrasPor(700);
-  if (entradaDirecaoEsq) virarDirGiro90();
+  if (entradaDirecaoEsq) virarEsqGiro90();
   else virarEsqGiro90();
 
   if (alinharNoFinal) {
-    if (numero == numeroVarreduraEnt) alinharComFc(0);
+    if (numero == numeroVarreduraEnt) alinharComFc(650);
     else moverTrasPor(650);
   }
   pararMotores();
@@ -363,9 +360,9 @@ void encontrouParede(bool alinharNoFinal) {
 
 void varreduraMeio(bool entregarQualquerBase) {
   // INICIO VARREDURA MEIO
-  moverFrentePor(500);
-  virarDirGiro90();
-  pararMotores();
+  // moverFrentePor(500);
+  // virarDirGiro90();
+  // pararMotores();
 
   abrirGarra();
   descerGarra();
@@ -640,7 +637,7 @@ void verificarSaida(bool esq, bool dir) {
     pararMotores();
   } else {
     ligarLed(esq, dir, VERMELHO);
-    if (contadorVitimas >= 3 || podeSair) {
+    if (podeSair) { // contadorVitimas >= 3 || podeSair
       for (uint8_t i = 0; i < 3; i++) {
         ligarLed(esq, dir, VERMELHO, 250);
         delay(250);
