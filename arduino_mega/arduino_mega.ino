@@ -81,6 +81,12 @@ void setup() {
   servoCancelaEsq.detach();
   servoCancelaDir.detach();
 
+  // DESAFIO
+  // virarDirGiro45();
+  // virarEsqGiro90();
+  // virarDirGiro45();
+  // pararMotores();
+
   #if defined(DEBUG) && (DEBUG == 0)
   Serial.print("Desligando Serial");
   Serial.end();
@@ -174,15 +180,15 @@ void loop() {
   // SEGUIDOR DE LINHA
   lerReflSegueLinha();
   seguidorMoverFrente();
-  if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO || sd3 >= LUZ_PRETO) seguirLinhaDir(6); //6
-  if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO || se3 >= LUZ_PRETO) seguirLinhaEsq(6);
+  if (sd1 >= LUZ_PRETO || sd2 >= LUZ_PRETO || sd3 >= LUZ_PRETO) seguirLinhaDir(5); //6
+  if (se1 >= LUZ_PRETO || se2 >= LUZ_PRETO || se3 >= LUZ_PRETO) seguirLinhaEsq(4);
 
 #if defined(OBSTACULO) && (OBSTACULO == 1)
   // leitura não bloqueante
   if (lerLaserFrenteNaoBloquante()) {
     if (distanciaLaserFrente != 0 && distanciaLaserFrente <= DIST_OBSTACULO) {
       // !laserFrente.timeoutOccurred() &&
-      desviarObstaculo(false);
+      desviarObstaculo(true);
     }
   }
 #endif

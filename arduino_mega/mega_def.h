@@ -9,26 +9,24 @@
 #define DEBUG_ULTRA 0
 #define DEBUG_BOTOES 0
 
-#define LUZ_PRETO 200 // acima é preto    200
+#define LUZ_PRETO 205 // acima é preto    200
 #define LUZ_BRANCO 152 // abaixo é branco  147
 #define LUZ_FRENTE 90  // abaixo é branco e acima é preto   120
 
-#define CORTE_VERDE_ESQ 66 // abaixo disso é verde -- 62
-#define CORTE_VERDE_DIR 64 // 60
-#define CORTE_VERDE_ESQ2 9
-#define CORTE_VERDE_DIR2 9
+#define CORTE_VERDE_ESQ 80   // abaixo disso é verde -- 120 branco 50 verde
+#define CORTE_VERDE_DIR 80   // 130 branco 30 verde
 #define CORTE_VERMELHO_CRUZ 80 // 100
 
 // USE VALORES DE 0 A 100
 #define VEL_MOTOR_FRENTE 50
 #define VEL_MOTOR_TRAS 40
-#define VEL_MOTOR_CURVA 59 // 59
-#define VEL_MOTOR_SEG_FRENTE 38 // 38
+#define VEL_MOTOR_CURVA 64 // 59
+#define VEL_MOTOR_SEG_FRENTE 36 // 38
 #define VEL_MOTOR_SEG_MAX 75
 #define VEL_MOTOR_SEG_MIN 70 // 70
 
-#define TEMPO_MOVER_ANTES_ANALISAR_VERDE moverFrentePor(98); // 98
-#define TEMPO_MOVER_ANTES_CRUZ 282 // 300
+#define TEMPO_MOVER_ANTES_ANALISAR_VERDE moverFrentePor(120); // 98
+#define TEMPO_MOVER_ANTES_CRUZ 200 // 300
 
 #define DIST_LASER_GARRA_VIT 45
 #define DIST_OBSTACULO 70
@@ -40,7 +38,7 @@
 // ---------------
 
 #define SERVO_PA_GARRA_POS_INICIAL 110
-#define SERVO_SUBIR_GARRA_POS_INICIAL 132
+#define SERVO_SUBIR_GARRA_POS_INICIAL 132 // 132
 #define SERVO_ROTACIONAR_GARRA_POS_INICIAL 90
 #define SERVO_CANCELA_ESQ_POS_INICIAL 75
 #define SERVO_CANCELA_DIR_POS_INICIAL 170
@@ -140,12 +138,12 @@ int contUltra = 0;
 
 
 #define ULTRA_ENTRADA_SALA 1
-#define RAMPA 0
+#define RAMPA 1
 #define GANGORRA 0
-#define OBSTACULO 0
+#define OBSTACULO 1
 #define GAP 1
-#define MCD 1
-#define MCE 1
+#define MCD 0
+#define MCE 0
 #define GRAUS90 1
 
 // em teste

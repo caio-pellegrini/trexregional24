@@ -210,11 +210,11 @@ void abrirGarra() { movimentarServo(&servoPaGarra, 35, 3); }
 
 void subirGarra() { movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6); }
 
+void descerGarra() { movimentarServo(&servoSubirGarra, 0, 6); }
+
 void descerGarraRampa() { movimentarServo(&servoSubirGarra, 30, 4); }
 // GANGORRA OU RAMPA - 30
 // RAMPA SALA RESGATE - 15
-
-void descerGarra() { movimentarServo(&servoSubirGarra, 0, 6); }
 
 void rotacionarGarraDir() { movimentarServo(&servoRotacionarGarra, 110, 10); }
 

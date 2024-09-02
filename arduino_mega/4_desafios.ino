@@ -31,9 +31,9 @@ void verificarMeioCruzamentoDir() {
 void verificar90GrausDir() {
   if (sf <= LUZ_FRENTE && sm >= LUZ_PRETO && (se3 <= LUZ_PRETO && se2 <= LUZ_PRETO) && (sd1 >= LUZ_PRETO && sd2 >= LUZ_PRETO && sd3 >= LUZ_PRETO)) {
     ligarLed(DIR, VERMELHO);
-    for (uint8_t i = 0; i < 10; i++) {  // 5
+    for (uint8_t i = 0; i < 5; i++) {  // 5
       virarDirPor(5);
-      moverFrentePor(1); // 2
+      moverFrentePor(2); // 2
     }
     pararMotores();
     desligarLed(DIR);
@@ -43,9 +43,9 @@ void verificar90GrausDir() {
 void verificar90GrausEsq() {
   if (sf <= LUZ_FRENTE && sm >= LUZ_PRETO && (se3 >= LUZ_PRETO && se2 >= LUZ_PRETO && se1 >= LUZ_PRETO) && (sd2 <= LUZ_PRETO && sd3 <= LUZ_PRETO)) {
     ligarLed(ESQ, VERMELHO);
-    for (uint8_t i = 0; i < 10; i++) {
+    for (uint8_t i = 0; i < 5; i++) {
       virarEsqPor(5);
-      moverFrentePor(1);
+      moverFrentePor(2);
     }
     pararMotores();
     desligarLed(ESQ);
@@ -67,7 +67,7 @@ void verificarSegueLinhaEsq() {
 void verificarGap() {
   ligarLed(AMBOS, BRANCO);
 
-  moverFrentePor(80);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA -- 100
+  moverFrentePor(120);  // O QUANTO DEVE ANDAR ATÉ ENCONTRAR A FITA VERMELHA -- 100
 
   pararMotores();
   delay(150);
@@ -99,16 +99,16 @@ void verificarGap() {
 
     moverFrenteLentoPor(1);
 
-    // LER ULTRA DA PAREDE SE SAIDA FOR MEIO LADO
-    if (millis() - tempoInicial >= 1100 && millis() - tempoInicial <= 1300) {
-      pararMotores();
-      delay(10);
-      lerUltraEsq();
-      lerUltraDir();
-    }
+    // // LER ULTRA DA PAREDE SE SAIDA FOR MEIO LADO
+    // if (millis() - tempoInicial >= 1000 && millis() - tempoInicial <= 1200) {
+    //   pararMotores();
+    //   delay(10);
+    //   lerUltraEsq();
+    //   lerUltraDir();
+    // }
 
     // VALOR DE ENTRADA PARA SALA DE RESGATE
-    if (millis() - tempoInicial >= 2100) {
+    if (millis() - tempoInicial >= 1750) { // 2000
       pararMotores();
       desligarLed(AMBOS);
       delay(250);
@@ -127,13 +127,13 @@ void analisarVerde(bool isBeco, bool isVerdeEsquerdo, bool isVerdeDireito) {
   bool verdeEsq = false;
   bool verdeDir = false;
 
-  if (rgbTcsEsq[1] < CORTE_VERDE_ESQ && rgbTcsEsq[1] > CORTE_VERDE_ESQ2) {
+  if (rgbTcsEsq[1] < CORTE_VERDE_ESQ) {
     ligarLed(ESQ, VERDE);
     verdeEsq = true;
   }
 
   if (rgbTcsDir[1] != 0) {
-    if (rgbTcsDir[1] < CORTE_VERDE_DIR && rgbTcsDir[1] > CORTE_VERDE_DIR2) {
+    if (rgbTcsDir[1] < CORTE_VERDE_DIR) {
       ligarLed(DIR, VERDE);
       verdeDir = true;
     }
@@ -231,7 +231,7 @@ void desviarObstaculo(bool isEsquerdo) {
 
   // ADIONAR CURVINHA COM DELAY APENAS PARA ALINHAR
 
-  moverTrasPor(300);
+  moverTrasPor(310);
 
   if (isEsquerdo) virarEsqGiro90();
   else virarDirGiro90();
@@ -243,7 +243,7 @@ void desviarObstaculo(bool isEsquerdo) {
 
   unsigned long tempoInicial = millis();
   // AJUSTAR DE ACORDO COM O TAMANHO DO OBSTACULO // OBJ GRANDE 2460
-  int tamanho = 2300;
+  int tamanho = 2300; // 2300 
   while (millis() - tempoInicial < tamanho) {
     moverFrentePor(1);
 
@@ -255,8 +255,6 @@ void desviarObstaculo(bool isEsquerdo) {
 
       if (isEsquerdo) virarEsqGiro90();
       else virarDirGiro90();
-
-
 
       return; // volta para o loop
     }
@@ -282,7 +280,8 @@ void desviarObstaculo(bool isEsquerdo) {
   if (isEsquerdo) virarEsqGiro90();
   else virarDirGiro90();
   
-  moverTrasPor(250);  // AJUSTAR RÉ
+  moverTrasPor(1);  // AJUSTAR RÉ - 250
+  pararMotores();
   desligarLed(AMBOS);
 }
 
@@ -343,7 +342,7 @@ void rampaOuGangorra() {
     subirGarra();
     servoSubirGarra.detach();
     servoRotacionarGarra.detach();
-    moverTrasPor(200);
+    moverTrasPor(320);
     pararMotores();
 
     // adicione aqui se precisar fazer com que identifique algo depois da gangorra

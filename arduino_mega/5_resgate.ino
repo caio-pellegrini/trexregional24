@@ -37,7 +37,7 @@ void salaDeResgate() {
   if (!deveSair) varreduraMeio(false);
 
   // 2º VARREDURA - 
-
+  
   if (!deveSair) varredura(1);
 
   if (!deveSair) varredura(2);
@@ -48,9 +48,8 @@ void salaDeResgate() {
 
   
   // 3º VARREDURA - ENTREGA QUALQUER BASE E PODE SAIR SE ENCONTRAR
-
-  entregarQualquerBase = true;
   podeSair = true;
+  entregarQualquerBase = true;
 
   if (!deveSair) varredura(1);
 
@@ -167,24 +166,24 @@ void varredura(uint8_t num) {
       break;
     }
 
-    // // reconhecer saída
-    // if (millis() - tempu > 2000 || numero != 1) { // trocar para 1 para reconhecer saida mesmo
-    //   if (entradaDirecaoEsq == 0) {
-    //     lerUltraDir();
-    //     if (distanciaUltraDir > 60) {
-    //       verificarSaida(DIR);
-    //       if (deveSair) break;
-    //       if (numero == numeroVarreduraEnt) break;
-    //     }
-    //   } else {
-    //     lerUltraEsq();
-    //     if (distanciaUltraEsq > 60) {
-    //       verificarSaida(ESQ);
-    //       if (deveSair) break;
-    //       if (numero == numeroVarreduraEnt) break;
-    //     }
-    //   }
-    // }
+    // reconhecer saída
+    if (millis() - tempu > 2000 || numero != 1) { // trocar para 1 para reconhecer saida mesmo
+      if (entradaDirecaoEsq) {
+        lerUltraDir();
+        if (distanciaUltraDir > 60) {
+          verificarSaida(DIR);
+          if (deveSair) break;
+          if (numero == numeroVarreduraEnt) break;
+        }
+      } else {
+        lerUltraEsq();
+        if (distanciaUltraEsq > 60) {
+          verificarSaida(ESQ);
+          if (deveSair) break;
+          if (numero == numeroVarreduraEnt) break;
+        }
+      }
+    }
   }
 
   laserGarra.stopContinuous();
@@ -235,7 +234,7 @@ void encontrouArea() {
   if (entradaDirecaoEsq) virarDirGiro45();
   else virarEsqGiro45();
 
-  moverFrentePor(1200);
+  moverFrentePor(1100);
   pararMotores();
 
   if (contadorVitimas != 0) {
@@ -266,9 +265,9 @@ void encontrouArea() {
   if (contadorVitimas != 0) {
     if (!entregarQualquerBase) {
       if (!corAreaVermelha && contCacambaVivas > 0) {
+        // BASE VERDE
+        movimentarServo(&servoSubirGarra, 120, 6);
         abrirCancelaDir();
-        servoSubirGarra.attach(SERVO_SUBIR_GARRA_PIN);
-        descerGarra();
         contTotalVivas = contCacambaVivas;
         contCacambaVivas = 0;
         delay(750);
@@ -279,9 +278,11 @@ void encontrouArea() {
         // pararMotores();
         // delay(500);
         fecharCancelaDir();
-        subirGarra();
+        movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6);
       }
       if (corAreaVermelha && contCacambaMortas > 0) {
+        // BASE VERMELHA
+        movimentarServo(&servoSubirGarra, 120, 6);
         abrirCancelaEsq();
         contTotalMortas = contCacambaMortas;
         contCacambaMortas = 0;
@@ -293,8 +294,11 @@ void encontrouArea() {
         // pararMotores();
         // delay(500);
         fecharCancelaEsq();
+        movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6);
       }
     } else {
+      // QUALQUER BASE
+      movimentarServo(&servoSubirGarra, 120, 6);
       abrirCancelaEsq();
       abrirCancelaDir();
       contTotalVivas = contCacambaVivas;
@@ -310,6 +314,7 @@ void encontrouArea() {
       delay(500);
       fecharCancelaEsq();
       fecharCancelaDir();
+      movimentarServo(&servoSubirGarra, SERVO_SUBIR_GARRA_POS_INICIAL, 6);
     }
   }
 
@@ -339,16 +344,17 @@ void encontrouParede(bool alinharNoFinal) {
       }
     }
 
-    if (millis() - tempoInicial > 1500) break;
+    if (millis() - tempoInicial > 1400) break;
   }
 
   pararMotores();
   moverTrasPor(700);
+  
   if (entradaDirecaoEsq) virarEsqGiro90();
-  else virarEsqGiro90();
+  else virarDirGiro90();
 
   if (alinharNoFinal) {
-    if (numero == numeroVarreduraEnt) alinharComFc(650);
+    if (numero == numeroVarreduraEnt) alinharComFc(650); // 0
     else moverTrasPor(650);
   }
   pararMotores();
@@ -402,7 +408,7 @@ void varreduraMeio(bool entregarQualquerBase) {
       pararMotores();
       break;
     }
-  } while (millis() - tempo <= 2000); // AJUSTAR ESSE VALOR
+  } while (millis() - tempo <= 1900); // AJUSTAR ESSE VALOR
 
   pararMotores();
   verificarPegarVitima();
@@ -411,7 +417,7 @@ void varreduraMeio(bool entregarQualquerBase) {
   moverFrenteLentoPor(500); // 1000
   pararMotores();
 
-  virarEsqGiro90(); // adicionar outra direcao aqui
+  virarDirGiro90(); // adicionar outra direcao aqui
 
   alinharComFc(1000);
   
@@ -443,19 +449,19 @@ void varreduraMeio(bool entregarQualquerBase) {
       break;
     }
 
-    // // botao da area bateu
-    // lerBtnArea();
-    // if (btnAreaEsq || btnAreaDir) {
-    //   encontrouArea();
-    //   break;
-    // }
+    // botao da area bateu
+    lerBtnArea();
+    if (btnAreaEsq || btnAreaDir) {
+      encontrouParede(false);
+      break;
+    }
   }
 
   pararMotores();
   verificarPegarVitima();
   subirGarra();
 
-  virarEsqGiro90(); // mudar aqui
+  virarDirGiro90(); // mudar aqui
 
   alinharComFc(1000);
 
@@ -494,12 +500,12 @@ void varreduraMeio(bool entregarQualquerBase) {
       break;
     }
   }
-  moverTrasPor(400);
+  moverTrasPor(1000);
   pararMotores();
 
   // FINAL VARREDURA
-  virarEsqGiro90();
-  pararMotores();
+  // virarEsqGiro90();
+  // pararMotores();
 
   laserGarra.stopContinuous();
 
@@ -624,16 +630,16 @@ void verificarSaida(bool esq, bool dir) {
     moverTrasPor(1500);
 
     if (entradaDirecaoEsq) {
-      virarDirGiro45();
+      virarEsqGiro45();
       moverFrentePor(80);
-      virarDirGiro45();
+      virarEsqGiro45();
     } else {
-      virarEsqGiro45();
+      virarDirGiro45();
       moverFrentePor(80);
-      virarEsqGiro45();
+      virarDirGiro45();
     }
     desligarLed(esq, dir);
-    alinharComFc(0);
+    alinharComFc(1000);
     pararMotores();
   } else {
     ligarLed(esq, dir, VERMELHO);
@@ -653,8 +659,8 @@ void sairSalaResgate() {
   subirGarra();
   moverFrentePor(900);
 
-  if (entradaDirecaoEsq) virarEsqGiro90();
-  else virarDirGiro90();
+  if (entradaDirecaoEsq) virarDirGiro90();
+  else virarEsqGiro90();
 
   do {
     moverFrentePor(1);
