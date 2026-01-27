@@ -9,9 +9,9 @@ Sistema de controle completo para navegação autônoma em arenas de resgate, de
 
 ## 🏆 Conquistas
 
-- 🥈 **Medalha de Prata** - Regional 2024
-- 🏅 **Prêmio Nacional de Melhor Design** - 2023
 - 🎯 **Classificação para Etapa Nacional** - Primeira vez em 10 anos
+- 🏅 **Prêmio Nacional de Melhor Design** - 2023
+- 🥈 **Medalha de Prata** - Regional 2024
 
 ## 🎯 Sobre o Projeto
 
@@ -226,8 +226,7 @@ trexregional24/
 
 ### Pré-requisitos
 
-- [Arduino IDE](https://www.arduino.cc/en/software) 1.8.19+
-- Drivers USB Arduino
+- [Arduino IDE](https://www.arduino.cc/en/software) 2.0+
 
 ### Bibliotecas (incluídas em `/libraries`)
 
@@ -344,10 +343,6 @@ Serial.setTimeout(100);   // Nano
 - Máximo 50 linhas por função
 - Comente código complexo
 
-## 📄 Licença
-
-Licença MIT - veja [LICENSE](LICENSE)
-
 ## 👥 Equipe
 
 - **Desenvolvedor**: Caio Pellegrini
@@ -357,8 +352,11 @@ Licença MIT - veja [LICENSE](LICENSE)
 
 - [Pololu](https://www.pololu.com/) - QTRSensors
 - [Adafruit](https://www.adafruit.com/) - TCS34725, BusIO
-- Comunidade Arduino Brasil
 - OBR - Olimpíada Brasileira de Robótica
+
+## 🌐 Redes Sociais
+
+- [Instagram T-Rex](https://www.instagram.com/sesi_trex/)
 
 ---
 
