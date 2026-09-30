@@ -3,9 +3,21 @@
 [![Platform](https://img.shields.io/badge/platform-Arduino-00979D.svg)](https://www.arduino.cc/)
 [![Language](https://img.shields.io/badge/language-C%2FC%2B%2B-00599C.svg)](https://isocpp.org/)
 
-> Firmware embarcado para robô autônomo de resgate - OBR (Olimpíada Brasileira de Robótica) - Modalidade RoboCup Rescue Line
+**Autonomous rescue robot firmware built for the Brazilian Robotics Olympiad (OBR), RoboCup Rescue Line.**
 
-Sistema de controle completo para navegação autônoma em arenas de resgate, desenvolvido para a OBR. Implementa lógica de controle em tempo real usando máquinas de estados, integração de múltiplos sensores e algoritmos de decisão para missões de busca e resgate.
+I worked on T-Rex from 2022 to 2024 as **Team Captain and Lead Programmer**, designing and developing the robot's firmware and control architecture. The system combines real-time state machines, autonomous navigation, multi-sensor integration, motor control, and a five-servo rescue mechanism across an Arduino Mega and an auxiliary Arduino Nano.
+
+This project predates my use of coding agents and represents much of the embedded-systems and debugging foundation I now bring to AI-assisted software development.
+
+### Highlights
+
+- Qualified for the **OBR National Stage**, the team's first national qualification in 10 years.
+- Received the **National Best Design award** in 2023.
+- Won a **silver medal at the 2024 regional stage**.
+- Integrated QTR line sensors, VL53L0X distance sensors, MPU6050 IMU, TCS34725 RGB sensors, ultrasonic sensors, DC motors, and servos.
+- Implemented the complete competition behavior: line following, obstacle avoidance, gaps, ramps, rescue-room scanning, victim collection, classification, and delivery.
+
+> The detailed technical documentation below is kept in Portuguese because it was written during the original Brazilian competition project.
 
 ## 🏆 Conquistas
 
